@@ -28,9 +28,14 @@ function close_NotiForm() {
     $(".extra").hide();
 }
 
-function noti_Fun(text) {
+function noti_Fun(text, type) {
     $(".extra").show();
     document.getElementById("notiForm").innerHTML = text;
+    if (type === "success") {
+        document.getElementById("notiForm").style.background = '#0c0';
+    } else {
+        document.getElementById("notiForm").style.background = '#c00';
+    }
     $("#noti-form").show();
 }
 
