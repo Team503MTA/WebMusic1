@@ -49,17 +49,22 @@ namespace WebMusic.Controllers
                 }
                 else
                 {
-                    id =
-                        playList.Where(p => p.ID_PROD != id && p.TYPE == type)
-                            .OrderBy(p => Guid.NewGuid())
-                            .Select(p => p.ID_PROD)
-                            .FirstOrDefault();
-                }
-                if (id == null)
-                {
-                    id = Convert.ToInt32(Session["idRandom"].ToString());
+                    int typeSong = (int)Session["typeSong"];
+                    USER_TRACKLIST temp =
+                        playList.Where(p => p.ID_PROD != id || p.TYPE != typeSong).OrderBy(p => Guid.NewGuid()).FirstOrDefault();
+                    if (temp == null)
+                    {
+                        id = Convert.ToInt32(Session["idRandom"].ToString());
+                        type = typeSong;
+                    }
+                    else
+                    {
+                        id = temp.ID_PROD;
+                        type = temp.TYPE;
+                    }
                 }
                 Session["idRandom"] = id;
+                Session["typeSong"] = type;
             }
 
             StringBuilder sb = new StringBuilder();
@@ -200,6 +205,7 @@ namespace WebMusic.Controllers
         {
             USER user = Session["User"] as USER;
             var playList = db.USER_TRACKLIST.Where(p => p.ID_USER == user.ID).ToList();
+            Session["PlaylistRight"] = playList;
             if (playList.Count == 0)
             {
                 return Json("");
