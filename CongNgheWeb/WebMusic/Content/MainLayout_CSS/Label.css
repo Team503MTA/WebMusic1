@@ -1,0 +1,594 @@
+﻿
+
+/* Detail-label */
+
+.content {
+    display: block;
+    width: 100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    background: #101010;
+}
+
+.detail-label-wrap {
+    padding: 0;
+    font-size: 95%;
+}
+
+.detail-label {
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-label-left img {
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-label-nav {
+    font-size: 80%;
+    color: #666;
+    margin: 0;
+}
+
+.detail-label-name {
+    font-size: 200%;
+    color: #fff;
+}
+
+p.detail-label-artist-name {
+    display: inline-block;
+    color: #666;
+}
+
+a.detail-label-artist-name {
+    color: #fff;
+    margin-left: 5px;
+    text-decoration: none;
+}
+
+p.detail-label-release {
+    color: #555;
+    display: inline-block;
+}
+
+span.detail-label-release {
+    margin-left: 5px;
+    color: #fff;
+}
+
+p.detail-label-location {
+    color: #555;
+    display: inline-block;
+}
+
+a.detail-label-location {
+    margin-left: 5px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.detail-label-genres p{
+    color: #555;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.detail-label-genres a{
+    color: #fff;
+}
+
+.detail-label-descrip-title {
+    color: #555;
+}
+
+#detail-label-descrip-content{
+    color: #fff;
+}
+
+.detail-label-more {
+    color: #55e;
+    cursor: pointer;
+}
+
+.detail-label-less {
+    color: #55e;
+    display: none;
+    cursor: pointer;
+}
+
+
+/* end detail-label */
+
+
+/* More from this artist */
+.detail-label-artist{
+    display: inline-block;
+    width: 100%;
+    padding: 0 30px;
+    margin:100px 0 0 0;
+}
+
+.detail-label-artist-title{
+    color: #88dd22;
+    font-size: 180%;
+}
+
+.detail-label-artist-info{
+    display: none;
+    width: 100%;
+}
+
+.detail-label-artist-info ul{
+    padding: 0;
+    display: inline-block;
+    width: 100%;
+    list-style-type: none;
+}
+
+.detail-label-artist-info li{
+    display: inline-block;
+    padding: 0;
+    float: left;
+    width: 24.625%;
+    margin-right: 0.5%;
+}
+
+.detail-label-artist-info li:last-child{
+    margin-right: 0;
+}
+
+
+/* end more this from artist */
+
+/* Detail-label-artist-info */
+
+.detail-label-artist-child{
+    display: inline-block;
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    overflow: hidden;
+    height: auto;
+}
+
+.detail-label-artist-child button{
+    cursor: pointer;
+}
+
+.detail-label-artist-child img{
+    width: 100%;
+    display: inline-block;
+}
+
+.detail-label-artist-child-control{
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #000;
+    height: 0px;
+    transition: 0.2s all;
+}
+
+.detail-label-artist-child-control button{
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    border: 0;
+    padding: 0;
+}
+
+.detail-label-artist-child-control span{
+    display: inline-block;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    float: left;
+    width: 0px;
+    color: #22dd22;
+    border: 0;
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    text-align: center;
+    margin-right: 2%;
+    overflow: hidden;
+    transform: translateY(1000%);
+    transition: 0.5s all;
+    transition-timing-function: ease-in-out;
+}
+
+.detail-label-artist-child-fb{
+    display: inline-block;
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    float: left;
+    height: 100%;
+    width: 30px;
+    color: #fff;
+    background: #2222ee;
+    text-align: center;
+    font-size: 100%;
+    border-radius: 50%;
+    margin: 0 2% 0 0;
+    transition: 0.6s all;
+    transform: translate(10000%,10000%);
+}
+
+.detail-label-artist-child-tw{
+    display: inline-block;
+    box-sizing: border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    height: 100%;
+    width: 30px;
+    color: #fff;
+    background: #2222ee;
+    text-align: center;
+    font-size: 100%;
+    float: left;
+    border-radius: 50%;
+    transition: 0.8s all;
+    transform: translateX(1500%);
+}
+
+.detail-label-artist-child:hover .detail-label-artist-child-control span{
+    transform: translateY(0);
+    width: 70px;
+    border: 2px solid #22dd22;
+}
+
+.detail-label-artist-child:hover .detail-label-artist-child-fb{
+    transform: translate(0,0);
+}
+
+.detail-label-artist-child:hover .detail-label-artist-child-tw{
+    transform: translateX(0);
+}
+
+.detail-label-artist-child:hover .detail-label-artist-child-control{
+    height: 30px;
+}
+
+.detail-label-artist-child-name{
+    display: inline-block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: #000;
+    margin: 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 110%;
+    font-weight: bold;
+}
+
+.detail-label-artist-child-name a{
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    overflow: hidden;
+}
+
+.detail-label-artist-child-name a:hover{
+    text-shadow:0 0 15px #f00;
+}
+/* END Detail-label-artist-info */
+
+
+
+
+/* Detail-label-artist-slider */
+.detail-label-artist-pages{
+    display: inline-block;
+    width: 100%;
+    height: 5px;
+}
+
+.detail-label-artist-pages ul{
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    list-style-type: none;
+    height: 100%;
+}
+
+.detail-label-artist-pages-li{
+    display: inline-block;
+    margin-right: 0.5%;
+    height: 100%;
+    background: #666;
+    float: left;
+    cursor: pointer;
+}
+
+.detail-label-artist-pages-li:last-child{
+    margin-right: 0;
+}
+
+.detail-label-artist-pages-li-active{
+    background: #115511;
+}
+/* END Detail-label-artist-slider */
+
+
+
+
+/*Detail-label-track*/
+.detail-label-track{
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border:0;
+    padding: 0 30px;
+}
+
+.detail-label-track-title{
+    display: inline-block;
+    color: #77cc22;
+    font-size: 180%;
+}
+
+.detail-label-track-slide{
+    display: none;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border:0;
+}
+
+.detail-label-track-slide-active{
+    display: inline-block;
+}
+
+.detail-label-track-slide ul{
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border:0;
+    list-style-type: none;
+}
+
+.detail-label-track-slide li{
+    display: inline-block;
+    width: 19.6%;
+    margin-right: 0.5%;
+    float: left;
+}
+
+.detail-label-track-slide li:last-child{
+    margin-right: 0;
+}
+/*END Detail-label-track*/
+
+
+/*Detail-label-track-child*/
+
+.detail-label-track-child {
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: #333;
+}
+
+.detail-label-track-child-top{
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+.detail-label-track-child-top img{
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.detail-label-track-child-top-control {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    width: 0%;
+    padding: 0;
+    z-index: 2;
+    overflow: hidden;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    transition: 0.5s all;
+}
+
+.detail-label-track-child-top button{
+    padding: 0;
+    border: 0;
+    height: 30px;
+    cursor: pointer;
+}
+
+.detail-label-track-child-play{
+    width: 30px;
+    display: inline-block;
+    vertical-align: top;
+    background: #555;
+    color: #eee;
+    float: left;
+}
+
+.detail-label-track-child-buy{
+    width: 70px;
+    font-family: cursive;
+    display: inline-block;
+    vertical-align: top;
+    background: #ee2577;
+    font-family: cursive;
+    border: 0;
+    float: left;
+    color: #eee;
+    font-weight: bold;
+}
+
+.detail-label-track-child-share{
+    width: 70px;
+    display: inline-block;
+    vertical-align: top;
+    font-family: cursive;
+    background: #2222ee;
+    color: #eee;
+    border: 0;
+    float: left;
+}
+
+.detail-label-track-child-share i{
+    margin-right: 5px;
+    font-size: 130%;
+}
+
+.detail-label-track-child-top p{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    margin: 0;
+    width: 0;
+    height: 0%;
+    background: #000;
+    opacity: 0.3;
+    transition: 0.5s all;
+}
+
+.detail-label-track-child:hover .detail-label-track-child-top-control{
+    width: 100%;
+}
+
+.detail-label-track-child:hover .detail-label-track-child-top p{
+    width: 100%;
+    height: 100%;
+}
+
+.detail-label-track-child-bottom{
+    margin: 0;
+    padding: 0;
+}
+
+.detail-label-track-child-bottom a{
+    text-decoration: none;
+}
+/*END Detail-label-track-child*/
+
+
+
+/*  Label Detail_________name song , artist and label */
+
+.detail-label-track-child-bottom{
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding: 2px 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.detail-label-track-child-name{
+    font-size: 105%;
+    padding: 0;
+    margin: 0;
+}
+.detail-label-track-child-name a{
+    color: #eee;
+}
+.detail-label-track-child-name:hover{
+    color: #eee;
+    text-shadow: 0 0 15px #f00;
+}
+.detail-label-track-child-artist{
+    font-size: 100%;
+    padding: 0;
+    margin: 0;
+}
+.detail-label-track-child-artist a{
+    color: #44bbcc;
+}
+.detail-label-track-child-artist:hover{
+    color: #22bbcc;
+    text-shadow: 0 0 15px #f00;
+}
+.detail-label-track-child-label{
+    color: #777;
+    font-size: 95%;
+    margin:0;
+}
+.detail-label-track-child-label a{
+    color: #666;
+}
+.detail-label-track-child-label:hover{
+    color: #777;
+    text-shadow: 0 0 15px #f00;
+}
+/* Label Detail_________END___name song , artist and label */
+
+
+/* Detail Label  Slider control */
+
+.detail-label-track-control {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    
+}
+
+.detail-label-track-button {
+    height: 5px;
+    display: inline-block;
+    float: left;
+    background: #aaa;
+    margin-right: 0.5%;
+    cursor: pointer;
+}
+
+.detail-label-track-button:last-child {
+    margin-right: 0;
+}
+
+.detail-label-track-button-active {
+    background: #151;
+}
+/* End Slider not auto  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

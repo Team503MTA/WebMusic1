@@ -1,0 +1,56 @@
+﻿@using WebMusic.Models;
+@model LISTEN_SLIDER
+
+<link href="~/Content/MainLayout_CSS/style-layout.css" rel="stylesheet" />
+<link href="~/Content/MainLayout_CSS/style-listen.css" rel="stylesheet" />
+<link href="~/Content/MainLayout_CSS/StyleDetailsListen.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+
+@{
+    ViewBag.Title = "DetailsSliderListen";
+    Layout = "~/Views/Layout/MainLayout.cshtml";
+}
+
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="col-sm-4">
+                    <img src="@Url.Content(Model.LINK_IMG)" alt="">
+                </div>
+                <div class="col-sm-8">
+                    <div class="info-show">
+                        <p class="name">SONG </p><p class="name text">@Model.NAME_SONG</p><br />
+                        <p class="artist">ARTIST </p><p class="artist text">@Model.ARTISTS</p> <br />
+                        <p class="genre">GENRES</p> <p class="location text">@Model.GENRE</p><br />
+                        <div class="flower">
+                            <a href="#"><i class="glyphicon glyphicon-play"></i></a>
+                            <button class="money">$2.8</button>
+                            <a href="#"><i class="fa fa-facebook-square"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-google-plus"></i></a>
+
+                        </div>
+
+                        <hr />
+                        <p class="describle">DISCRIPTION  </p><span class="describle text" id="detail-slider-listen">@Model.DESCRIPT</span>
+                        <span class="detail-slider-listen-more">More</span>
+                        <span class="detail-slider-listen-less">Less</span>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            @Html.Action("DailyRotation", "Listen")
+        </div>
+    </div>
+</div>
+
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/MainLayout_JS/main-Cuong.js"></script>
+<script src="~/Scripts/MainLayout_JS/main-layout.js"></script>

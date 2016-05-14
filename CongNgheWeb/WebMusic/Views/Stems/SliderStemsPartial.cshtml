@@ -1,0 +1,12 @@
+﻿@model List<MusicWeb.Model.GENRE>
+<div class="slidebar">
+    <h2>STEMS BY GENRE</h2>
+    <ul class="music-type">
+        @{
+            foreach (var item in Model)
+            {
+                <li><a href="#">@item.NAME</a></li>
+            }
+        }
+    </ul>
+</div>

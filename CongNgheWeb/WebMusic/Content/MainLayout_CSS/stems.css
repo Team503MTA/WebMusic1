@@ -1,0 +1,178 @@
+﻿.banner{
+    vertical-align: middle;
+    text-align: center;
+    color: white;
+    height: 325px;
+    background-image: url(/Image/stems/banner.jpg);
+    font: normal normal normal 100% sans-serif;
+}
+.banner h2{
+    margin-top: 10%;
+}
+.ba
+.banner p{
+    margin-top: 6%;
+}
+.banner a{
+    font-size: 120%;
+    margin-top: 5%;
+    padding: 1% 2%;
+    background: #333333;
+    display: inline-block;
+}
+.banner a:hover{
+    color: #fff;
+}
+.content{
+    padding: 20px;
+    background: #262626;
+}
+.content-top{
+    margin-bottom: 50px;
+    background: #262626;
+    display: block;
+}
+.content-top .pull-left{
+    height: 110px;
+}
+.content-top .pull-left h1{
+    height: 110px;
+    width: auto;
+    margin-top: 0;
+    line-height: 110px;
+    color: #fff;
+}
+.content-top .pull-right{
+    height: 110px;
+    width: auto;
+    line-height: 110px;
+    font-weight: bold;
+    display: block;
+}
+.content-top li{
+    display: inline-block;
+}
+.content-top li a{
+    text-decoration: none;
+    color: #fff;
+    font-family: sans-serif;
+}
+.content-top li:first-child{
+    margin-right: 15px;
+}
+.content-top .active a{
+    border-bottom: #94d500 solid 3px;
+}
+.content .col-xs-8{
+    padding: 0;
+}
+.new-stems-div{
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+.new-stems-div ul{
+    width: 100%;
+    padding: 0;
+    position: relative;
+    display: inline-block;
+}
+.new-stems-div ul li{
+    display: inline-block;
+    background: #383838;
+    width: 19%;
+    margin-right: 0.5%;
+    margin-top: 0.6%;
+}
+.new-stems-div-ul li:first-child{
+    float: left;
+}
+.new-stems-div-ul li:nth-child(5){
+    margin-right: 0;
+}
+.new-stems-div-ul li:nth-child(10){
+    margin-right: 0;
+}
+.new-stems-div-ul li:last-child{
+    margin-right: 0;
+}
+.new-stems-div-ul img{
+    display: block;
+    width: 100%;
+}
+.new-stems-div .art {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.new-stems-div-ul .link-decorate{
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    margin: 0;
+    color: #8c8c8c;
+    font-family: monospace;
+}
+.new-stems-div-ul a{
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.new-stems-div-ul .new-stems-name{
+    color: #fff;
+    font-weight: bold;
+}
+.new-stems-div .new-stems-artist{
+    display: inline-block;
+    /*width: 100%;*/
+    font-weight: bold;
+    font-size: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.new-stems-div-ul .stems-info{
+    font-weight: normal;
+    font-size: 80%;
+}
+.new-stems-div .new-stems-name:hover{
+    color: #ebebeb;
+}
+.new-stems-div-ul .new-stems-artist:hover{
+    color: #949494;
+}
+.content .col-xs-4{
+    padding: 0 10px;
+    background: #262626;
+}
+.col-xs-4 .slidebar{
+    width: auto;
+    margin-top: -20px;
+    padding: 0;
+    margin-left: 10%;
+    background: #383838;
+}
+.slidebar h2{
+    font-size: 150%;
+    color: #fff;
+    font-family: serif;
+    display: block;
+    margin-left: 20px;
+}
+.slidebar ul{
+    display: inline-block;
+    padding-left: 0;
+    margin-left: 20px;
+}
+.slidebar ul li{
+    list-style: none;
+}
+.slidebar ul li a{
+    color: #39C1DE;
+    font-size: 120%;
+    font-family: serif;
+}
+.slidebar ul li a:hover{
+    text-decoration: none;
+    color: #00ffff;
+}

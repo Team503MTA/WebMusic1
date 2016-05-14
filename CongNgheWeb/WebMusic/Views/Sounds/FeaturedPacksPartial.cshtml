@@ -1,0 +1,50 @@
+﻿@using MusicWeb.Model
+@model List<SOUNDS>
+<div class="main-content-1">
+    <h1>FEATURED PACKS</h1>
+    @{
+        var num = 0;
+        var cl = "packs-active";
+        for (int i = 0; i <= Model.Count() - 4; i = i + 4)
+        {
+            <div stt="@num" class="packs @cl">
+                @{
+                    for (int j = i; j < i + 4; j++)
+                    {
+                        <div class="items packs-items">
+                            <a class="img-items" href="#"><img src="@Url.Content("~/Image/sounds/"+@Model[j].LINK_IMG)" alt=""></a>
+                            <div class="items-info packs-items-info">
+                                <a href="#" class="items-name">@Model[j].NAME</a>
+                                <a href="#" class="items-label">@ViewBag.lbl[j]</a>
+                                <span class="items-type"><a href="#"></a></span>
+                                <span class="extra">
+                                    <a class="btn-items play-button" href="#"></a>
+                                    <a class=" btn-items menu-button" href="#"></a>
+                                </span>
+                            </div>
+                        </div>
+                    }
+
+                }
+            </div>
+                        num++;
+                        cl = "";
+                    }
+    }
+    <ul class="slider slider-content">
+        <li class="slider-direction">
+            <a class="prev" href="#"></a>
+        </li>
+        <li stt="0" class="slider-li slider-content-li slider-content-li-active"></li>
+        <li stt="1" class="slider-li slider-content-li"></li>
+        <li stt="2" class="slider-li slider-content-li"></li>
+        <li stt="3" class="slider-li slider-content-li"></li>
+        <li stt="4" class="slider-li slider-content-li"></li>
+        <li stt="5" class="slider-li slider-content-li"></li>
+        <li stt="6" class="slider-li slider-content-li"></li>
+        <li stt="7" class="slider-li slider-content-li"></li>
+        <li class="slider-direction">
+            <a class="next" href="#"></a>
+        </li>
+    </ul>
+</div>

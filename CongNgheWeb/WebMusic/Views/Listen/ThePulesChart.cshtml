@@ -1,0 +1,34 @@
+﻿@using WebMusic.Models;
+@model List<TRACK_ARTIST>
+
+
+<div class="top-ten">
+    <p class="top-ten-title">The Pulse Chart</p>
+    <ul>
+        @{
+            var count = 1;
+            foreach (var item in Model)
+            {
+                <li>
+                    <div class="song-horizontal">
+                        <div class="song-horizontal-left">
+                            <p>@count</p>
+                            <button><i class="fa fa-play"></i></button>
+                            <span class="song-horizontal-left-top"></span>
+                            <span class="song-horizontal-left-bottom"></span>
+                            <span class="song-horizontal-left-left"></span>
+                            <span class="song-horizontal-left-right"></span>
+                        </div>
+                        <div class="song-horizontal-right">
+                            <p class="song-horizontal-name"><a class="name-level-1" href="#">@item.NAME_TRACK</a></p>
+                            <p class="song-horizontal-artist"><a class="name-level-2" } href="#">@item.NAME_ARTIST</a></p>
+                            <p class="song-horizontal-label"><a class="name-level-3" href="#">@item.NAME_LABEL</a></p>
+                            <button>$2.8</button>
+                        </div>
+                    </div>
+                </li>
+                count++;
+            }
+        }
+    </ul>
+</div>

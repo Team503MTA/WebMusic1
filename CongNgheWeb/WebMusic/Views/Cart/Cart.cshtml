@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Layout/MainLayout.cshtml";
+}
+
+@using WebMusic.Models;
+@model List<Cart>
+
+<link href="~/Content/MainLayout_CSS/style-cart.css" rel="stylesheet" />
+
+
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h1 id="detail-username">vu hoang ha</h1>
+                <br />
+                <div class="row">
+                    <div class="col-sm-4 header">Name</div>
+                    <div class="col-sm-3 header">Artist</div>
+                    <div class="col-sm-3 header">Label</div>
+                    <div class="col-sm-1 header">Cost</div>
+                    <div class="col-sm-1 header">Delete</div>
+                </div>
+
+                @foreach (var item in Model)
+                {
+                    <div class="row">
+                        <div class="col-sm-4 cart-row cart-name">
+                            <a href="@Url.Action("Index","Track",new {@id = item.id})">@item.name</a>
+                        </div>
+                        <div class="col-sm-3 cart-row cart-artist">
+                            @foreach (var i in item.artist)
+                            {
+                                <a href="@Url.Action("Index","Artist", new {@nameArtist = i})">@i</a>
+                            }
+                        </div>
+                        <div class="col-sm-3 cart-row cart-label">
+                            @foreach (var i in item.artist)
+                            {
+                                <a href="@Url.Action("Index","Label", new {@nameLabel = i})">@i</a>
+                            }
+                        </div>
+                        <div class="col-sm-1 cart-row cart-cost">@item.cost</div>
+                        <div class="col-sm-1 cart-row cart-delete">
+                            <a href="#">Delete</a>
+                        </div>
+                    </div>
+                }
+                
+                <div class="row">
+                    <div class="col-sm-1 col-sm-offset-10" id="TotalMoney">$@ViewBag.TotalDebt</div>
+                    <div class="col-sm-1" id="Buy-now">
+                        Buy Now
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                @using (Html.BeginForm())
+                {
+                    <form>
+                        <input type="text" name="userEmail" placeholder="Email" class="form-element" id="cart-email-form">
+                        <input type="password" name="userPassword" placeholder="Password" class="form-element" id="cart-password-form">
+                        <div class="remember-user">
+                            <input type="checkbox" id="cart-remember-me" value="Forget password">
+                            <label for="remember-me">Remember me</label>
+                        </div>
+
+                        <div class="login-form-button-group">
+                            <input type="submit" id="button-me-login" class="button-me" value="Buy">
+                        </div>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

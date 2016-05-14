@@ -1,0 +1,25 @@
+﻿@using WebMusic.Models;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/MainLayout.cshtml";
+}
+<link href="~/Content/MainLayout_CSS/style-layout.css" rel="stylesheet" />
+<link href="~/Content/MainLayout_CSS/style-show.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+<div class="content">
+
+    @Html.Action("SliderShow", "Show")
+    <div class="container">
+        <div class="col-sm-12 show">
+            @Html.Action("ListShow", "Show")
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/MainLayout_JS/main-Cuong.js"></script>
+<script src="~/Scripts/MainLayout_JS/main-layout.js"></script>

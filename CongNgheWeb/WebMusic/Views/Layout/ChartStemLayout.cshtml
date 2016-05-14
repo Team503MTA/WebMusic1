@@ -1,0 +1,45 @@
+﻿@using System.Web.Optimization
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scale=no" />
+    <link href="~/Content/Bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Bootstrap/css/bootstrap-theme.css" rel="stylesheet" />
+    <link href="~/Content/Css/main.css" rel="stylesheet" />
+    @*@Styles.Render("~/Content/css");*@
+    <title>@ViewBag.Title</title>
+</head>
+
+<body>
+    <!-- Header -->
+    @RenderPage("~/Views/Shared/Navbar.cshtml");>
+    <!-- end header -->
+    <!-- Menu  -->
+    @RenderPage("~/Views/Shared/Menu.cshtml");
+    <!-- end menu -->
+    <!-- Content -->
+    @RenderBody();
+    <!-- end content -->
+    <!-- Footer -->
+    @RenderPage("~/Views/Shared/Footer.cshtml");
+    <!-- end footer -->
+    <!-- Play music -->
+    @RenderPage("~/Views/Shared/PlayMusic.cshtml");
+    <!-- end play music -->
+
+    <script src="~/Content/Bootstrap/js/jquery-1.12.1.min.js"></script>
+    <script src="~/Content/Bootstrap/js/bootstrap.js"></script>
+    <script src="~/Content/Bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Content/Javascript/main.js"></script>
+    @*@Scripts.Render("~/content/js");*@
+</body>
+
+</html>
+

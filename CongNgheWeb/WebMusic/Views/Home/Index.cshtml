@@ -1,0 +1,34 @@
+﻿
+@{
+    Layout = "~/Views/Layout/MainLayout.cshtml";
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/MainLayout_CSS/style-index.css" rel="stylesheet" />
+
+<div class="col-sm-8" id="startIndex">
+</div>
+
+<script type="text/javascript">
+    startLoad();
+    $.ajax({
+        url: '@Url.Action("FullIndex", "Home")',
+        dataType: 'json',
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            document.getElementById("startIndex").innerHTML = '';
+            document.getElementById("startIndex").innerHTML = data;
+            hotSlider_Fun();
+            Top_6_DJ_Fun();
+            newTrack_Index_Fun();
+
+            endLoad();
+        }
+    });
+
+</script>
+
+<script src="~/Scripts/MainLayout_JS/main-index.js"></script>
+
+

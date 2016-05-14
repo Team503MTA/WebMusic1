@@ -1,0 +1,48 @@
+﻿@model MusicWeb.Model.STEMS
+<div class="stems-detail">
+    <div class="div-img">
+        <img src="@Url.Content("~/Image/stems/"+@Model.IMG)" alt="">
+    </div>
+    <div class="div-info">
+        <div class="stems-title">
+            <p>STEMS</p>
+        </div>
+        <div class="stems-name">
+            <h3>@Model.NAME</h3>
+        </div>
+        <div class="stems-artist">
+            <label for="artist">ARTISTS</label>
+            @{
+                foreach (var t in ViewBag.art)
+                {
+                    <a href="#" id="artist">@t   </a>
+                }
+            }
+        </div>
+        <div class="date-created">
+            <label for="date-release">RELEASE DATE</label>
+            <span id="date-release">@Model.DATE_RELEASE</span>
+        </div>
+        <div class="stems-label">
+            <label for="label">LABEL</label>
+            @{
+                foreach (var it in ViewBag.lbl)
+                {
+                    <a href="#" id="label">@it </a>
+                }
+            }
+        </div>
+        <div class="stems-catalog">
+            <label for="catalog">CATALOG</label>
+            <span id="catalog">@Model.CATALOG</span>
+        </div>
+        <div class="stems-extra">
+            <span class="play glyphicon glyphicon-play"></span>
+            <span class="list glyphicon glyphicon-list"></span>
+            <button class="cost" type="button">$ @Model.COST <span class="glyphicon glyphicon-menu-down"></span></button>
+            <a class="social-link" href="#" title="Like Us On Facebook" target="_blank"><img src="~/Image/sounds/fb.png" alt="" /></a>
+            <a class="social-link" href="#" title="Follow Us On Twitter" target="_blank"><img src="~/Image/sounds/tw.png" alt=""></a>
+        </div>
+    </div>
+</div>
+

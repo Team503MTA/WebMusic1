@@ -1,0 +1,87 @@
+﻿
+
+#content-wrap {
+    margin: 30px 0;
+    background: #222;
+    border: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+
+#detail-username{
+	color: #eee;
+}
+
+.header{
+	display: inline-block;
+	background: #333;
+	color: #eee;
+	border-right: 1px solid #333;
+	box-sizing: border-box;
+	text-align: center;
+	padding: 10px 0;
+}
+
+.header:last-child{
+	border-right:none;
+}
+
+.cart-row{
+	text-align: center;
+	background: #222;
+	color: #c6a;
+	padding: 10px 0;
+	border-right: 1px solid #444;
+}
+
+.cart-row:last-child{
+	border-right:none;
+}
+
+.cart-sale {
+    color: #eee;
+    background: #5c5;
+}
+
+.cart-name a{
+	color: #eee;
+}
+
+.cart-artist a{
+	color: #337ab7;
+}
+
+.cart-label a{
+	color: #777;
+}
+
+.cart-delete a{
+	color: #f00;
+}
+
+#TotalMoney{
+	background: #eee;
+	color: #dd53a0;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+}
+
+#Buy-now{
+	background: #4b4;
+	color: #eee;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+}
+
+#Buy-now:hover {
+    cursor: pointer;
+}
+
+#button-cart-pay {
+    display: inline-block;
+}

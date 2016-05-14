@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h2 style="color:#808080; display:block; width:100%; margin-left:5%;">Admin</h2>
+
+<p class="Them">
+    @Html.ActionLink("Thêm Mới", "ThemMoi");
+</p>
+
+<p class="Sua">
+    @Html.ActionLink("Sửa", "Sua", new { });
+</p>
+
+<p class="Xoa">
+    @Html.ActionLink("Xóa", "Xoa", new { });
+</p>
+
+

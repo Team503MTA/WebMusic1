@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/ChartStemLayout.cshtml";
+}
+<link href="~/Content/Css/stems-detail.css" rel="stylesheet" />
+<div class="content">
+    <div id="charts-detail">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    @Html.Action("StemsDetailPartial", "StemsDetail");
+                    @Html.Action("StemdetailPartial", "StemsDetail");
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script src="~/Content/Javascript/stems.js"></script>*@
+
+
+
+

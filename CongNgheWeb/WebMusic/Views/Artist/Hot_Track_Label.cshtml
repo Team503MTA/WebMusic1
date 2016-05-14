@@ -1,0 +1,264 @@
+﻿
+
+@using WebMusic.Models
+@model List<TRACK>
+
+
+@{
+    int count = 0;
+    List<List<List<string>>> Info = ViewBag.Info;
+    int loop = 0;
+    if (Info.Count > 0)
+    {
+        loop = Info.Count / 5;
+        if (Info.Count % 5 != 0)
+        {
+            loop++;
+        }
+    }
+
+    double widthButton = 100;
+    if (loop > 1)
+    {
+        widthButton = loop * 0.5;
+        widthButton -= 0.5;
+        widthButton = 100 - widthButton;
+        widthButton /= loop;
+    }
+
+    var rightWidth = widthButton + "%";
+
+}
+
+<style>
+    .detail-artist-trackLabel-slider-button{
+        width: @rightWidth;
+    }
+</style>
+
+
+<div class="detail-artist-trackLabel">
+    <p class="detail-artist-trackLabel-title">Hot Track Same Label</p>
+    <div class="detail-artist-trackLabel-content">
+        @{
+            for (int i = 0; i < loop; i++)
+            {
+                if (i != loop - 1)
+                {
+                    <div stt="@i" class="detail-artist-trackLabel-slide">
+                        <ul>
+
+                            <li>
+                                <div class="detail-artist-trackLabel-child">
+                                    <div class="detail-artist-trackLabel-child-top">
+                                        <img src="@Url.Content(Model.ElementAt(count).LINK_IMG)" alt="">
+                                        <div class="detail-artist-trackLabel-child-control">
+                                            <button class="detail-artist-trackLabel-child-play"><i class="fa fa-play"></i></button>
+                                            <button class="detail-artist-trackLabel-child-buy">$@Model.ElementAt(count).COST</button>
+                                            <button class="detail-artist-trackLabel-child-share"><i class="fa fa-facebook"></i>Share</button>
+                                        </div>
+                                        <p></p>
+                                    </div>
+                                    <div class="detail-artist-trackLabel-child-bottom">
+                                        <p class="detail-artist-trackLabel-child-name"><a href="#">@Model.ElementAt(count).NAME</a></p>
+                                        <p class="detail-artist-trackLabel-child-artist">
+                                            @foreach (var item in Info[count][0])
+                                            {
+                                                <a href="@Url.Action("Index", "Artist", new { @artistName = item })">@item</a>
+                                            }
+                                        </p>
+                                        <p class="detail-artist-trackLabel-child-label">
+                                            @foreach (var item in Info[count][1])
+                                            {
+                                                <a href="#">@item</a>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            @{count = count + 1;}
+
+                            <li>
+                                <div class="detail-artist-trackLabel-child">
+                                    <div class="detail-artist-trackLabel-child-top">
+                                        <img src="@Url.Content(Model.ElementAt(count).LINK_IMG)" alt="">
+                                        <div class="detail-artist-trackLabel-child-control">
+                                            <button class="detail-artist-trackLabel-child-play"><i class="fa fa-play"></i></button>
+                                            <button class="detail-artist-trackLabel-child-buy">$@Model.ElementAt(count).COST</button>
+                                            <button class="detail-artist-trackLabel-child-share"><i class="fa fa-facebook"></i>Share</button>
+                                        </div>
+                                        <p></p>
+                                    </div>
+                                    <div class="detail-artist-trackLabel-child-bottom">
+                                        <p class="detail-artist-trackLabel-child-name"><a href="#">@Model.ElementAt(count).NAME</a></p>
+                                        <p class="detail-artist-trackLabel-child-artist">
+                                            @foreach (var item in Info[count][0])
+                                            {
+                                                <a href="@Url.Action("Index", "Artist", new { @artistName = item })">@item</a>
+                                            }
+                                        </p>
+                                        <p class="detail-artist-trackLabel-child-label">
+                                            @foreach (var item in Info[count][1])
+                                            {
+                                                <a href="#">@item</a>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            @{count = count + 1;}
+
+                            <li>
+                                <div class="detail-artist-trackLabel-child">
+                                    <div class="detail-artist-trackLabel-child-top">
+                                        <img src="@Url.Content(Model.ElementAt(count).LINK_IMG)" alt="">
+                                        <div class="detail-artist-trackLabel-child-control">
+                                            <button class="detail-artist-trackLabel-child-play"><i class="fa fa-play"></i></button>
+                                            <button class="detail-artist-trackLabel-child-buy">$@Model.ElementAt(count).COST</button>
+                                            <button class="detail-artist-trackLabel-child-share"><i class="fa fa-facebook"></i>Share</button>
+                                        </div>
+                                        <p></p>
+                                    </div>
+                                    <div class="detail-artist-trackLabel-child-bottom">
+                                        <p class="detail-artist-trackLabel-child-name"><a href="#">@Model.ElementAt(count).NAME</a></p>
+                                        <p class="detail-artist-trackLabel-child-artist">
+                                            @foreach (var item in Info[count][0])
+                                            {
+                                                <a href="@Url.Action("Index", "Artist", new { @artistName = item })">@item</a>
+                                            }
+                                        </p>
+                                        <p class="detail-artist-trackLabel-child-label">
+                                            @foreach (var item in Info[count][1])
+                                            {
+                                                <a href="#">@item</a>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            @{count = count + 1;}
+
+                            <li>
+                                <div class="detail-artist-trackLabel-child">
+                                    <div class="detail-artist-trackLabel-child-top">
+                                        <img src="@Url.Content(Model.ElementAt(count).LINK_IMG)" alt="">
+                                        <div class="detail-artist-trackLabel-child-control">
+                                            <button class="detail-artist-trackLabel-child-play"><i class="fa fa-play"></i></button>
+                                            <button class="detail-artist-trackLabel-child-buy">$@Model.ElementAt(count).COST</button>
+                                            <button class="detail-artist-trackLabel-child-share"><i class="fa fa-facebook"></i>Share</button>
+                                        </div>
+                                        <p></p>
+                                    </div>
+                                    <div class="detail-artist-trackLabel-child-bottom">
+                                        <p class="detail-artist-trackLabel-child-name"><a href="#">@Model.ElementAt(count).NAME</a></p>
+                                        <p class="detail-artist-trackLabel-child-artist">
+                                            @foreach (var item in Info[count][0])
+                                            {
+                                                <a href="@Url.Action("Index", "Artist", new { @artistName = item })">@item</a>
+                                            }
+                                        </p>
+                                        <p class="detail-artist-trackLabel-child-label">
+                                            @foreach (var item in Info[count][1])
+                                            {
+                                                <a href="#">@item</a>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            @{count = count + 1;}
+
+                            <li>
+                                <div class="detail-artist-trackLabel-child">
+                                    <div class="detail-artist-trackLabel-child-top">
+                                        <img src="@Url.Content(Model.ElementAt(count).LINK_IMG)" alt="">
+                                        <div class="detail-artist-trackLabel-child-control">
+                                            <button class="detail-artist-trackLabel-child-play"><i class="fa fa-play"></i></button>
+                                            <button class="detail-artist-trackLabel-child-buy">$@Model.ElementAt(count).COST</button>
+                                            <button class="detail-artist-trackLabel-child-share"><i class="fa fa-facebook"></i>Share</button>
+                                        </div>
+                                        <p></p>
+                                    </div>
+                                    <div class="detail-artist-trackLabel-child-bottom">
+                                        <p class="detail-artist-trackLabel-child-name"><a href="#">@Model.ElementAt(count).NAME</a></p>
+                                        <p class="detail-artist-trackLabel-child-artist">
+                                            @foreach (var item in Info[count][0])
+                                            {
+                                                <a href="@Url.Action("Index", "Artist", new { @artistName = item })">@item</a>
+                                            }
+                                        </p>
+                                        <p class="detail-artist-trackLabel-child-label">
+                                            @foreach (var item in Info[count][1])
+                                            {
+                                                <a href="#">@item</a>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                            @{count = count + 1;}
+
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div stt="@i" class="detail-artist-trackLabel-slide">
+                        <ul>
+                            @while (1 == 1)
+                            {
+                                <li>
+                                    <div class="detail-artist-trackLabel-child">
+                                        <div class="detail-artist-trackLabel-child-top">
+                                            <img src="@Url.Content(Model.ElementAt(count).LINK_IMG)" alt="">
+                                            <div class="detail-artist-trackLabel-child-control">
+                                                <button class="detail-artist-trackLabel-child-play"><i class="fa fa-play"></i></button>
+                                                <button class="detail-artist-trackLabel-child-buy">$@Model.ElementAt(count).COST</button>
+                                                <button class="detail-artist-trackLabel-child-share"><i class="fa fa-facebook"></i>Share</button>
+                                            </div>
+                                            <p></p>
+                                        </div>
+                                        <div class="detail-artist-trackLabel-child-bottom">
+                                            <p class="detail-artist-trackLabel-child-name"><a href="#">@Model.ElementAt(count).NAME</a></p>
+                                            <p class="detail-artist-trackLabel-child-artist">
+                                                @foreach (var item in Info[count][0])
+                                                {
+                                                    <a href="@Url.Action("Index", "Artist", new { @artistName = item })">@item</a>
+                                                }
+                                            </p>
+                                            <p class="detail-artist-trackLabel-child-label">
+                                                @foreach (var item in Info[count][1])
+                                                {
+                                                    <a href="#">@item</a>
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                                count = count + 1;
+                                if (count == Info.Count)
+                                {
+                                    break;
+                                }
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+        }
+
+
+
+        <div class="detail-artist-trackLabel-slider-control">
+            <div stt="0" class="detail-artist-trackLabel-slider-button-active detail-artist-trackLabel-slider-button"></div>
+            @if (loop > 1)
+            {
+                for (int k = 1; k < loop; k++)
+                {
+                    <div stt="@k" class="detail-artist-trackLabel-slider-button"></div>
+                }
+            }
+
+        </div>
+    </div>
+</div>

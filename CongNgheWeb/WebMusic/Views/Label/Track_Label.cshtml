@@ -1,0 +1,442 @@
+﻿
+@using WebMusic.Models;
+@model List<TRACK>
+
+@{
+    int count = 0;
+    int loop = 0;
+    if (Model.Count > 5)
+    {
+        loop = Model.Count / 5;
+        if (Model.Count % 5 != 0)
+        {
+            loop++;
+        }
+    }
+
+    double widthButton = 100;
+    if (loop > 1)
+    {
+        widthButton = loop * 0.5;
+        widthButton -= 0.5;
+        widthButton = 100 - widthButton;
+        widthButton /= loop;
+    }
+    else
+    {
+        widthButton = 0;
+    }
+
+    var rightWidth = widthButton + "%";
+
+    List<List<List<string>>> Info = ViewBag.Info;
+
+    int tempLoop = loop - 1;
+}
+
+<style>
+    .detail-label-track-button{
+        width: @rightWidth !important;
+    }
+</style>
+
+
+<div class="detail-label-track">
+    <p class="detail-label-track-title">Hot Track This Label</p>
+    @for (int cnt = 0; cnt < loop - 1; cnt++)
+    {
+        if (cnt != 0)
+        {
+            <div stt="@cnt" class="detail-label-track-slide">
+                <ul>
+                    <li>
+                        <div class="detail-label-track-child">
+                            <div class="detail-label-track-child-top">
+                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                <div class="detail-label-track-child-top-control">
+                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                </div>
+                                <p></p>
+                            </div>
+                            <div class="detail-label-track-child-bottom">
+                                <p class="detail-label-track-child-name">
+                                    <a href="#">@Model[count].NAME</a>
+                                </p>
+                                <p class="detail-label-track-child-artist">
+                                    @foreach (var i in Info[count][0])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                                <p class="detail-label-track-child-label">
+                                    @foreach (var i in Info[count][1])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    @{ count = count + 1; }
+
+                    <li>
+                        <div class="detail-label-track-child">
+                            <div class="detail-label-track-child-top">
+                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                <div class="detail-label-track-child-top-control">
+                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                </div>
+                                <p></p>
+                            </div>
+                            <div class="detail-label-track-child-bottom">
+                                <p class="detail-label-track-child-name">
+                                    <a href="#">@Model[count].NAME</a>
+                                </p>
+                                <p class="detail-label-track-child-artist">
+                                    @foreach (var i in Info[count][0])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                                <p class="detail-label-track-child-label">
+                                    @foreach (var i in Info[count][1])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    @{ count = count + 1; }
+
+                    <li>
+                        <div class="detail-label-track-child">
+                            <div class="detail-label-track-child-top">
+                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                <div class="detail-label-track-child-top-control">
+                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                </div>
+                                <p></p>
+                            </div>
+                            <div class="detail-label-track-child-bottom">
+                                <p class="detail-label-track-child-name">
+                                    <a href="#">@Model[count].NAME</a>
+                                </p>
+                                <p class="detail-label-track-child-artist">
+                                    @foreach (var i in Info[count][0])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                                <p class="detail-label-track-child-label">
+                                    @foreach (var i in Info[count][1])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    @{ count = count + 1; }
+
+                    <li>
+                        <div class="detail-label-track-child">
+                            <div class="detail-label-track-child-top">
+                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                <div class="detail-label-track-child-top-control">
+                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                </div>
+                                <p></p>
+                            </div>
+                            <div class="detail-label-track-child-bottom">
+                                <p class="detail-label-track-child-name">
+                                    <a href="#">@Model[count].NAME</a>
+                                </p>
+                                <p class="detail-label-track-child-artist">
+                                    @foreach (var i in Info[count][0])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                                <p class="detail-label-track-child-label">
+                                    @foreach (var i in Info[count][1])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    @{ count = count + 1; }
+
+                    <li>
+                        <div class="detail-label-track-child">
+                            <div class="detail-label-track-child-top">
+                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                <div class="detail-label-track-child-top-control">
+                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                </div>
+                                <p></p>
+                            </div>
+                            <div class="detail-label-track-child-bottom">
+                                <p class="detail-label-track-child-name">
+                                    <a href="#">@Model[count].NAME</a>
+                                </p>
+                                <p class="detail-label-track-child-artist">
+                                    @foreach (var i in Info[count][0])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                                <p class="detail-label-track-child-label">
+                                    @foreach (var i in Info[count][1])
+                                    {
+                                    <a href="#">@i</a>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    @{ count = count + 1; }
+                </ul>
+            </div>
+                        }
+                        else
+                        {
+                            <div stt="0" class="detail-label-track-slide detail-label-track-slide-active">
+                                <ul>
+                                    <li>
+                                        <div class="detail-label-track-child">
+                                            <div class="detail-label-track-child-top">
+                                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                                <div class="detail-label-track-child-top-control">
+                                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                                </div>
+                                                <p></p>
+                                            </div>
+                                            <div class="detail-label-track-child-bottom">
+                                                <p class="detail-label-track-child-name">
+                                                    <a href="#">@Model[count].NAME</a>
+                                                </p>
+                                                <p class="detail-label-track-child-artist">
+                                                    @foreach (var i in Info[count][0])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                                <p class="detail-label-track-child-label">
+                                                    @foreach (var i in Info[count][1])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    @{ count = count + 1; }
+
+                                    <li>
+                                        <div class="detail-label-track-child">
+                                            <div class="detail-label-track-child-top">
+                                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                                <div class="detail-label-track-child-top-control">
+                                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                                </div>
+                                                <p></p>
+                                            </div>
+                                            <div class="detail-label-track-child-bottom">
+                                                <p class="detail-label-track-child-name">
+                                                    <a href="#">@Model[count].NAME</a>
+                                                </p>
+                                                <p class="detail-label-track-child-artist">
+                                                    @foreach (var i in Info[count][0])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                                <p class="detail-label-track-child-label">
+                                                    @foreach (var i in Info[count][1])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    @{ count = count + 1; }
+
+                                    <li>
+                                        <div class="detail-label-track-child">
+                                            <div class="detail-label-track-child-top">
+                                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                                <div class="detail-label-track-child-top-control">
+                                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                                </div>
+                                                <p></p>
+                                            </div>
+                                            <div class="detail-label-track-child-bottom">
+                                                <p class="detail-label-track-child-name">
+                                                    <a href="#">@Model[count].NAME</a>
+                                                </p>
+                                                <p class="detail-label-track-child-artist">
+                                                    @foreach (var i in Info[count][0])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                                <p class="detail-label-track-child-label">
+                                                    @foreach (var i in Info[count][1])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    @{ count = count + 1; }
+
+                                    <li>
+                                        <div class="detail-label-track-child">
+                                            <div class="detail-label-track-child-top">
+                                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                                <div class="detail-label-track-child-top-control">
+                                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                                </div>
+                                                <p></p>
+                                            </div>
+                                            <div class="detail-label-track-child-bottom">
+                                                <p class="detail-label-track-child-name">
+                                                    <a href="#">@Model[count].NAME</a>
+                                                </p>
+                                                <p class="detail-label-track-child-artist">
+                                                    @foreach (var i in Info[count][0])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                                <p class="detail-label-track-child-label">
+                                                    @foreach (var i in Info[count][1])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    @{ count = count + 1; }
+
+                                    <li>
+                                        <div class="detail-label-track-child">
+                                            <div class="detail-label-track-child-top">
+                                                <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                                                <div class="detail-label-track-child-top-control">
+                                                    <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                                                    <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                                                    <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                                                </div>
+                                                <p></p>
+                                            </div>
+                                            <div class="detail-label-track-child-bottom">
+                                                <p class="detail-label-track-child-name">
+                                                    <a href="#">@Model[count].NAME</a>
+                                                </p>
+                                                <p class="detail-label-track-child-artist">
+                                                    @foreach (var i in Info[count][0])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                                <p class="detail-label-track-child-label">
+                                                    @foreach (var i in Info[count][1])
+                                                    {
+                                                    <a href="#">@i</a>
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    @{ count = count + 1; }
+                                </ul>
+                            </div>
+                                            }
+                                        }
+
+    <div stt="@tempLoop" class="detail-label-track-slide">
+        <ul>
+            @while (1 == 1)
+        {
+        <li>
+            <div class="detail-label-track-child">
+                <div class="detail-label-track-child-top">
+                    <img src="@Url.Content(Model[count].LINK_IMG)" alt="">
+                    <div class="detail-label-track-child-top-control">
+                        <a href="#" class="detail-label-track-child-play"><i class="fa fa-play"></i></a>
+                        <button class="detail-label-track-child-buy">$@Model[count].COST</button>
+                        <a href="#" class="detail-label-track-child-share"><i class="fa fa-facebook"></i>Share</a>
+                    </div>
+                    <p></p>
+                </div>
+                <div class="detail-label-track-child-bottom">
+                    <p class="detail-label-track-child-name">
+                        <a href="#">@Model[count].NAME</a>
+                    </p>
+                    <p class="detail-label-track-child-artist">
+                        @foreach (var i in Info[count][0])
+                            {
+                            <a href="#">@i</a>
+                            }
+                    </p>
+                    <p class="detail-label-track-child-label">
+                        @foreach (var i in Info[count][1])
+                            {
+                            <a href="#">@i</a>
+                            }
+                    </p>
+                </div>
+            </div>
+        </li>
+
+            count = count + 1;
+            if (count == @Model.Count)
+            {
+                break;
+            }
+        }
+        </ul>
+
+    </div>
+
+
+    <div class="detail-label-track-control">
+        @for (int i = 0; i < loop; i++)
+        {
+            if (i != 0)
+            {
+                <div stt="@i" class="detail-label-track-button"></div>
+            }
+            else
+            {
+                <div stt="0" class="detail-label-track-button-active detail-label-track-button"></div>
+            }
+        }
+    </div>
+
+</div>

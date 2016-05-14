@@ -1,0 +1,44 @@
+﻿
+<div class="tag-playmusic">
+    <audio id="myTune" controls>
+        <source src="~/Music/1.mp3">
+    </audio>
+
+    <div class="playmusic-info">
+        <div class="imgPlayMusic">
+            <img src="" alt="">
+        </div>
+        <div class="textPlayMusic">
+            <a href="#" class="playmusic-name"></a>
+            <a href="#" class="playmusic-label"></a>
+        </div>
+    </div>
+    <div class="playmusic-time">
+        <label id="playmusic-start"></label>
+        <progress id="playmusic-process" value="0" max="100"></progress>
+        <label id="playmusic-end"></label>
+    </div>
+    <div class="playmusic-button">
+        <button id="playmusic-prev">
+            <i class="glyphicon glyphicon-backward"></i>
+        </button>
+        <button id="playButton">
+            <i class="glyphicon glyphicon-play"></i>
+            <i class="glyphicon glyphicon-pause"></i>
+        </button>
+        <button id="playmusic-next">
+            <i class="glyphicon glyphicon-forward"></i>
+        </button>
+        <button id="loopButton">
+            <i class="glyphicon glyphicon-repeat"></i>
+        </button>
+        <div id="volume">
+            <button id="volumeButton">
+                <i class="glyphicon glyphicon-volume-down"></i>
+                <i class="glyphicon glyphicon-volume-up"></i>
+                <i class="glyphicon glyphicon-volume-off"></i>
+            </button>
+            <progress id="volumeProBar" value="100" max="100"></progress>
+        </div>
+    </div>
+</div>

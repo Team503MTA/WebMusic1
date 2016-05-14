@@ -1,0 +1,29 @@
+﻿@using WebMusic.Models;
+@model List<ARTIST>
+
+<div class="FeaturedArtists-right">
+    <p class="featured-title">FEATURED ARTIST</p>
+    <hr align=left>
+    <div class="img-featuredartists">
+        @{
+            foreach (var item in Model)
+            {
+                <div class="top-Artist">
+                    <img src="@Url.Content(item.IMG)" alt="">
+                    <div class="top-Artist-control">
+                        <span>Follow</span>
+                        <button class="top-Artist-fb">
+                            <i class="fa fa-facebook"></i>
+                        </button>
+                        <button class="top-Artist-tw"><i class="fa fa-twitter"></i></button>
+                    </div>
+                    <div class="top-Artist-name">
+                        <a href="#" id="name-Artists">@item.NAME</a>
+                    </div>
+                </div>
+            }
+        }
+
+
+    </div>
+</div>

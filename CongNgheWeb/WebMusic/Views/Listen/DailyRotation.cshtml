@@ -1,0 +1,48 @@
+﻿@using WebMusic.Models;
+@model List<TRACK_ARTIST>
+
+<div class="daily-rotation">
+    <p class="daily-rotation-title"> DAILY-ROTATIAN</p>
+    <div class="daily-rotation-content">
+        <ul class="daily-rotation-content">
+            @{
+                foreach (var item in Model)
+                {
+                    <div class="daily-rotation-song-vertical">
+                        <div class="daily-rotation-song-vertical-top">
+                            <img src="@Url.Content(item.LINK_IMG)" alt="">
+                            <div class="daily-rotation-song-vertical-top-control">
+                                <button class="daily-rotation-song-vertical-play"><i class="fa fa-play"></i></button>
+                                <button class="daily-rotation-song-vertical-buy">@item.COST</button>
+                                <button class="daily-rotation-song-vertical-share"><i class="fa fa-facebook"></i>Share</button>
+                            </div>
+                            <p></p>
+                        </div>
+                        <div class="daily-rotation-song-vertical-bottom">
+                            @if (item.NAME_TRACK.Length > 15)
+                            {
+                                <p class="daily-rotation-song-vertical-name"><a href="#"><strong>@item.NAME_TRACK.Substring(0, 15)...</strong></a></p>
+                            }
+                            else
+                            {
+                                <p class="daily-rotation-song-vertical-name"><a href="#"><strong>@item.NAME_TRACK</strong></a></p>
+
+                            }
+                            @if (item.NAME_ARTIST.Length > 15)
+                            {
+                                <p class="daily-rotation-song-vertical-name"><a href="#">@item.NAME_ARTIST.Substring(0, 15)...</a></p>
+                            }
+                            else
+                            {
+                                <p class="daily-rotation-song-vertical-name"><a href="#">@item.NAME_ARTIST</a></p>
+
+                            }
+                            <p class="daily-rotation-song-vertical-label"><a href="#">@item.NAME_LABEL</a></p>
+                        </div>
+                    </div>
+                }
+            }
+
+        </ul>
+    </div>
+</div>

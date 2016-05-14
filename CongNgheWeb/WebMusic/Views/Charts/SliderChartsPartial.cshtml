@@ -1,0 +1,27 @@
+﻿
+@model List<MusicWeb.Model.CHART>
+<div class="slider">
+    <button class="direction prev" type="button"><img src="~/Image/charts/prev.png" alt=""></button>
+    @{
+        var cl = "slider-img-active";
+        var num = 0;
+        for (int i = 0; i < Model.Count; i++)
+        {
+            <a href="#">
+                <img stt="@num" src="@Url.Content("~/Image/tracks/"+ ViewBag.img[i])" alt="" class="slider-img @cl" />
+            </a>
+            cl = "";
+            num++;
+        }
+    }
+    <button class="direction next" type="button"><img src="~/Image/charts/next.png" alt=""></button>
+    <ul class="slider-ul">
+        <li stt="0" class="slider-li slider-li-active"></li>
+        <li stt="1" class="slider-li"></li>
+        <li stt="2" class="slider-li"></li>
+        <li stt="3" class="slider-li"></li>
+        <li stt="4" class="slider-li"></li>
+        <li stt="5" class="slider-li"></li>
+        <li stt="6" class="slider-li"></li>
+    </ul>
+</div>

@@ -1,0 +1,38 @@
+﻿@model MusicWeb.Model.CHART
+<div class="charts-detail">
+    <div class="div-img">
+        <img src="@Url.Content("~/Image/tracks/" +ViewBag.img)" alt="">
+    </div>
+    <div class="div-info">
+        <div class="charts-title">
+            <p>CHART</p>
+        </div>
+        <div class="charts-name">
+            <h3>@Model.NAME</h3>
+        </div>
+        <div class="charts-creator">
+            <label for="creator">CREATED BY</label>
+            <a href="#" id="creator">BEATPORT</a>
+        </div>
+        <div class="date-created">
+            <label for="date-release">DATE CREATED</label>
+            <span id="date-release">@Model.DATE_RELEASE</span>
+        </div>
+        <div class="charts-genre">
+            <label for="genre">GENRES</label>
+            <a href="#" id="genre">@Model.NAME_GENRE</a>
+        </div>
+        <div class="charts-extra">
+            <span class="play glyphicon glyphicon-play"></span>
+            <span class="list glyphicon glyphicon-list"></span>
+            <button class="cost" type="button">$ @Model.COST <span class="glyphicon glyphicon-menu-down"></span></button>
+            <a class="social-link" href="#" title="Like Us On Facebook" target="_blank"><img src="~/Image/sounds/fb.png" alt="" /></a>
+            <a class="social-link" href="#" title="Follow Us On Twitter" target="_blank"><img src="~/Image/sounds/tw.png" alt=""></a>
+        </div>
+        <div class="charts-descrip">
+            <label for="descrip">DESCRIPTION</label>
+            <span id="descrip">@Model.DESCRIP</span>
+        </div>
+    </div>
+</div>
+

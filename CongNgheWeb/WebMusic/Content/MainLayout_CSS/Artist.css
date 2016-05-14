@@ -1,0 +1,796 @@
+﻿
+
+
+/* Content detail */
+
+.content {
+    display: block;
+    width: 100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.detail-artist-wrap {
+    padding: 0;
+    font-size: 95%;
+}
+
+.detail-artist {
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-artist-left img {
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-artist-nav {
+    font-size: 80%;
+    color: #666;
+    margin: 0;
+}
+
+.detail-artist-name {
+    font-size: 200%;
+    color: #fff;
+}
+
+p.detail-artist-genres {
+    display: inline-block;
+    color: #666;
+}
+
+a.detail-artist-genres {
+    color: #fff;
+    margin-left: 5px;
+    text-decoration: none;
+}
+
+p.detail-artist-release {
+    color: #555;
+    display: inline-block;
+}
+
+span.detail-artist-release {
+    margin-left: 5px;
+    color: #fff;
+}
+
+p.detail-artist-label {
+    color: #555;
+    display: inline-block;
+}
+
+a.detail-artist-label {
+    margin-left: 5px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.detail-artist-descrip-title {
+    color: #666;
+}
+
+#detail-artist-descrip-content {
+    color: #eee;
+}
+
+.detail-artist-more {
+    color: #55e;
+    cursor: pointer;
+}
+
+.detail-artist-less {
+    color: #55e;
+    display: none;
+    cursor: pointer;
+}
+
+.detail-artist-follow{
+    background: transparent;
+    margin-top: 20px;
+}
+
+.detail-artist-follow p{
+    display: inline-block;
+    height: 30px;
+    vertical-align: top;
+    line-height: 30px;
+    padding-bottom: 6px;
+    width: 80px;
+    text-align: center;
+    border: 2px solid #22dd22;
+    color: #22dd22;
+}
+
+.detail-artist-fb , .detail-artist-tw{
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: #333;
+    color: #fff;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    text-align: center;
+    line-height: 30px;
+}
+
+.detail-artist-fb:hover , .detail-artist-tw:hover {
+    cursor: pointer;
+    color: #fff;
+}
+
+.detail-artist-fb:focus , .detail-artist-tw:focus {
+    color: #fff;
+}
+
+
+/* end content detail */
+
+
+
+/* All track total */
+
+.track-total{
+    width: 100%;
+}
+
+.detail-artist-total-track{
+    display: inline-block;
+    width: 100%;
+    font-family: cursive;
+    margin-top: 100px;
+    padding: 0 15px;
+}
+
+.detail-artist-total-track-title{
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    color: #22cc55;
+    padding-bottom: 20px;
+    font-size: 150%;
+}
+
+.detail-artist-total-track-content{
+    padding-top: 15px;
+    display: inline-block;
+    width: 100%;
+    border-top: 1px solid #888;
+}
+
+.detail-artist-total-track-content ul{
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-artist-total-track-content li{
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    background:#333;
+    border:none;
+}
+
+.detail-artist-total-track-content li:first-child{
+    color: #eee;
+    background: transparent;
+}
+
+.detail-artist-total-track-play, .detail-artist-total-track-genre, .detail-artist-total-track-bpm, .detail-artist-total-track-key, .detail-artist-total-track-length, .detail-artist-total-track-buy{
+    display: inline-block;
+    float: left;
+    width: 8.3333%;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: 100%;
+    box-sizing : border-box;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.detail-artist-total-track-buy{
+    padding-right: 0;
+}
+
+.detail-artist-total-track-name, .detail-artist-total-track-artist, .detail-artist-total-track-remixer{
+    display: inline-block;
+    float: left;
+    width: 16.6666%;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: 100%;
+    box-sizing : border-box;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.detail-artist-total-track-content a{
+    text-decoration: none;
+}
+
+.detail-artist-total-track-buy button{
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(240, 70, 110, 0.5);
+    height: 100%;
+    width: 100%;
+    color: #eee;
+    font-weight: bold;
+    font-size: 100%;
+    cursor: pointer;
+}
+
+.detail-artist-total-track-play span{
+    padding:0;
+    margin: 0;
+    color: #eee;
+    font-size: 150%;
+    display: inline-block;
+    float: left;
+    width: 40%;
+    height: 100%;
+}
+
+.detail-artist-total-track-play button{
+    margin: 0;
+    padding: 0;
+    height: 30px;
+    width: 30px;
+    border:0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.detail-artist-total-track-play i{
+    color: #888;
+    font-size: 130%;
+}
+
+.detail-artist-total-track-name a{
+    color: #eee;
+}
+
+.detail-artist-total-track-name a:hover{
+    color: #eee;
+    text-shadow:0 0 15px #f00;
+}
+
+.detail-artist-total-track-artist a{
+    color: #22aadd;
+}
+
+.detail-artist-total-track-artist a:hover{
+    color: #22aadd;
+    text-shadow:0 0 15px #f00;
+}
+
+.detail-artist-total-track-remixer a{
+    color: #22bb88;
+}
+
+.detail-artist-total-track-remixer a:hover{
+    color: #22bb88;
+    text-shadow:0 0 15px #f00;
+}
+
+.detail-artist-total-track-genre a{
+    color: #bbb;
+}
+
+.detail-artist-total-track-genre a:hover{
+    color: #bbb;
+    text-shadow:0 0 15px #f00;
+}
+
+.detail-artist-total-track-bpm span{
+    color: #666;
+}
+
+.detail-artist-total-track-key span{
+    color: #666;
+}
+
+.detail-artist-total-track-length span{
+    color: #666;
+}
+
+.detail-artist-total-track-content li:hover .detail-artist-total-track-play i{
+    color: #eee;
+    text-shadow:0 0 15px #f00;
+}
+
+.detail-artist-total-track-content li:hover .detail-artist-total-track-buy button{
+    background: rgba(240, 70, 110, 1);
+}
+/*END all track total*/
+
+
+
+
+/* Artist remix */
+.detail-artist-remix{
+    display: inline-block;
+    width: 100%;
+    padding: 0 30px;
+    margin-top: 100px;
+}
+
+.detail-artist-remix-title{
+    display: inline-block;
+    width: 100%;
+    color: #22cc55;
+    font-size: 150%;
+    margin-bottom: 30px;
+}
+
+.detail-artist-remix-content{
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-artist-remix-slide{
+    display: none;
+    width: 100%;
+}
+
+.detail-artist-remix-slide:first-child{
+    display: inline-block;
+}
+
+.detail-artist-remix-slide ul{
+    padding: 0;
+    list-style-type: none;
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-artist-remix-slide li{
+    padding: 0;
+    display: inline-block;
+    width: 19.6%;
+    float: left;
+    margin-right: 0.5%;
+}
+
+.detail-artist-remix-slide li:last-child{
+    margin-right: 0;
+}
+
+/* END Artist remix */
+
+
+/* Detail-artist-remix-child */
+
+.detail-artist-remix-child {
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: #333;
+}
+
+.detail-artist-remix-child-top{
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+.detail-artist-remix-child-top img{
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.detail-artist-remix-child-control{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    display: inline-block;
+    width: 0%;
+    padding: 0;
+    z-index: 2;
+    overflow: hidden;
+    transition: 0.5s all;
+}
+
+.detail-artist-remix-child-control button{
+    padding: 0;
+    border: 0;
+    height: 30px;
+    cursor: pointer;
+}
+
+.detail-artist-remix-child-play{
+    width: 30px;
+    display: inline-block;
+    vertical-align: top;
+    background: #555;
+    color: #eee;
+    float: left;
+}
+
+.detail-artist-remix-child-buy{
+    width: 70px;
+    font-family: cursive;
+    display: inline-block;
+    vertical-align: top;
+    background: #ee2577;
+    font-family: cursive;
+    border: 0;
+    float: left;
+    color: #eee;
+    font-weight: bold;
+}
+
+.detail-artist-remix-child-share{
+    width: 70px;
+    display: inline-block;
+    vertical-align: top;
+    font-family: cursive;
+    background: #2222ee;
+    color: #eee;
+    border: 0;
+    float: left;
+}
+
+.detail-artist-remix-child-share i{
+    margin-right: 5px;
+    font-size: 130%;
+}
+
+.detail-artist-remix-child-top p{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    margin: 0;
+    width: 0;
+    height: 0%;
+    background: #000;
+    opacity: 0.3;
+    transition: 0.5s all;
+}
+
+.detail-artist-remix-child:hover .detail-artist-remix-child-control{
+    width: 100%;
+}
+
+.detail-artist-remix-child:hover .detail-artist-remix-child-top p{
+    width: 100%;
+    height: 100%;
+}
+
+.detail-artist-remix-child-bottom{
+    margin: 0;
+    padding: 0;
+}
+
+.detail-artist-remix-child-bottom a{
+    text-decoration: none;
+}
+/* END Detail-artist-remix-child */
+
+
+
+/* Detail-Artist-remix-child name,artist,label */
+
+.detail-artist-remix-child-bottom{
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding: 2px 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.detail-artist-remix-child-name a{
+    color: #eee;
+    font-size: 105%;
+}
+.detail-artist-remix-child-name a:hover{
+    color: #eee;
+    text-shadow: 0 0 15px #f00;
+}
+.detail-artist-remix-child-artist a{
+    color: #22bbcc;
+    font-size: 100%;
+}
+.detail-artist-remix-child-artist a:hover{
+    color: #22bbcc;
+    text-shadow: 0 0 15px #f00;
+}
+.detail-artist-remix-child-label a{
+    color: #777;
+    font-size: 95%;
+}
+.detail-artist-remix-child-label a:hover{
+    color: #777;
+    text-shadow: 0 0 15px #f00;
+}
+/* END detail-artist-remix-child name, artist, label */
+
+
+/* Detail-artist-remix-slider */
+
+.detail-artist-remix-slider-control {
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-artist-remix-slider-button {
+    height: 5px;
+    display: inline-block;
+    float: left;
+    background: #aaa;
+    margin-right: 0.5%;
+    cursor: pointer;
+}
+
+.detail-artist-remix-slider-button:last-child {
+    margin-right: 0;
+}
+
+.detail-artist-remix-slider-button-active {
+    background: #151;
+}
+/* END Detail-artist-remix-slider */
+
+
+
+
+
+
+
+
+/* Artist remix */
+.detail-artist-trackLabel{
+    display: inline-block;
+    width: 100%;
+    padding: 0 30px;
+    margin-top: 100px;
+}
+
+.detail-artist-trackLabel-title{
+    display: inline-block;
+    width: 100%;
+    color: #22cc55;
+    font-size: 150%;
+    margin-bottom: 30px;
+}
+
+.detail-artist-trackLabel-content{
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-artist-trackLabel-slide{
+    display: none;
+    width: 100%;
+}
+
+.detail-artist-trackLabel-slide:first-child{
+    display: inline-block;
+}
+
+.detail-artist-trackLabel-slide ul{
+    padding: 0;
+    list-style-type: none;
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-artist-trackLabel-slide li{
+    padding: 0;
+    display: inline-block;
+    width: 19.6%;
+    float: left;
+    margin-right: 0.5%;
+}
+
+.detail-artist-trackLabel-slide li:last-child{
+    margin-right: 0;
+}
+
+/* END Artist remix */
+
+
+/* detail-artist-trackLabel-child */
+body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    font-family: cursive;
+}
+
+.detail-artist-trackLabel-child {
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: #333;
+}
+
+.detail-artist-trackLabel-child-top{
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+.detail-artist-trackLabel-child-top img{
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.detail-artist-trackLabel-child-control{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    display: inline-block;
+    width: 0%;
+    padding: 0;
+    z-index: 2;
+    overflow: hidden;
+    transition: 0.5s all;
+}
+
+.detail-artist-trackLabel-child-control button{
+    padding: 0;
+    border: 0;
+    height: 30px;
+    cursor: pointer;
+}
+
+.detail-artist-trackLabel-child-play{
+    width: 30px;
+    display: inline-block;
+    vertical-align: top;
+    background: #555;
+    color: #eee;
+    float: left;
+}
+
+.detail-artist-trackLabel-child-buy{
+    width: 70px;
+    font-family: cursive;
+    display: inline-block;
+    vertical-align: top;
+    background: #ee2577;
+    font-family: cursive;
+    border: 0;
+    float: left;
+    color: #eee;
+    font-weight: bold;
+}
+
+.detail-artist-trackLabel-child-share{
+    width: 70px;
+    display: inline-block;
+    vertical-align: top;
+    font-family: cursive;
+    background: #2222ee;
+    color: #eee;
+    border: 0;
+    float: left;
+}
+
+.detail-artist-trackLabel-child-share i{
+    margin-right: 5px;
+    font-size: 130%;
+}
+
+.detail-artist-trackLabel-child-top p{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    margin: 0;
+    width: 0;
+    height: 0%;
+    background: #000;
+    opacity: 0.3;
+    transition: 0.5s all;
+}
+
+.detail-artist-trackLabel-child:hover .detail-artist-trackLabel-child-control{
+    width: 100%;
+}
+
+.detail-artist-trackLabel-child:hover .detail-artist-trackLabel-child-top p{
+    width: 100%;
+    height: 100%;
+}
+
+.detail-artist-trackLabel-child-bottom{
+    margin: 0;
+    padding: 0;
+}
+
+.detail-artist-trackLabel-child-bottom a{
+    text-decoration: none;
+}
+/* END detail-artist-trackLabel-child */
+
+
+
+/* detail-artist-trackLabel-child name,artist,label */
+
+.detail-artist-trackLabel-child-bottom{
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding: 2px 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.detail-artist-trackLabel-child-name a{
+    color: #eee;
+    font-size: 105%;
+}
+.detail-artist-trackLabel-child-name a:hover{
+    color: #eee;
+    text-shadow: 0 0 15px #f00;
+}
+.detail-artist-trackLabel-child-artist a{
+    color: #22bbcc;
+    font-size: 100%;
+}
+.detail-artist-trackLabel-child-artist a:hover{
+    color: #22bbcc;
+    text-shadow: 0 0 15px #f00;
+}
+.detail-artist-trackLabel-child-label a{
+    color: #777;
+    font-size: 95%;
+}
+.detail-artist-trackLabel-child-label a:hover{
+    color: #777;
+    text-shadow: 0 0 15px #f00;
+}
+/* END detail-artist-trackLabel-child name, artist, label */
+
+
+/* detail-artist-trackLabel-slider */
+
+.detail-artist-trackLabel-slider-control {
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-artist-trackLabel-slider-button {
+    height: 5px;
+    display: inline-block;
+    float: left;
+    width: 19.6%;
+    background: #aaa;
+    margin-right: 0.5%;
+    cursor: pointer;
+}
+
+.detail-artist-trackLabel-slider-button:last-child {
+    margin-right: 0;
+}
+
+.detail-artist-trackLabel-slider-button-active {
+    background: #151;
+}
+/* END detail-artist-trackLabel-slider */

@@ -1,0 +1,188 @@
+﻿.charts-detail{
+    color: #7D7D7D !important;
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 100px;
+}
+.charts-detail a{
+    color: #fff;
+    font-weight: bold;
+    margin-left: 10px;
+}
+.charts-detail .div-img{
+    width: 30%;
+    display: inline-block;
+}
+.div-img img{
+    width: 100%;
+    display: block;
+}
+.div-info{
+    width: 65%;
+    margin-left: 4%;
+    display: inline-block;
+    position: absolute;
+    line-height: 30px;
+}
+.div-info .charts-name{
+    margin-top: -25px;
+    color: #FCFAFA;  
+}
+.date-created span{
+    color: #fff;
+    margin-left: 10px;
+}
+.charts-extra .play{
+    color: #fff;
+    font-size: 1.7em;
+    vertical-align: middle;
+    margin-right: 2%;
+}
+.charts-extra .list{
+    color: #fff;
+    font-size: 1.7em;
+    vertical-align: middle;
+    margin-right: 2%;
+}
+.charts-extra .cost{
+    margin-right: 2%;
+    vertical-align: middle;
+    border: none;
+    background: #FF53A0;
+    color: #fff;
+    font-weight: bold;
+    width: 12%;
+}
+.charts-extra .cost span{
+    margin-left: 10px;
+    color: #fff;
+}
+.charts-descrip{
+    margin-top: 20px;
+}
+.charts-descrip span{
+    margin-left: 10px;
+    color: #fff;
+}
+.charts-extra .play:hover, .list:hover{
+    color: #FF53A0;
+}
+.tracks-detail{
+    width: 100%;
+    display: inline-block;
+    color: #fff;
+}
+.tracks-list{
+    width: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.tracks-list hr{
+    display: block;
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+.tracks-list .tracks-fields{
+    width: 100%;
+    display: inline-block;
+}
+.tracks-list .tracks-fields span{
+    display: inline-block;
+}
+.tracks-fields span:nth-child(2){
+    margin-left: 13%;
+}
+.tracks-fields span:nth-child(3){
+    margin-left: 16.3%;
+}
+.tracks-fields span:nth-child(4){
+    margin-left: 14%;
+}
+.tracks-fields span:nth-child(5){
+    margin-left: 10.7%;
+}
+.tracks-fields span:nth-child(6){
+    margin-left: 9.8%;
+}
+.tracks{
+    background: #373737;
+    margin-bottom: 2px;
+
+}
+.tracks .div-tracks-img{
+    width: 5%;
+    display: inline-block;
+}
+.div-tracks-img img{
+    width: 100%;
+    display: inline-block;
+}
+.div-tracks-number{
+    width: 2%;
+    display: inline-block;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+.div-tracks-play{
+    width: 5%;
+    display: inline-block;
+}
+.div-tracks-play span{
+    margin-right: 5px;
+}
+.div-tracks-title{
+    width: 20%;
+    display: inline-block;
+}
+.div-tracks-artist{
+    width: 18%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.div-tracks-artist a{
+    color: #45B4BE;
+    font-weight: bold;
+}
+.div-tracks-label{
+    width: 15%;
+    display: inline-block;    
+}
+.div-tracks-label a{
+    color: #879187;
+}
+.div-tracks-genre{
+    width: 14%;
+    display: inline-block;
+}
+.div-tracks-genre a{
+    color: #879187;
+}
+.div-tracks-released{
+    width: 12%;
+    display: inline-block;
+    color: #879187;
+    vertical-align: middle;
+}
+.div-tracks-cost{
+    width: 6%;
+    display: inline-block;
+    vertical-align: middle;
+    color: #879187;
+}
+.div-tracks-cost button{
+    height: 27px;
+    width: 100%;
+    background: #874060;
+    border: none;
+}
+.tracks:hover .div-tracks-cost button {
+    background: #FF53A0;
+    color: #fff;
+}
+.tracks:hover .div-tracks-play {
+    color: #FF53A0;
+}
+
+

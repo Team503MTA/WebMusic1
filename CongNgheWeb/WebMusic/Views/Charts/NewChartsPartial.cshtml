@@ -1,0 +1,70 @@
+﻿@model List<MusicWeb.Model.CHART>
+
+@{
+    var num = 0;
+    var cl = "";
+}
+<div class="new-charts">
+    <div class="new-charts-top">
+        <div class="pull-left">
+            <h3>NEW CHARTS</h3>
+        </div>
+        <div class="pull-right">
+            <ul class="direction">
+                <li><button class="prev"><span class="glyphicon glyphicon-triangle-left"></span></button></li>
+                <li><button class="next"><span class="glyphicon glyphicon-triangle-right"></span></button></li>
+            </ul>
+        </div>
+    </div>
+    <div class="new-charts-detail">
+        @{
+            cl = "new-charts-div-active";
+            for (int i = 0; i <= Model.Count() - 6; i = i + 6)
+            {
+                <div stt="@num" class="new-charts-div @cl">
+
+                    <ul class="new-charts-div-ul">
+                        @{
+                            for (int j = i; j < i + 6; j++)
+                            {
+                                if (ViewBag.img[j] == null)
+                                {
+                                    ViewBag.img[j] = "blank-artist.png";
+                                }
+                                <li>
+                                    <a class="new-charts-detail-link" href="@Url.Action("Index", "ChartsDetail", new {@id = Model[j].ID})"><img src="@Url.Content("~/Image/tracks/" + ViewBag.img[j])" alt=""></a>
+
+                                    <a class="new-charts-name link-decorate" href="#">@Model[j].NAME</a>
+                                    <a class="new-charts-artist link-decorate" href="#">BEATPORT</a>
+                                </li>
+                            }
+
+                        }
+                    </ul>
+                </div>
+                                num++;
+                                cl = "";
+                            }
+        }
+    </div>
+    <div class="new-charts-slider">
+        <ul>
+            @{
+                cl = "new-charts-slider-li-active";
+                var w = 98 / (num);
+                var mr = 2 / (num);
+                for (int i = 0; i < num; i++)
+                {
+                    <li stt="@i" class="new-charts-slider-li @cl" style="width: @w%; margin-right: @mr%"></li>
+                    cl = "";
+                }
+            }
+
+            @*            <li stt="2" class="new-charts-slider-li"></li>
+                <li stt="3" class="new-charts-slider-li"></li>
+                <li stt="4" class="new-charts-slider-li"></li>
+                <li stt="5" class="new-charts-slider-li"></li>
+                <li stt="6" class="new-charts-slider-li"></li>*@
+        </ul>
+    </div>
+</div>

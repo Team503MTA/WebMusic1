@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/ChartStemLayout.cshtml";
+}
+
+<link href="~/Content/Css/stems.css" rel="stylesheet" />
+<div class="banner">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 col-xs-offset-3">
+                <h2><span class="glyphicon glyphicon-align-justify"></span><strong>STEMS</strong></h2>
+                <h1>TRANSFORM YOUR SET</h1>
+                <p>Stems is a new file format for music that will redefine your creative live perfomance</p>
+                <a href="#">LEARN MORE</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="content-top">
+                    <div class="pull-left">
+                        <h1>FEATURED STEMS</h1>
+                    </div>
+                    <div class="pull-right">
+                        <ul class="selectors">
+                            <li class="active"><a href="#">FEATURED</a></li>
+                            <li><a href="#">ALL STEMS</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="col-xs-8">
+                    @Html.Action("NewStemsPArtial", "Stems");
+                </div>
+                <div class="col-xs-4">
+                    @Html.Action("SliderStemsPartial", "Stems");
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

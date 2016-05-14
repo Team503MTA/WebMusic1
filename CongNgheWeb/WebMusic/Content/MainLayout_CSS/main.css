@@ -1,0 +1,682 @@
+﻿body {
+    padding: 0;
+    margin: 0;
+    font-family: serif;
+    background: #1f1f1f;
+}
+li{
+    list-style: none;
+}
+li a{
+    color: #fff;
+}
+
+
+
+/*Headerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr*/
+header{
+    padding: 0;
+    margin: 0;
+    display: block;
+    width: auto;
+    font-size: 1.5em;
+}
+.navbar{
+    display: block;
+    width: 100%;
+    background: #1f1f1f;
+}
+.navbar-header{
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin-bottom: 0;
+}
+.navbar-brand{
+    vertical-align: middle;
+    width: 13%;
+    height: 100%;
+    display: block;
+    padding: 0;
+}
+.navbar-brand img{
+    vertical-align: middle;
+    height: 50px;
+    display: block;
+}
+header .glyphicon{
+    vertical-align: middle;
+    font-size: 18px;
+    color: #fff;
+    position: absolute;
+    right: 13%;
+    line-height: 50px;
+}
+.navbar-left li.livetag a{
+    color: #fff !important;
+}
+.navbar-right #login{
+    color: #fff;
+    display: block;
+    background: #1f1f1f;
+    height: 100%;
+    vertical-align: middle;
+    height: 50px;
+    line-height: 50px;
+    border: none;
+}
+
+/*Loginnnnnnnnnnnnnnnnnnnnnnnnnnnnnn*/
+#login:hover{
+    background: #94D500;
+}
+.login-drop-shadow{
+    display: none;
+    width: 28%;
+    height: 650%;
+    position: absolute;
+    right: -80px;
+    top: -2px;
+    color: #A5A6A8;
+    background: #1F1B1D;
+    margin-top: 50px;
+    z-index: 9999999;
+}
+.login-drop-shadow h2{
+    font-size: 1.2em;
+    text-align: center;
+    color: #fff;
+}
+.login-drop-shadow p{
+    font-size: 0.75em;
+    text-align: center;
+}
+.login-drop-shadow .login-btn-create{
+    background: #94d500;
+    width: 70%;
+    vertical-align: middle;
+    height: 40px;
+    margin-left: 15%;
+    color: #fff;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 3px;
+}
+.login-drop-shadow .login-btn-create:hover{
+    background: #9FE400;
+}
+.login-drop-shadow fieldset{
+    font-size: 0.9em;
+}
+.login-drop-shadow fieldset legend{
+    text-align: center;
+    font-size: 0.8em;
+    color: #fff;
+}
+.login-drop-shadow input{
+    width: 90%;
+    margin-left: 5%;
+    border: none;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+.login-drop-shadow .login-check{
+    width: 5%;
+}
+.login-drop-shadow .btn-login{
+    float: right;
+    border: none;
+    background: #39c1dc;
+    color: #fff;
+    margin-right: 5%;
+    border-radius: 3px;
+}
+.login-drop-shadow .btn-login:hover{
+    background: #46C5E0;
+}
+.login-drop-shadow a{
+    float: right;
+   position: absolute;
+    margin-top: 10px;
+}
+
+/*Create accounttttttttttttttttttttttttt*/
+.navbar .div-create{
+    display: none;
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    background: #262626;
+    z-index: 9;
+}
+.navbar .create{
+    background: #262626;
+    display: block;
+    position: absolute;
+    font-family: serif;
+    color: #636363;
+    width: 100%;
+    font-family: monospace;
+    font-size: 0.7em;
+    font-weight: normal;
+    z-index: 9;
+}
+.navbar .create h2{
+    width: 30%;
+    margin-top: 25px;
+    margin-left: 100px;
+    color: #fff;
+}
+.btn-close{
+    background: #1f1f1f url(/Image/sounds/close.png) no-repeat scroll 0 0;
+    vertical-align: middle;
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 200px;
+    width: 18px;
+    height: 18px;
+    border-radius: 10px;
+    border: none;
+}
+.btn-close:hover{
+    background: #1f1f1f url(/Image/sounds/close.png) no-repeat scroll 0 -18px;
+}
+.navbar .create .login-shortcut{
+    width: 13%;
+    text-align: right;
+    position: absolute;
+    right: 200px;
+    top: 40px
+}
+.navbar .div-btn-create p a{
+    color: #525252;
+    font-weight: bold;
+    font-family: monospace;
+}
+.navbar .create span{
+    position: absolute;
+    top: 110px;
+    margin-left: 100px;
+}
+.create-wrap{
+    width: 100%;
+    display: block;
+    margin: 0;
+    padding: 20px 100px 20px 100px;
+}
+.create-wrap .account-info{
+    width: 100%;
+    display: -webkit-flex;
+    display: flex;
+    display: -webkit-inline-flex;
+    float: right;
+    margin-bottom: 1px;
+}
+.create-wrap .account-info:nth-child(5){
+    margin-top: 50px;
+}
+.account-info .notice{
+    display: block;
+    margin-top: 30px;
+    position: absolute;
+    right: 200px;
+    width: 40%;
+}
+.create-wrap .info-title{
+    width: 30%;
+    height: 30px;
+    margin-left: 90px;
+    text-align: right;
+    line-height: 30px;
+    
+}
+.create-wrap input{
+    width: 40%;
+    height: 30px;
+    position: absolute;
+    right: 200px;
+}
+.create-wrap .div-btn-create{
+    text-align: right;
+    padding-right: 100px;
+}
+.div-btn-create .btn-create{
+    width: 15%;
+    height: 50px;
+    background: #99cb1a;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+}
+.div-btn-create .btn-create:hover{
+    background: #a8e00f;
+}
+.div-btn-create p{
+    word-spacing: -4px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+.div-btn-create p:last-child a{
+    color: #39C1DE;
+}
+
+
+/*  menuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu  */
+#menu{
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    margin-top: 50px;
+    background: #1c1c1c;
+    vertical-align: middle;
+    z-index: 99;
+    border: 1px solid #333333;
+}
+#menu a{
+    color: #c3c3c3;
+}
+#menu a:hover{
+    color: #fff;
+    background: #1c1c1c;
+}
+.navbar-menu{
+    display: inline-block;
+    width: 100%;
+}
+#menu .nav{
+    display: block;
+    width: 47%;
+}
+.subnav .genres{
+    border: none;
+    background: #1c1c1c;
+    color: #c3c3c3;
+    vertical-align: middle;
+    height: 50px;
+    line-height: 50px;
+    margin-right: 10px;
+}
+.drop-shadow{
+    background: #000 none repeat scroll 0 0;
+    box-shadow: 1px 1px 5px #333;
+    display: none;
+    position: absolute;
+    opacity: 0.9;
+    width: 320px;
+    margin: 0;
+    padding: 0;
+    z-index: 1000;
+}
+.drop-shadow a{
+    color: deepskyblue!important;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+.drop-shadow a:hover{
+    color: aqua !important;
+}
+.dropdown-menu-items{
+    display: block;
+    font-family: sans-serif;
+    width: 320px;
+    height: 30px;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    vertical-align: middle;
+    line-height: 30px;
+}
+.dropdown-menu-items .items-row{
+    display: inline-block;
+    width: 40%;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 5%;
+    vertical-align: middle;   
+}
+
+.navbar-menu .form-search .search-input{
+    background: #282828;
+    display: inline-block;
+    vertical-align: middle;
+    color: #fff;
+    margin: 5px 0;
+    border: none;
+    width: 35%;
+    height: 40px;
+}
+.navbar-menu .form-search .search-submit{
+    display: inline-block;
+    vertical-align: middle;
+    margin: 5px -10px 5px 0;
+    width: 3%;
+    border: none;
+    background: #282828;
+    color: #fff;
+    height: 40px;
+}
+.search-input[placeholder]{
+    padding-left: 10px;
+    font-size: 1em;
+}
+.btn-cart{
+    display: block;
+    vertical-align: middle;
+    margin-top: -50px;
+    width: 5%;
+    height: 50px;
+    float: right;
+    background: #1c1c1c;
+    border: none;
+}
+.btn-cart:hover{
+    background: #FF53A0;
+}
+.btn-cart .glyphicon{
+    color: #fff;
+    vertical-align: middle;
+    font-size: 20px;
+}
+
+
+
+
+/*Footerrrrrrrrrrrrrrrrrrrrrrrrrrrrrr*/
+.footer{
+    background: #373737;
+    color: #949494;
+    margin-bottom: 0;
+}
+.footer .footer-left{
+    background: #373737;
+    margin-left: -10px;
+}
+.footer .footer-logo{
+    display: block;
+    width: 100%;
+    height: 70px;
+}
+.footer .footer-logo img{
+    width: 80%;
+    height: 50px;
+    margin-left: -20px;
+}
+.footer-logo .copyright{
+    width: 100%;
+    height: 20px;
+    position: absolute;
+    top: 40px;
+}
+.footer .social-network{
+    margin-top: 20px;
+    display: inline-block;
+}
+.social-network .social-link{
+    margin-right: 10px;
+    background: #373737;
+}
+.footer .pay-link{
+    display: block;
+    position: absolute;
+    top: 160px;
+}
+.pay-link img{
+    width: 24%;
+    display: inline-block;
+}
+.pay-link p{
+    display: inline-block;
+    width: 50%;
+    vertical-align: middle;
+    line-height: 17px;
+}
+.footer-right .col-xs-4{
+    vertical-align: middle;
+    text-align: center;
+}
+.footer-right h3{
+    color: #fff;
+}
+.footer-right .col-xs-4 li{
+    width: 100%;
+    float: left;
+    text-align: left;
+    margin-left: 12%;
+    margin-bottom: -2px;
+}
+.footer-right .col-xs-4:last-child li{
+    margin-left: 8%;
+}
+.footer-ul{
+    margin-top: -10px;
+}
+.footer-right .col-xs-4 li a{
+    color: #949494;
+}
+
+
+/*Play Musiccccccccccccccccccccccccc*/
+#myTune {
+    display: none;
+}
+
+.tag-playmusic {
+    height: 70px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 999999998;
+    background: #111;
+}
+
+.playmusic-info {
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    width: 25%;
+    float: left;
+    margin-right: 1%;
+}
+
+.imgPlayMusic {
+    display: inline-block;
+    width: 39%;
+    float: left;
+    overflow: hidden;
+    height: 100%;
+    margin-right: 1%;
+    text-align: right;
+}
+
+.playmusic-info img {
+    height: 100%;
+    display: inline-block;
+}
+
+.playmusic-info .textPlayMusic {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 10px;
+    width: 60%;
+    float: left;
+}
+
+.playmusic-info .textPlayMusic a {
+    display: block;
+    margin-bottom: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-decoration: none;
+    color: #44aabb;
+}
+
+.playmusic-info .textPlayMusic a:hover {
+    color: #aacccc;
+}
+
+#playButton .glyphicon-pause {
+    display: none;
+}
+
+.playmusic-time {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    width: 36%;
+    float: left;
+    margin: 0;
+    margin-right: 1%;
+}
+
+#playmusic-start {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 25px;
+    color: #fff;
+    width: 17%;
+    float: left;
+    margin-right: 1%;
+    text-align: center;
+}
+
+#playmusic-process {
+    height: 5px;
+    border: 1px solid #a00;
+    display: inline-block;
+    width: 63%;
+    vertical-align: top;
+    margin-top: 33px;
+    float: left;
+    margin-right: 1%;
+}
+
+#playmusic-end {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 25px;
+    color: #fff;
+    width: 18%;
+    float: left;
+    text-align: center;
+}
+
+#playmusic-process {
+    cursor: pointer;
+}
+
+#playmusic-process::-webkit-progress-bar {
+    background: #eee;
+}
+
+#playmusic-process::-webkit-progress-value {
+    background: #b00;
+}
+
+.playmusic-button {
+    width: 37%;
+    margin: 0;
+    display: inline-block;
+    float: left;
+    height: 100%;
+}
+
+#playButton,
+#pauseButton,
+#loopButton,
+#playmusic-prev,
+#playmusic-next,
+#volume {
+    border: 0;
+    font-size: 100%;
+    padding: 2px 5px;
+    background: transparent;
+    color: #888;
+    margin-top: 23px;
+    vertical-align: top;
+    outline: none;
+    display: inline-block;
+    text-align: center;
+}
+
+#playmusic-prev,
+#playmusic-next {
+    float: left;
+    width: 12%;
+    margin-left: 0;
+    margin-right: 1%;
+}
+
+#playButton {
+    font-size: 180%;
+    color: #fff;
+    margin-top: 14px;
+    width: 15%;
+    margin-right: 1%;
+    float: left;
+}
+
+#loopButton {
+    float: left;
+    width: 12%;
+    margin-right: 1%;
+    display: inline-block;
+}
+
+#volume {
+    margin-top: 0;
+    color: #fff;
+    font-size: 130%;
+    height: 100%;
+    display: inline-block;
+    padding: 0;
+    width: 45%;
+    float: left;
+    text-align: center;
+}
+
+#volumeButton {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 21px;
+    background: transparent;
+    width: 29%;
+    border: 0;
+    float: left;
+    margin-right: 1%;
+    outline: none;
+}
+
+#volumeButton .glyphicon-volume-down,
+#volumeButton .glyphicon-volume-off {
+    display: none;
+}
+
+#volumeProBar {
+    height: 4px;
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 33px;
+    border: 0;
+    width: 62%;
+    margin-right: 8%;
+    cursor: pointer;
+}
+
+#volumeProBar:hover {
+    height: 6px;
+    margin-top: 32px;
+}
+
+#volumeProBar::-webkit-progress-bar {
+    background: #fff;
+}
+
+
+/* End Audio */

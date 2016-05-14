@@ -1,0 +1,146 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model PagedList.PagedList<WebMusic.Models.ARTIST>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+
+<link href="~/Content/TemplateAdim/css/StyleManage.css" rel="stylesheet" />
+
+<div id="textSearch">
+    @*@Html.Action("Result", "Search", FormMethod.Post)*@
+    <form class="form-search">
+        <input type="text" placeholder="Searching ...">
+        @*@Html.TextBox("textSearch", "", htmlAttributes: new { @class = "TextBoxSearch", @placeholder = "Searching..." })*@
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+
+<div @*style="overflow: scroll;"*@>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.First().ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().NAME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().BORN)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().DATE)
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.DESCRIP)
+                </th>*@
+            @*<th>
+                    @Html.DisplayNameFor(model => model.TW)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.FB)
+                </th>*@
+            @*<th>
+                    @Html.DisplayNameFor(model => model.IMG)
+                </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.First().NAME_LABEL)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().POINT_MONTH)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().POINT_ALL)
+            </th>
+            @*<th>
+                    @Html.DisplayNameFor(model => model.LABEL.NAME)
+                </th>*@
+            @*<th>
+                    @Html.DisplayNameFor(model => model.STATISTIC_ARTIST.ID_ARTIST)
+                </th>*@
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NAME)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BORN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DATE)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.DESCRIP)
+                    </td>*@
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.TW)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FB)
+                    </td>*@
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.IMG)
+                    </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.NAME_LABEL)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.POINT_MONTH)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.POINT_ALL)
+                </td>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.LABEL.NAME)
+                    </td>*@
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.STATISTIC_ARTIST.ID_ARTIST)
+                    </td>*@
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { @ID = item.ID }) |
+                    @Html.ActionLink("Details", "Details", new { @ID = item.ID }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+
+<div class="page-list">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+</div>
+
+<div style=" text-align:center">
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)/ @Model.PageCount
+</div>
+
+<style>
+    .page-list {
+        display: inline;
+        text-align: center;
+        vertical-align: middle;
+        text-decoration: none;
+    }
+
+        .page-list ul li {
+            list-style: none;
+            display: inline-block;
+            margin-right: 2%;
+        }
+</style>

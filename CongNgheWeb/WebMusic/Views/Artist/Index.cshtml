@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/MainLayout.cshtml";
+}
+
+@model int
+
+<link href="~/Content/MainLayout_CSS/Artist.css" rel="stylesheet" />
+
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 detail-artist-wrap">
+                @Html.Action("Detail_Artist", "Artist", new {@id = @Model})
+                @Html.Action("Total_Track_Artist", "Artist", new { @id = @Model })
+                @Html.Action("Hot_Remix", "Artist", new { @id = @Model })
+                @Html.Action("Hot_Track_Label", "Artist", new { @id = @Model })
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/MainLayout_JS/main-detail-artist.js"></script>
+

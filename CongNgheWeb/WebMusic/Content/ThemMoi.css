@@ -1,0 +1,54 @@
+﻿body {
+}
+
+.form-horizontal{
+    width:100%;
+    position:relative;
+}
+
+.horizontal-left{
+    display:inline-block;
+    width:49%;
+    float:left;
+}
+
+.horizontal-right{
+    display:inline-block;
+    width:50%;
+    float:left;
+    margin-left:1%;
+}
+
+.form-group{
+    display:inline-block;
+    color:#808080;
+    width:100%;
+}
+
+.col-md-2{
+    display:inline-block;
+    width:20%;
+    float:left;
+    overflow:hidden;
+}
+
+.text-box{
+     display:inline-block;
+    width:79%;
+    float:left;
+    overflow:hidden;
+    background-color:#c1c1c1;
+}
+
+#create{
+    display:block;
+    width:10%;
+    height: 2em;
+    margin:5em 15em;
+    background-color: white;
+    border: none;
+}
+#create:hover{
+    border:1px solid rgba(255,0,0,0.5);
+}
+

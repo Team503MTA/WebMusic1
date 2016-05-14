@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/MainLayout.cshtml";
+}
+
+@model int
+
+
+<link href="~/Content/MainLayout_CSS/Track.css" rel="stylesheet" />
+
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 detail-song-wrap">
+                @Html.Action("Detail_Track", "Track", new {@id = @Model})
+                @Html.Action("Track_Total", "Track", new {@id = @Model})
+                @Html.Action("More_Track_Artist", "Track", new {@id = @Model})
+                @Html.Action("More_Track_Label", "Track", new {@id = @Model})
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/MainLayout_JS/main-detail-track.js"></script>
+
+
+

@@ -1,0 +1,2217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MusicModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ARTIST">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="BORN" Type="nvarchar" MaxLength="100" />
+          <Property Name="DATE" Type="date" />
+          <Property Name="DESCRIP" Type="nvarchar" MaxLength="4000" />
+          <Property Name="TW" Type="nvarchar" MaxLength="100" />
+          <Property Name="FB" Type="nvarchar" MaxLength="100" />
+          <Property Name="ID_LABEL" Type="smallint" />
+          <Property Name="IMG" Type="nvarchar" MaxLength="150" />
+          <Property Name="NAME_LABEL" Type="nvarchar" MaxLength="100" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POINT_ALL" Type="int" />
+        </EntityType>
+        <EntityType Name="CARD">
+          <Key>
+            <PropertyRef Name="NUMBER" />
+          </Key>
+          <Property Name="NUMBER" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="PASSWORD" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="CHART">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATE_RELEASE" Type="date" />
+          <Property Name="DESCRIP" Type="nvarchar" MaxLength="500" />
+          <Property Name="NAME_GENRE" Type="nvarchar" MaxLength="50" />
+          <Property Name="LINK_IMG" Type="nchar" MaxLength="50" />
+          <Property Name="COST" Type="float" />
+          <Property Name="ID_GENRE" Type="smallint" />
+          <Property Name="TYPE" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="FORMULA_HOT">
+          <Key>
+            <PropertyRef Name="CLICK" />
+            <PropertyRef Name="BUY" />
+          </Key>
+          <Property Name="CLICK" Type="int" Nullable="false" />
+          <Property Name="BUY" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GENRE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="DESCRIP" Type="nvarchar" MaxLength="4000" />
+          <Property Name="TEMPO" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="GENRE_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_ARTIST" />
+            <PropertyRef Name="ID_GENRE" />
+          </Key>
+          <Property Name="ID_ARTIST" Type="int" Nullable="false" />
+          <Property Name="ID_GENRE" Type="smallint" Nullable="false" />
+          <Property Name="POINT" Type="tinyint" />
+          <Property Name="NAME_GENRE" Type="nvarchar" MaxLength="50" />
+          <Property Name="NAME_LABEL" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="GENRE_LABEL">
+          <Key>
+            <PropertyRef Name="ID_LABEL" />
+            <PropertyRef Name="ID_GENRE" />
+          </Key>
+          <Property Name="ID_LABEL" Type="smallint" Nullable="false" />
+          <Property Name="ID_GENRE" Type="smallint" Nullable="false" />
+          <Property Name="NAME_GENRE" Type="nvarchar" MaxLength="50" />
+          <Property Name="POINT" Type="int" />
+        </EntityType>
+        <EntityType Name="HISTORY_USER">
+          <Key>
+            <PropertyRef Name="ID_USER" />
+            <PropertyRef Name="ID_TRACK" />
+            <PropertyRef Name="TYPE" />
+          </Key>
+          <Property Name="ID_USER" Type="int" Nullable="false" />
+          <Property Name="TIME" Type="date" Nullable="false" />
+          <Property Name="ID_TRACK" Type="int" Nullable="false" />
+          <Property Name="COST" Type="float" />
+          <Property Name="TYPE" Type="tinyint" Nullable="false" />
+          <Property Name="RANK" Type="tinyint" />
+          <Property Name="DISTANCE_NEAR" Type="smallint" />
+        </EntityType>
+        <EntityType Name="HOME_HOT_NEW">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Home_NewTrack">
+          <Key>
+            <PropertyRef Name="s" />
+          </Key>
+          <Property Name="s" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LABEL">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="FOUNDED" Type="date" />
+          <Property Name="FOUNDER" Type="nvarchar" MaxLength="100" />
+          <Property Name="LOCATION" Type="nvarchar" MaxLength="100" />
+          <Property Name="DESCRIP" Type="nvarchar" MaxLength="4000" />
+          <Property Name="LINK" Type="nvarchar" MaxLength="150" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="LISTEN_SLIDER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME_SONG" Type="nvarchar" MaxLength="200" />
+          <Property Name="COST" Type="float" />
+          <Property Name="LINK" Type="nvarchar" MaxLength="200" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="200" />
+          <Property Name="DESCRIPT" Type="nvarchar(max)" />
+          <Property Name="GENRE" Type="nvarchar" MaxLength="200" />
+          <Property Name="LENGHT" Type="nvarchar" MaxLength="200" />
+          <Property Name="ARTISTS" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="NEW_TRACK">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="150" />
+          <Property Name="LINK" Type="nvarchar" MaxLength="150" />
+          <Property Name="RANKK" Type="tinyint" />
+          <Property Name="COST" Type="float" />
+        </EntityType>
+        <EntityType Name="REMIX">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="TEMPO" Type="int" />
+          <Property Name="KEY_" Type="nvarchar" MaxLength="20" />
+          <Property Name="COST" Type="float" />
+          <Property Name="LINK" Type="nvarchar" MaxLength="150" />
+          <Property Name="DATE_RELEASE" Type="date" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="150" />
+          <Property Name="ID_TRACK" Type="int" />
+          <Property Name="LENGTH" Type="nvarchar" MaxLength="10" />
+          <Property Name="GENRE" Type="nvarchar" MaxLength="50" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POINT_ALL" Type="int" />
+          <Property Name="FULL_ARTIST" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="REMIX_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_REMIX" />
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_REMIX" Type="int" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="int" Nullable="false" />
+          <Property Name="NAME_ARTIST" Type="nvarchar" MaxLength="100" />
+          <Property Name="NAME_LABEL" Type="nvarchar" MaxLength="100" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POINT_ALL" Type="int" />
+          <Property Name="GENRE" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="SALE">
+          <Key>
+            <PropertyRef Name="LEVEL_" />
+          </Key>
+          <Property Name="LEVEL_" Type="tinyint" Nullable="false" />
+          <Property Name="SALE_INDEX" Type="tinyint" />
+          <Property Name="CONDITION" Type="float" />
+        </EntityType>
+        <EntityType Name="SHOW">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="int" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="150" />
+          <Property Name="LOCATION" Type="nvarchar" MaxLength="150" />
+          <Property Name="TIME" Type="date" />
+          <Property Name="DESCRIBLE" Type="nvarchar(max)" />
+          <Property Name="LINK_IMG" Type="nchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="SHOW_LIST">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME_SHOW" Type="nvarchar" MaxLength="150" />
+          <Property Name="ARTIST_SHOW" Type="nvarchar" MaxLength="150" />
+          <Property Name="LOCATION" Type="nvarchar" MaxLength="150" />
+          <Property Name="TIME" Type="nvarchar" MaxLength="150" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="150" />
+          <Property Name="DESCRIBLE" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="SOUNDS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="LABEL_ID" Type="smallint" />
+          <Property Name="RELEASE_DATE" Type="date" />
+          <Property Name="DATA_SIZE" Type="nchar" MaxLength="100" />
+          <Property Name="DESCRIP" Type="nvarchar" MaxLength="4000" />
+          <Property Name="COST" Type="float" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POINT_ALL" Type="int" />
+          <Property Name="LINK_IMG" Type="nchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="STATISTIC_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_ARTIST" Type="int" Nullable="false" />
+          <Property Name="CLICK_MONTH" Type="int" />
+          <Property Name="CLICK_ALL" Type="int" />
+          <Property Name="BUY_MONTH" Type="int" />
+          <Property Name="BUY_ALL" Type="int" />
+        </EntityType>
+        <EntityType Name="STATISTIC_REMIX">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="CLICK_ALL" Type="int" />
+          <Property Name="CLICK_MONTH" Type="int" />
+          <Property Name="BUY_ALL" Type="int" />
+          <Property Name="BUY_MONTH" Type="int" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POINT_ALL" Type="int" />
+        </EntityType>
+        <EntityType Name="STATISTIC_TRACK">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="CLICK_ALL" Type="int" />
+          <Property Name="CLICK_MONTH" Type="int" />
+          <Property Name="BUY_ALL" Type="int" />
+          <Property Name="BUY_MONTH" Type="int" />
+        </EntityType>
+        <EntityType Name="STEM">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="TEMPO" Type="tinyint" />
+          <Property Name="KEY_" Type="nchar" MaxLength="20" />
+          <Property Name="COST" Type="float" />
+          <Property Name="LINK" Type="nchar" MaxLength="50" />
+          <Property Name="LINK_IMG" Type="nchar" MaxLength="50" />
+          <Property Name="DESCRIP" Type="nvarchar" MaxLength="500" />
+          <Property Name="LENGTH" Type="nchar" MaxLength="20" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POIN_ALL" Type="int" />
+          <Property Name="STEMS_ID" Type="int" />
+          <Property Name="GENRE" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="STEM_ARTIST">
+          <Key>
+            <PropertyRef Name="STEM_ID" />
+            <PropertyRef Name="ARTIST_ID" />
+          </Key>
+          <Property Name="STEM_ID" Type="int" Nullable="false" />
+          <Property Name="ARTIST_ID" Type="int" Nullable="false" />
+          <Property Name="ARTIST_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="NAME_LABEL" Type="nvarchar" MaxLength="50" />
+          <Property Name="NAME_STEM" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="STEMS">
+          <Key>
+            <PropertyRef Name="STEMS_ID" />
+          </Key>
+          <Property Name="STEMS_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="DATE_RELEASE" Type="date" />
+          <Property Name="COST" Type="float" />
+          <Property Name="CATALOG" Type="nvarchar" MaxLength="50" />
+          <Property Name="IMG" Type="nchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="TOP_6_DJ">
+          <Key>
+            <PropertyRef Name="RANK" />
+          </Key>
+          <Property Name="RANK" Type="int" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="int" />
+          <Property Name="NAME_ARTIST" Type="nvarchar" MaxLength="100" />
+          <Property Name="IMG" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="TRACK">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="TEMPO" Type="tinyint" />
+          <Property Name="KEY_" Type="nvarchar" MaxLength="20" />
+          <Property Name="COST" Type="float" />
+          <Property Name="LINK" Type="nvarchar" MaxLength="150" />
+          <Property Name="DATE_RELEASE" Type="date" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="150" />
+          <Property Name="DESCRIPT" Type="nvarchar" MaxLength="4000" />
+          <Property Name="LENGTH" Type="nvarchar" MaxLength="10" />
+          <Property Name="GENRE" Type="nvarchar" MaxLength="50" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POINT_ALL" Type="int" />
+          <Property Name="FULL_NAME" Type="nvarchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="TRACK_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_TRACK" />
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_TRACK" Type="int" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="int" Nullable="false" />
+          <Property Name="NAME_ARTIST" Type="nvarchar" MaxLength="100" />
+          <Property Name="NAME_LABEL" Type="nvarchar" MaxLength="100" />
+          <Property Name="COST" Type="float" />
+          <Property Name="NAME_TRACK" Type="nvarchar" MaxLength="100" />
+          <Property Name="POINT_ALL" Type="int" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="GENRE" Type="nvarchar" MaxLength="50" />
+          <Property Name="POINT_DAY" Type="int" />
+        </EntityType>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FIRSTNAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="PASSWORD" Type="nvarchar" MaxLength="100" />
+          <Property Name="EMAIL" Type="nvarchar" MaxLength="100" />
+          <Property Name="LEVEL_" Type="tinyint" />
+          <Property Name="LASTNAME" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="USER_TRACKLIST">
+          <Key>
+            <PropertyRef Name="ID_USER" />
+            <PropertyRef Name="ID_PROD" />
+            <PropertyRef Name="TYPE" />
+          </Key>
+          <Property Name="ID_USER" Type="int" Nullable="false" />
+          <Property Name="ID_PROD" Type="int" Nullable="false" />
+          <Property Name="TYPE" Type="tinyint" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="USER_VIDEOLIST">
+          <Key>
+            <PropertyRef Name="ID_USER" />
+            <PropertyRef Name="ID_VIDEO" />
+          </Key>
+          <Property Name="ID_USER" Type="int" Nullable="false" />
+          <Property Name="ID_VIDEO" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VIDEO">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="150" />
+          <Property Name="DESCRIPT" Type="nvarchar" MaxLength="200" />
+          <Property Name="TIME" Type="date" />
+          <Property Name="LINK" Type="nvarchar" MaxLength="150" />
+        </EntityType>
+        <Association Name="FK_ARTIST_LABEL">
+          <End Role="LABEL" Type="Self.LABEL" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LABEL">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARTIST">
+              <PropertyRef Name="ID_LABEL" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CHART_GENRE">
+          <End Role="GENRE" Type="Self.GENRE" Multiplicity="0..1" />
+          <End Role="CHART" Type="Self.CHART" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GENRE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CHART">
+              <PropertyRef Name="ID_GENRE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GENRE_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GENRE_ARTIST" Type="Self.GENRE_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GENRE_ARTIST">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GENRE_ARTIST_GENRE">
+          <End Role="GENRE" Type="Self.GENRE" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GENRE_ARTIST" Type="Self.GENRE_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GENRE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GENRE_ARTIST">
+              <PropertyRef Name="ID_GENRE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GENRE_LABEL_GENRE">
+          <End Role="GENRE" Type="Self.GENRE" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GENRE_LABEL" Type="Self.GENRE_LABEL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GENRE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GENRE_LABEL">
+              <PropertyRef Name="ID_GENRE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GENRE_LABEL_LABEL">
+          <End Role="LABEL" Type="Self.LABEL" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GENRE_LABEL" Type="Self.GENRE_LABEL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LABEL">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GENRE_LABEL">
+              <PropertyRef Name="ID_LABEL" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HISTORY_USER_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HISTORY_USER" Type="Self.HISTORY_USER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HISTORY_USER">
+              <PropertyRef Name="ID_TRACK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HISTORY_USER_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HISTORY_USER" Type="Self.HISTORY_USER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HISTORY_USER">
+              <PropertyRef Name="ID_USER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NEW_TRACK_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="NEW_TRACK" Type="Self.NEW_TRACK" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NEW_TRACK">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_REMIX_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="REMIX_ARTIST" Type="Self.REMIX_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="REMIX_ARTIST">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_REMIX_ARTIST_REMIX1">
+          <End Role="REMIX" Type="Self.REMIX" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="REMIX_ARTIST" Type="Self.REMIX_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="REMIX">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="REMIX_ARTIST">
+              <PropertyRef Name="ID_REMIX" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_REMIX_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="0..1" />
+          <End Role="REMIX" Type="Self.REMIX" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="REMIX">
+              <PropertyRef Name="ID_TRACK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SHOW_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SHOW" Type="Self.SHOW" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SHOW">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SOUNDS_LABEL">
+          <End Role="LABEL" Type="Self.LABEL" Multiplicity="0..1" />
+          <End Role="SOUNDS" Type="Self.SOUNDS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LABEL">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SOUNDS">
+              <PropertyRef Name="LABEL_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STATISTIC_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="STATISTIC_ARTIST" Type="Self.STATISTIC_ARTIST" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STATISTIC_ARTIST">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STATISTIC_REMIX_REMIX">
+          <End Role="REMIX" Type="Self.REMIX" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="STATISTIC_REMIX" Type="Self.STATISTIC_REMIX" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="REMIX">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STATISTIC_REMIX">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STATISTIC_TRACK_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="STATISTIC_TRACK" Type="Self.STATISTIC_TRACK" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STATISTIC_TRACK">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STEM_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1" />
+          <End Role="STEM_ARTIST" Type="Self.STEM_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STEM_ARTIST">
+              <PropertyRef Name="ARTIST_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STEM_ARTIST_STEM">
+          <End Role="STEM" Type="Self.STEM" Multiplicity="1" />
+          <End Role="STEM_ARTIST" Type="Self.STEM_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STEM">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STEM_ARTIST">
+              <PropertyRef Name="STEM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STEM_ARTIST_STEM1">
+          <End Role="STEM" Type="Self.STEM" Multiplicity="1" />
+          <End Role="STEM_ARTIST" Type="Self.STEM_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STEM">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STEM_ARTIST">
+              <PropertyRef Name="STEM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TRACK_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TRACK_ARTIST" Type="Self.TRACK_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TRACK_ARTIST">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TRACK_ARTIST_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TRACK_ARTIST" Type="Self.TRACK_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TRACK_ARTIST">
+              <PropertyRef Name="ID_TRACK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_TRACKLIST_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="USER_TRACKLIST" Type="Self.USER_TRACKLIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="USER_TRACKLIST">
+              <PropertyRef Name="ID_PROD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_TRACKLIST_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="USER_TRACKLIST" Type="Self.USER_TRACKLIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="USER_TRACKLIST">
+              <PropertyRef Name="ID_USER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_VIDEOLIST_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="USER_VIDEOLIST" Type="Self.USER_VIDEOLIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="USER_VIDEOLIST">
+              <PropertyRef Name="ID_USER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_VIDEOLIST_VIDEO">
+          <End Role="VIDEO" Type="Self.VIDEO" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="USER_VIDEOLIST" Type="Self.USER_VIDEOLIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VIDEO">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="USER_VIDEOLIST">
+              <PropertyRef Name="ID_VIDEO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MusicModelStoreContainer">
+          <EntitySet Name="ARTIST" EntityType="Self.ARTIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CARD" EntityType="Self.CARD" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CHART" EntityType="Self.CHART" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FORMULA_HOT" EntityType="Self.FORMULA_HOT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GENRE" EntityType="Self.GENRE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GENRE_ARTIST" EntityType="Self.GENRE_ARTIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GENRE_LABEL" EntityType="Self.GENRE_LABEL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HISTORY_USER" EntityType="Self.HISTORY_USER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HOME_HOT_NEW" EntityType="Self.HOME_HOT_NEW" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Home_NewTrack" EntityType="Self.Home_NewTrack" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LABEL" EntityType="Self.LABEL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LISTEN_SLIDER" EntityType="Self.LISTEN_SLIDER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NEW_TRACK" EntityType="Self.NEW_TRACK" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="REMIX" EntityType="Self.REMIX" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="REMIX_ARTIST" EntityType="Self.REMIX_ARTIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SALE" EntityType="Self.SALE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SHOW" EntityType="Self.SHOW" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SHOW_LIST" EntityType="Self.SHOW_LIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SOUNDS" EntityType="Self.SOUNDS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STATISTIC_ARTIST" EntityType="Self.STATISTIC_ARTIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STATISTIC_REMIX" EntityType="Self.STATISTIC_REMIX" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STATISTIC_TRACK" EntityType="Self.STATISTIC_TRACK" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STEM" EntityType="Self.STEM" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STEM_ARTIST" EntityType="Self.STEM_ARTIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STEMS" EntityType="Self.STEMS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TOP_6_DJ" EntityType="Self.TOP_6_DJ" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TRACK" EntityType="Self.TRACK" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TRACK_ARTIST" EntityType="Self.TRACK_ARTIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER" EntityType="Self.USER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER_TRACKLIST" EntityType="Self.USER_TRACKLIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER_VIDEOLIST" EntityType="Self.USER_VIDEOLIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIDEO" EntityType="Self.VIDEO" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_ARTIST_LABEL" Association="Self.FK_ARTIST_LABEL">
+            <End Role="LABEL" EntitySet="LABEL" />
+            <End Role="ARTIST" EntitySet="ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHART_GENRE" Association="Self.FK_CHART_GENRE">
+            <End Role="GENRE" EntitySet="GENRE" />
+            <End Role="CHART" EntitySet="CHART" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GENRE_ARTIST_ARTIST" Association="Self.FK_GENRE_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTIST" />
+            <End Role="GENRE_ARTIST" EntitySet="GENRE_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GENRE_ARTIST_GENRE" Association="Self.FK_GENRE_ARTIST_GENRE">
+            <End Role="GENRE" EntitySet="GENRE" />
+            <End Role="GENRE_ARTIST" EntitySet="GENRE_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GENRE_LABEL_GENRE" Association="Self.FK_GENRE_LABEL_GENRE">
+            <End Role="GENRE" EntitySet="GENRE" />
+            <End Role="GENRE_LABEL" EntitySet="GENRE_LABEL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GENRE_LABEL_LABEL" Association="Self.FK_GENRE_LABEL_LABEL">
+            <End Role="LABEL" EntitySet="LABEL" />
+            <End Role="GENRE_LABEL" EntitySet="GENRE_LABEL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HISTORY_USER_TRACK" Association="Self.FK_HISTORY_USER_TRACK">
+            <End Role="TRACK" EntitySet="TRACK" />
+            <End Role="HISTORY_USER" EntitySet="HISTORY_USER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HISTORY_USER_USER" Association="Self.FK_HISTORY_USER_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="HISTORY_USER" EntitySet="HISTORY_USER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NEW_TRACK_TRACK" Association="Self.FK_NEW_TRACK_TRACK">
+            <End Role="TRACK" EntitySet="TRACK" />
+            <End Role="NEW_TRACK" EntitySet="NEW_TRACK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_REMIX_ARTIST_ARTIST" Association="Self.FK_REMIX_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTIST" />
+            <End Role="REMIX_ARTIST" EntitySet="REMIX_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_REMIX_ARTIST_REMIX1" Association="Self.FK_REMIX_ARTIST_REMIX1">
+            <End Role="REMIX" EntitySet="REMIX" />
+            <End Role="REMIX_ARTIST" EntitySet="REMIX_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_REMIX_TRACK" Association="Self.FK_REMIX_TRACK">
+            <End Role="TRACK" EntitySet="TRACK" />
+            <End Role="REMIX" EntitySet="REMIX" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SHOW_ARTIST" Association="Self.FK_SHOW_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTIST" />
+            <End Role="SHOW" EntitySet="SHOW" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SOUNDS_LABEL" Association="Self.FK_SOUNDS_LABEL">
+            <End Role="LABEL" EntitySet="LABEL" />
+            <End Role="SOUNDS" EntitySet="SOUNDS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STATISTIC_ARTIST_ARTIST" Association="Self.FK_STATISTIC_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTIST" />
+            <End Role="STATISTIC_ARTIST" EntitySet="STATISTIC_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STATISTIC_REMIX_REMIX" Association="Self.FK_STATISTIC_REMIX_REMIX">
+            <End Role="REMIX" EntitySet="REMIX" />
+            <End Role="STATISTIC_REMIX" EntitySet="STATISTIC_REMIX" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STATISTIC_TRACK_TRACK" Association="Self.FK_STATISTIC_TRACK_TRACK">
+            <End Role="TRACK" EntitySet="TRACK" />
+            <End Role="STATISTIC_TRACK" EntitySet="STATISTIC_TRACK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STEM_ARTIST_ARTIST" Association="Self.FK_STEM_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTIST" />
+            <End Role="STEM_ARTIST" EntitySet="STEM_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STEM_ARTIST_STEM" Association="Self.FK_STEM_ARTIST_STEM">
+            <End Role="STEM" EntitySet="STEM" />
+            <End Role="STEM_ARTIST" EntitySet="STEM_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STEM_ARTIST_STEM1" Association="Self.FK_STEM_ARTIST_STEM1">
+            <End Role="STEM" EntitySet="STEM" />
+            <End Role="STEM_ARTIST" EntitySet="STEM_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TRACK_ARTIST_ARTIST" Association="Self.FK_TRACK_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTIST" />
+            <End Role="TRACK_ARTIST" EntitySet="TRACK_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TRACK_ARTIST_TRACK" Association="Self.FK_TRACK_ARTIST_TRACK">
+            <End Role="TRACK" EntitySet="TRACK" />
+            <End Role="TRACK_ARTIST" EntitySet="TRACK_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_TRACKLIST_TRACK" Association="Self.FK_USER_TRACKLIST_TRACK">
+            <End Role="TRACK" EntitySet="TRACK" />
+            <End Role="USER_TRACKLIST" EntitySet="USER_TRACKLIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_TRACKLIST_USER" Association="Self.FK_USER_TRACKLIST_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="USER_TRACKLIST" EntitySet="USER_TRACKLIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_VIDEOLIST_USER" Association="Self.FK_USER_VIDEOLIST_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="USER_VIDEOLIST" EntitySet="USER_VIDEOLIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_VIDEOLIST_VIDEO" Association="Self.FK_USER_VIDEOLIST_VIDEO">
+            <End Role="VIDEO" EntitySet="VIDEO" />
+            <End Role="USER_VIDEOLIST" EntitySet="USER_VIDEOLIST" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MusicModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ARTIST">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BORN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DATE" Type="DateTime" Precision="0" />
+          <Property Name="DESCRIP" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="TW" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FB" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ID_LABEL" Type="Int16" />
+          <Property Name="IMG" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="NAME_LABEL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POINT_ALL" Type="Int32" />
+          <NavigationProperty Name="LABEL" Relationship="Self.FK_ARTIST_LABEL" FromRole="ARTIST" ToRole="LABEL" />
+          <NavigationProperty Name="GENRE_ARTIST" Relationship="Self.FK_GENRE_ARTIST_ARTIST" FromRole="ARTIST" ToRole="GENRE_ARTIST" />
+          <NavigationProperty Name="REMIX_ARTIST" Relationship="Self.FK_REMIX_ARTIST_ARTIST" FromRole="ARTIST" ToRole="REMIX_ARTIST" />
+          <NavigationProperty Name="SHOWs" Relationship="Self.FK_SHOW_ARTIST" FromRole="ARTIST" ToRole="SHOW" />
+          <NavigationProperty Name="STATISTIC_ARTIST" Relationship="Self.FK_STATISTIC_ARTIST_ARTIST" FromRole="ARTIST" ToRole="STATISTIC_ARTIST" />
+          <NavigationProperty Name="STEM_ARTIST" Relationship="Self.FK_STEM_ARTIST_ARTIST" FromRole="ARTIST" ToRole="STEM_ARTIST" />
+          <NavigationProperty Name="TRACK_ARTIST" Relationship="Self.FK_TRACK_ARTIST_ARTIST" FromRole="ARTIST" ToRole="TRACK_ARTIST" />
+        </EntityType>
+        <EntityType Name="CARD">
+          <Key>
+            <PropertyRef Name="NUMBER" />
+          </Key>
+          <Property Name="NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PASSWORD" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CHART">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATE_RELEASE" Type="DateTime" Precision="0" />
+          <Property Name="DESCRIP" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="NAME_GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="ID_GENRE" Type="Int16" />
+          <Property Name="TYPE" Type="Byte" />
+          <NavigationProperty Name="GENRE" Relationship="Self.FK_CHART_GENRE" FromRole="CHART" ToRole="GENRE" />
+        </EntityType>
+        <EntityType Name="FORMULA_HOT">
+          <Key>
+            <PropertyRef Name="CLICK" />
+            <PropertyRef Name="BUY" />
+          </Key>
+          <Property Name="CLICK" Type="Int32" Nullable="false" />
+          <Property Name="BUY" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GENRE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DESCRIP" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="TEMPO" Type="Byte" />
+          <NavigationProperty Name="CHARTs" Relationship="Self.FK_CHART_GENRE" FromRole="GENRE" ToRole="CHART" />
+          <NavigationProperty Name="GENRE_ARTIST" Relationship="Self.FK_GENRE_ARTIST_GENRE" FromRole="GENRE" ToRole="GENRE_ARTIST" />
+          <NavigationProperty Name="GENRE_LABEL" Relationship="Self.FK_GENRE_LABEL_GENRE" FromRole="GENRE" ToRole="GENRE_LABEL" />
+        </EntityType>
+        <EntityType Name="GENRE_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_ARTIST" />
+            <PropertyRef Name="ID_GENRE" />
+          </Key>
+          <Property Name="ID_ARTIST" Type="Int32" Nullable="false" />
+          <Property Name="ID_GENRE" Type="Int16" Nullable="false" />
+          <Property Name="POINT" Type="Byte" />
+          <Property Name="NAME_GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NAME_LABEL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ARTIST" Relationship="Self.FK_GENRE_ARTIST_ARTIST" FromRole="GENRE_ARTIST" ToRole="ARTIST" />
+          <NavigationProperty Name="GENRE" Relationship="Self.FK_GENRE_ARTIST_GENRE" FromRole="GENRE_ARTIST" ToRole="GENRE" />
+        </EntityType>
+        <EntityType Name="GENRE_LABEL">
+          <Key>
+            <PropertyRef Name="ID_LABEL" />
+            <PropertyRef Name="ID_GENRE" />
+          </Key>
+          <Property Name="ID_LABEL" Type="Int16" Nullable="false" />
+          <Property Name="ID_GENRE" Type="Int16" Nullable="false" />
+          <Property Name="NAME_GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POINT" Type="Int32" />
+          <NavigationProperty Name="GENRE" Relationship="Self.FK_GENRE_LABEL_GENRE" FromRole="GENRE_LABEL" ToRole="GENRE" />
+          <NavigationProperty Name="LABEL" Relationship="Self.FK_GENRE_LABEL_LABEL" FromRole="GENRE_LABEL" ToRole="LABEL" />
+        </EntityType>
+        <EntityType Name="HISTORY_USER">
+          <Key>
+            <PropertyRef Name="ID_USER" />
+            <PropertyRef Name="ID_TRACK" />
+            <PropertyRef Name="TYPE" />
+          </Key>
+          <Property Name="ID_USER" Type="Int32" Nullable="false" />
+          <Property Name="TIME" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ID_TRACK" Type="Int32" Nullable="false" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="TYPE" Type="Byte" Nullable="false" />
+          <Property Name="RANK" Type="Byte" />
+          <Property Name="DISTANCE_NEAR" Type="Int16" />
+          <NavigationProperty Name="TRACK" Relationship="Self.FK_HISTORY_USER_TRACK" FromRole="HISTORY_USER" ToRole="TRACK" />
+          <NavigationProperty Name="USER" Relationship="Self.FK_HISTORY_USER_USER" FromRole="HISTORY_USER" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="HOME_HOT_NEW">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Home_NewTrack">
+          <Key>
+            <PropertyRef Name="s" />
+          </Key>
+          <Property Name="s" Type="String" MaxLength="10" FixedLength="true" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LABEL">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FOUNDED" Type="DateTime" Precision="0" />
+          <Property Name="FOUNDER" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LOCATION" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DESCRIP" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="LINK" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ARTISTs" Relationship="Self.FK_ARTIST_LABEL" FromRole="LABEL" ToRole="ARTIST" />
+          <NavigationProperty Name="GENRE_LABEL" Relationship="Self.FK_GENRE_LABEL_LABEL" FromRole="LABEL" ToRole="GENRE_LABEL" />
+          <NavigationProperty Name="SOUNDS" Relationship="Self.FK_SOUNDS_LABEL" FromRole="LABEL" ToRole="SOUNDS" />
+        </EntityType>
+        <EntityType Name="LISTEN_SLIDER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME_SONG" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="LINK" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DESCRIPT" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GENRE" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="LENGHT" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ARTISTS" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="NEW_TRACK">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="LINK" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="RANKK" Type="Byte" />
+          <Property Name="COST" Type="Double" />
+          <NavigationProperty Name="TRACK" Relationship="Self.FK_NEW_TRACK_TRACK" FromRole="NEW_TRACK" ToRole="TRACK" />
+        </EntityType>
+        <EntityType Name="REMIX">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TEMPO" Type="Int32" />
+          <Property Name="KEY_" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="LINK" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="DATE_RELEASE" Type="DateTime" Precision="0" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ID_TRACK" Type="Int32" />
+          <Property Name="LENGTH" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POINT_ALL" Type="Int32" />
+          <Property Name="FULL_ARTIST" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="REMIX_ARTIST" Relationship="Self.FK_REMIX_ARTIST_REMIX1" FromRole="REMIX" ToRole="REMIX_ARTIST" />
+          <NavigationProperty Name="TRACK" Relationship="Self.FK_REMIX_TRACK" FromRole="REMIX" ToRole="TRACK" />
+          <NavigationProperty Name="STATISTIC_REMIX" Relationship="Self.FK_STATISTIC_REMIX_REMIX" FromRole="REMIX" ToRole="STATISTIC_REMIX" />
+        </EntityType>
+        <EntityType Name="REMIX_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_REMIX" />
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_REMIX" Type="Int32" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="Int32" Nullable="false" />
+          <Property Name="NAME_ARTIST" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NAME_LABEL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POINT_ALL" Type="Int32" />
+          <Property Name="GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ARTIST" Relationship="Self.FK_REMIX_ARTIST_ARTIST" FromRole="REMIX_ARTIST" ToRole="ARTIST" />
+          <NavigationProperty Name="REMIX" Relationship="Self.FK_REMIX_ARTIST_REMIX1" FromRole="REMIX_ARTIST" ToRole="REMIX" />
+        </EntityType>
+        <EntityType Name="SALE">
+          <Key>
+            <PropertyRef Name="LEVEL_" />
+          </Key>
+          <Property Name="LEVEL_" Type="Byte" Nullable="false" />
+          <Property Name="SALE_INDEX" Type="Byte" />
+          <Property Name="CONDITION" Type="Double" />
+        </EntityType>
+        <EntityType Name="SHOW">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ID_ARTIST" Type="Int32" />
+          <Property Name="NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="LOCATION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="TIME" Type="DateTime" Precision="0" />
+          <Property Name="DESCRIBLE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="150" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="ARTIST" Relationship="Self.FK_SHOW_ARTIST" FromRole="SHOW" ToRole="ARTIST" />
+        </EntityType>
+        <EntityType Name="SHOW_LIST">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME_SHOW" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ARTIST_SHOW" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="LOCATION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="TIME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="DESCRIBLE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SOUND">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LABEL_ID" Type="Int16" />
+          <Property Name="RELEASE_DATE" Type="DateTime" Precision="0" />
+          <Property Name="DATA_SIZE" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="DESCRIP" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POINT_ALL" Type="Int32" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="LABEL" Relationship="Self.FK_SOUNDS_LABEL" FromRole="SOUNDS" ToRole="LABEL" />
+        </EntityType>
+        <EntityType Name="STATISTIC_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_ARTIST" Type="Int32" Nullable="false" />
+          <Property Name="CLICK_MONTH" Type="Int32" />
+          <Property Name="CLICK_ALL" Type="Int32" />
+          <Property Name="BUY_MONTH" Type="Int32" />
+          <Property Name="BUY_ALL" Type="Int32" />
+          <NavigationProperty Name="ARTIST" Relationship="Self.FK_STATISTIC_ARTIST_ARTIST" FromRole="STATISTIC_ARTIST" ToRole="ARTIST" />
+        </EntityType>
+        <EntityType Name="STATISTIC_REMIX">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="CLICK_ALL" Type="Int32" />
+          <Property Name="CLICK_MONTH" Type="Int32" />
+          <Property Name="BUY_ALL" Type="Int32" />
+          <Property Name="BUY_MONTH" Type="Int32" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POINT_ALL" Type="Int32" />
+          <NavigationProperty Name="REMIX" Relationship="Self.FK_STATISTIC_REMIX_REMIX" FromRole="STATISTIC_REMIX" ToRole="REMIX" />
+        </EntityType>
+        <EntityType Name="STATISTIC_TRACK">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="CLICK_ALL" Type="Int32" />
+          <Property Name="CLICK_MONTH" Type="Int32" />
+          <Property Name="BUY_ALL" Type="Int32" />
+          <Property Name="BUY_MONTH" Type="Int32" />
+          <NavigationProperty Name="TRACK" Relationship="Self.FK_STATISTIC_TRACK_TRACK" FromRole="STATISTIC_TRACK" ToRole="TRACK" />
+        </EntityType>
+        <EntityType Name="STEM">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TEMPO" Type="Byte" />
+          <Property Name="KEY_" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="LINK" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="DESCRIP" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="LENGTH" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POIN_ALL" Type="Int32" />
+          <Property Name="STEMS_ID" Type="Int32" />
+          <Property Name="GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="STEM_ARTIST" Relationship="Self.FK_STEM_ARTIST_STEM" FromRole="STEM" ToRole="STEM_ARTIST" />
+          <NavigationProperty Name="STEM_ARTIST1" Relationship="Self.FK_STEM_ARTIST_STEM1" FromRole="STEM" ToRole="STEM_ARTIST" />
+        </EntityType>
+        <EntityType Name="STEM_ARTIST">
+          <Key>
+            <PropertyRef Name="STEM_ID" />
+            <PropertyRef Name="ARTIST_ID" />
+          </Key>
+          <Property Name="STEM_ID" Type="Int32" Nullable="false" />
+          <Property Name="ARTIST_ID" Type="Int32" Nullable="false" />
+          <Property Name="ARTIST_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NAME_LABEL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NAME_STEM" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ARTIST" Relationship="Self.FK_STEM_ARTIST_ARTIST" FromRole="STEM_ARTIST" ToRole="ARTIST" />
+          <NavigationProperty Name="STEM" Relationship="Self.FK_STEM_ARTIST_STEM" FromRole="STEM_ARTIST" ToRole="STEM" />
+          <NavigationProperty Name="STEM1" Relationship="Self.FK_STEM_ARTIST_STEM1" FromRole="STEM_ARTIST" ToRole="STEM" />
+        </EntityType>
+        <EntityType Name="STEM1">
+          <Key>
+            <PropertyRef Name="STEMS_ID" />
+          </Key>
+          <Property Name="STEMS_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATE_RELEASE" Type="DateTime" Precision="0" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="CATALOG" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IMG" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="TOP_6_DJ">
+          <Key>
+            <PropertyRef Name="RANK" />
+          </Key>
+          <Property Name="RANK" Type="Int32" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="Int32" />
+          <Property Name="NAME_ARTIST" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IMG" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="TRACK">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TEMPO" Type="Byte" />
+          <Property Name="KEY_" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="LINK" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="DATE_RELEASE" Type="DateTime" Precision="0" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="DESCRIPT" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="LENGTH" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POINT_ALL" Type="Int32" />
+          <Property Name="FULL_NAME" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="HISTORY_USER" Relationship="Self.FK_HISTORY_USER_TRACK" FromRole="TRACK" ToRole="HISTORY_USER" />
+          <NavigationProperty Name="NEW_TRACK" Relationship="Self.FK_NEW_TRACK_TRACK" FromRole="TRACK" ToRole="NEW_TRACK" />
+          <NavigationProperty Name="REMIXes" Relationship="Self.FK_REMIX_TRACK" FromRole="TRACK" ToRole="REMIX" />
+          <NavigationProperty Name="STATISTIC_TRACK" Relationship="Self.FK_STATISTIC_TRACK_TRACK" FromRole="TRACK" ToRole="STATISTIC_TRACK" />
+          <NavigationProperty Name="TRACK_ARTIST" Relationship="Self.FK_TRACK_ARTIST_TRACK" FromRole="TRACK" ToRole="TRACK_ARTIST" />
+          <NavigationProperty Name="USER_TRACKLIST" Relationship="Self.FK_USER_TRACKLIST_TRACK" FromRole="TRACK" ToRole="USER_TRACKLIST" />
+        </EntityType>
+        <EntityType Name="TRACK_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_TRACK" />
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_TRACK" Type="Int32" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="Int32" Nullable="false" />
+          <Property Name="NAME_ARTIST" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NAME_LABEL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="NAME_TRACK" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="POINT_ALL" Type="Int32" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POINT_DAY" Type="Int32" />
+          <NavigationProperty Name="ARTIST" Relationship="Self.FK_TRACK_ARTIST_ARTIST" FromRole="TRACK_ARTIST" ToRole="ARTIST" />
+          <NavigationProperty Name="TRACK" Relationship="Self.FK_TRACK_ARTIST_TRACK" FromRole="TRACK_ARTIST" ToRole="TRACK" />
+        </EntityType>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FIRSTNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PASSWORD" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EMAIL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LEVEL_" Type="Byte" />
+          <Property Name="LASTNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="HISTORY_USER" Relationship="Self.FK_HISTORY_USER_USER" FromRole="USER" ToRole="HISTORY_USER" />
+          <NavigationProperty Name="USER_TRACKLIST" Relationship="Self.FK_USER_TRACKLIST_USER" FromRole="USER" ToRole="USER_TRACKLIST" />
+          <NavigationProperty Name="VIDEOs" Relationship="Self.USER_VIDEOLIST" FromRole="USER" ToRole="VIDEO" />
+        </EntityType>
+        <EntityType Name="USER_TRACKLIST">
+          <Key>
+            <PropertyRef Name="ID_USER" />
+            <PropertyRef Name="ID_PROD" />
+            <PropertyRef Name="TYPE" />
+          </Key>
+          <Property Name="ID_USER" Type="Int32" Nullable="false" />
+          <Property Name="ID_PROD" Type="Int32" Nullable="false" />
+          <Property Name="TYPE" Type="Byte" Nullable="false" />
+          <Property Name="NAME" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TRACK" Relationship="Self.FK_USER_TRACKLIST_TRACK" FromRole="USER_TRACKLIST" ToRole="TRACK" />
+          <NavigationProperty Name="USER" Relationship="Self.FK_USER_TRACKLIST_USER" FromRole="USER_TRACKLIST" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="VIDEO">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="DESCRIPT" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="TIME" Type="DateTime" Precision="0" />
+          <Property Name="LINK" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USERs" Relationship="Self.USER_VIDEOLIST" FromRole="VIDEO" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_ARTIST_LABEL">
+          <End Role="LABEL" Type="Self.LABEL" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LABEL">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARTIST">
+              <PropertyRef Name="ID_LABEL" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GENRE_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GENRE_ARTIST" Type="Self.GENRE_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GENRE_ARTIST">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_REMIX_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="REMIX_ARTIST" Type="Self.REMIX_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="REMIX_ARTIST">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SHOW_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SHOW" Type="Self.SHOW" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SHOW">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STATISTIC_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="STATISTIC_ARTIST" Type="Self.STATISTIC_ARTIST" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STATISTIC_ARTIST">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STEM_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1" />
+          <End Role="STEM_ARTIST" Type="Self.STEM_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STEM_ARTIST">
+              <PropertyRef Name="ARTIST_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TRACK_ARTIST_ARTIST">
+          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TRACK_ARTIST" Type="Self.TRACK_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ARTIST">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TRACK_ARTIST">
+              <PropertyRef Name="ID_ARTIST" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CHART_GENRE">
+          <End Role="GENRE" Type="Self.GENRE" Multiplicity="0..1" />
+          <End Role="CHART" Type="Self.CHART" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GENRE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CHART">
+              <PropertyRef Name="ID_GENRE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GENRE_ARTIST_GENRE">
+          <End Role="GENRE" Type="Self.GENRE" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GENRE_ARTIST" Type="Self.GENRE_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GENRE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GENRE_ARTIST">
+              <PropertyRef Name="ID_GENRE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GENRE_LABEL_GENRE">
+          <End Role="GENRE" Type="Self.GENRE" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GENRE_LABEL" Type="Self.GENRE_LABEL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GENRE">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GENRE_LABEL">
+              <PropertyRef Name="ID_GENRE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_GENRE_LABEL_LABEL">
+          <End Role="LABEL" Type="Self.LABEL" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="GENRE_LABEL" Type="Self.GENRE_LABEL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LABEL">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="GENRE_LABEL">
+              <PropertyRef Name="ID_LABEL" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HISTORY_USER_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HISTORY_USER" Type="Self.HISTORY_USER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HISTORY_USER">
+              <PropertyRef Name="ID_TRACK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_HISTORY_USER_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HISTORY_USER" Type="Self.HISTORY_USER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="HISTORY_USER">
+              <PropertyRef Name="ID_USER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SOUNDS_LABEL">
+          <End Role="LABEL" Type="Self.LABEL" Multiplicity="0..1" />
+          <End Role="SOUNDS" Type="Self.SOUND" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LABEL">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="SOUNDS">
+              <PropertyRef Name="LABEL_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NEW_TRACK_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="NEW_TRACK" Type="Self.NEW_TRACK" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="NEW_TRACK">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_REMIX_ARTIST_REMIX1">
+          <End Role="REMIX" Type="Self.REMIX" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="REMIX_ARTIST" Type="Self.REMIX_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="REMIX">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="REMIX_ARTIST">
+              <PropertyRef Name="ID_REMIX" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_REMIX_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="0..1" />
+          <End Role="REMIX" Type="Self.REMIX" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="REMIX">
+              <PropertyRef Name="ID_TRACK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STATISTIC_REMIX_REMIX">
+          <End Role="REMIX" Type="Self.REMIX" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="STATISTIC_REMIX" Type="Self.STATISTIC_REMIX" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="REMIX">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STATISTIC_REMIX">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STATISTIC_TRACK_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="STATISTIC_TRACK" Type="Self.STATISTIC_TRACK" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STATISTIC_TRACK">
+              <PropertyRef Name="ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STEM_ARTIST_STEM">
+          <End Role="STEM" Type="Self.STEM" Multiplicity="1" />
+          <End Role="STEM_ARTIST" Type="Self.STEM_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STEM">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STEM_ARTIST">
+              <PropertyRef Name="STEM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STEM_ARTIST_STEM1">
+          <End Role="STEM" Type="Self.STEM" Multiplicity="1" />
+          <End Role="STEM_ARTIST" Type="Self.STEM_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STEM">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="STEM_ARTIST">
+              <PropertyRef Name="STEM_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TRACK_ARTIST_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="TRACK_ARTIST" Type="Self.TRACK_ARTIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="TRACK_ARTIST">
+              <PropertyRef Name="ID_TRACK" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_TRACKLIST_TRACK">
+          <End Role="TRACK" Type="Self.TRACK" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="USER_TRACKLIST" Type="Self.USER_TRACKLIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TRACK">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="USER_TRACKLIST">
+              <PropertyRef Name="ID_PROD" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_TRACKLIST_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="USER_TRACKLIST" Type="Self.USER_TRACKLIST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="USER_TRACKLIST">
+              <PropertyRef Name="ID_USER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="USER_VIDEOLIST">
+          <End Role="USER" Type="Self.USER" Multiplicity="*" />
+          <End Role="VIDEO" Type="Self.VIDEO" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="MusicEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ARTISTs" EntityType="Self.ARTIST" />
+          <EntitySet Name="CARDs" EntityType="Self.CARD" />
+          <EntitySet Name="CHARTs" EntityType="Self.CHART" />
+          <EntitySet Name="FORMULA_HOT" EntityType="Self.FORMULA_HOT" />
+          <EntitySet Name="GENREs" EntityType="Self.GENRE" />
+          <EntitySet Name="GENRE_ARTIST" EntityType="Self.GENRE_ARTIST" />
+          <EntitySet Name="GENRE_LABEL" EntityType="Self.GENRE_LABEL" />
+          <EntitySet Name="HISTORY_USER" EntityType="Self.HISTORY_USER" />
+          <EntitySet Name="HOME_HOT_NEW" EntityType="Self.HOME_HOT_NEW" />
+          <EntitySet Name="Home_NewTrack" EntityType="Self.Home_NewTrack" />
+          <EntitySet Name="LABELs" EntityType="Self.LABEL" />
+          <EntitySet Name="LISTEN_SLIDER" EntityType="Self.LISTEN_SLIDER" />
+          <EntitySet Name="NEW_TRACK" EntityType="Self.NEW_TRACK" />
+          <EntitySet Name="REMIXes" EntityType="Self.REMIX" />
+          <EntitySet Name="REMIX_ARTIST" EntityType="Self.REMIX_ARTIST" />
+          <EntitySet Name="SALEs" EntityType="Self.SALE" />
+          <EntitySet Name="SHOWs" EntityType="Self.SHOW" />
+          <EntitySet Name="SHOW_LIST" EntityType="Self.SHOW_LIST" />
+          <EntitySet Name="SOUNDS" EntityType="Self.SOUND" />
+          <EntitySet Name="STATISTIC_ARTIST" EntityType="Self.STATISTIC_ARTIST" />
+          <EntitySet Name="STATISTIC_REMIX" EntityType="Self.STATISTIC_REMIX" />
+          <EntitySet Name="STATISTIC_TRACK" EntityType="Self.STATISTIC_TRACK" />
+          <EntitySet Name="STEMs" EntityType="Self.STEM" />
+          <EntitySet Name="STEM_ARTIST" EntityType="Self.STEM_ARTIST" />
+          <EntitySet Name="STEMS1" EntityType="Self.STEM1" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="TOP_6_DJ" EntityType="Self.TOP_6_DJ" />
+          <EntitySet Name="TRACKs" EntityType="Self.TRACK" />
+          <EntitySet Name="TRACK_ARTIST" EntityType="Self.TRACK_ARTIST" />
+          <EntitySet Name="USERs" EntityType="Self.USER" />
+          <EntitySet Name="USER_TRACKLIST" EntityType="Self.USER_TRACKLIST" />
+          <EntitySet Name="VIDEOs" EntityType="Self.VIDEO" />
+          <AssociationSet Name="FK_ARTIST_LABEL" Association="Self.FK_ARTIST_LABEL">
+            <End Role="LABEL" EntitySet="LABELs" />
+            <End Role="ARTIST" EntitySet="ARTISTs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GENRE_ARTIST_ARTIST" Association="Self.FK_GENRE_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTISTs" />
+            <End Role="GENRE_ARTIST" EntitySet="GENRE_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_REMIX_ARTIST_ARTIST" Association="Self.FK_REMIX_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTISTs" />
+            <End Role="REMIX_ARTIST" EntitySet="REMIX_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SHOW_ARTIST" Association="Self.FK_SHOW_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTISTs" />
+            <End Role="SHOW" EntitySet="SHOWs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STATISTIC_ARTIST_ARTIST" Association="Self.FK_STATISTIC_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTISTs" />
+            <End Role="STATISTIC_ARTIST" EntitySet="STATISTIC_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STEM_ARTIST_ARTIST" Association="Self.FK_STEM_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTISTs" />
+            <End Role="STEM_ARTIST" EntitySet="STEM_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TRACK_ARTIST_ARTIST" Association="Self.FK_TRACK_ARTIST_ARTIST">
+            <End Role="ARTIST" EntitySet="ARTISTs" />
+            <End Role="TRACK_ARTIST" EntitySet="TRACK_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHART_GENRE" Association="Self.FK_CHART_GENRE">
+            <End Role="GENRE" EntitySet="GENREs" />
+            <End Role="CHART" EntitySet="CHARTs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GENRE_ARTIST_GENRE" Association="Self.FK_GENRE_ARTIST_GENRE">
+            <End Role="GENRE" EntitySet="GENREs" />
+            <End Role="GENRE_ARTIST" EntitySet="GENRE_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GENRE_LABEL_GENRE" Association="Self.FK_GENRE_LABEL_GENRE">
+            <End Role="GENRE" EntitySet="GENREs" />
+            <End Role="GENRE_LABEL" EntitySet="GENRE_LABEL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_GENRE_LABEL_LABEL" Association="Self.FK_GENRE_LABEL_LABEL">
+            <End Role="LABEL" EntitySet="LABELs" />
+            <End Role="GENRE_LABEL" EntitySet="GENRE_LABEL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HISTORY_USER_TRACK" Association="Self.FK_HISTORY_USER_TRACK">
+            <End Role="TRACK" EntitySet="TRACKs" />
+            <End Role="HISTORY_USER" EntitySet="HISTORY_USER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_HISTORY_USER_USER" Association="Self.FK_HISTORY_USER_USER">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="HISTORY_USER" EntitySet="HISTORY_USER" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SOUNDS_LABEL" Association="Self.FK_SOUNDS_LABEL">
+            <End Role="LABEL" EntitySet="LABELs" />
+            <End Role="SOUNDS" EntitySet="SOUNDS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NEW_TRACK_TRACK" Association="Self.FK_NEW_TRACK_TRACK">
+            <End Role="TRACK" EntitySet="TRACKs" />
+            <End Role="NEW_TRACK" EntitySet="NEW_TRACK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_REMIX_ARTIST_REMIX1" Association="Self.FK_REMIX_ARTIST_REMIX1">
+            <End Role="REMIX" EntitySet="REMIXes" />
+            <End Role="REMIX_ARTIST" EntitySet="REMIX_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_REMIX_TRACK" Association="Self.FK_REMIX_TRACK">
+            <End Role="TRACK" EntitySet="TRACKs" />
+            <End Role="REMIX" EntitySet="REMIXes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STATISTIC_REMIX_REMIX" Association="Self.FK_STATISTIC_REMIX_REMIX">
+            <End Role="REMIX" EntitySet="REMIXes" />
+            <End Role="STATISTIC_REMIX" EntitySet="STATISTIC_REMIX" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STATISTIC_TRACK_TRACK" Association="Self.FK_STATISTIC_TRACK_TRACK">
+            <End Role="TRACK" EntitySet="TRACKs" />
+            <End Role="STATISTIC_TRACK" EntitySet="STATISTIC_TRACK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STEM_ARTIST_STEM" Association="Self.FK_STEM_ARTIST_STEM">
+            <End Role="STEM" EntitySet="STEMs" />
+            <End Role="STEM_ARTIST" EntitySet="STEM_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STEM_ARTIST_STEM1" Association="Self.FK_STEM_ARTIST_STEM1">
+            <End Role="STEM" EntitySet="STEMs" />
+            <End Role="STEM_ARTIST" EntitySet="STEM_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TRACK_ARTIST_TRACK" Association="Self.FK_TRACK_ARTIST_TRACK">
+            <End Role="TRACK" EntitySet="TRACKs" />
+            <End Role="TRACK_ARTIST" EntitySet="TRACK_ARTIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_TRACKLIST_TRACK" Association="Self.FK_USER_TRACKLIST_TRACK">
+            <End Role="TRACK" EntitySet="TRACKs" />
+            <End Role="USER_TRACKLIST" EntitySet="USER_TRACKLIST" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_TRACKLIST_USER" Association="Self.FK_USER_TRACKLIST_USER">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="USER_TRACKLIST" EntitySet="USER_TRACKLIST" />
+          </AssociationSet>
+          <AssociationSet Name="USER_VIDEOLIST" Association="Self.USER_VIDEOLIST">
+            <End Role="USER" EntitySet="USERs" />
+            <End Role="VIDEO" EntitySet="VIDEOs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MusicModelStoreContainer" CdmEntityContainer="MusicEntities">
+          <EntitySetMapping Name="ARTISTs">
+            <EntityTypeMapping TypeName="MusicModel.ARTIST">
+              <MappingFragment StoreEntitySet="ARTIST">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="BORN" ColumnName="BORN" />
+                <ScalarProperty Name="DATE" ColumnName="DATE" />
+                <ScalarProperty Name="DESCRIP" ColumnName="DESCRIP" />
+                <ScalarProperty Name="TW" ColumnName="TW" />
+                <ScalarProperty Name="FB" ColumnName="FB" />
+                <ScalarProperty Name="ID_LABEL" ColumnName="ID_LABEL" />
+                <ScalarProperty Name="IMG" ColumnName="IMG" />
+                <ScalarProperty Name="NAME_LABEL" ColumnName="NAME_LABEL" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CARDs">
+            <EntityTypeMapping TypeName="MusicModel.CARD">
+              <MappingFragment StoreEntitySet="CARD">
+                <ScalarProperty Name="NUMBER" ColumnName="NUMBER" />
+                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CHARTs">
+            <EntityTypeMapping TypeName="MusicModel.CHART">
+              <MappingFragment StoreEntitySet="CHART">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="DATE_RELEASE" ColumnName="DATE_RELEASE" />
+                <ScalarProperty Name="DESCRIP" ColumnName="DESCRIP" />
+                <ScalarProperty Name="NAME_GENRE" ColumnName="NAME_GENRE" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="ID_GENRE" ColumnName="ID_GENRE" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FORMULA_HOT">
+            <EntityTypeMapping TypeName="MusicModel.FORMULA_HOT">
+              <MappingFragment StoreEntitySet="FORMULA_HOT">
+                <ScalarProperty Name="CLICK" ColumnName="CLICK" />
+                <ScalarProperty Name="BUY" ColumnName="BUY" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GENREs">
+            <EntityTypeMapping TypeName="MusicModel.GENRE">
+              <MappingFragment StoreEntitySet="GENRE">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="DESCRIP" ColumnName="DESCRIP" />
+                <ScalarProperty Name="TEMPO" ColumnName="TEMPO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GENRE_ARTIST">
+            <EntityTypeMapping TypeName="MusicModel.GENRE_ARTIST">
+              <MappingFragment StoreEntitySet="GENRE_ARTIST">
+                <ScalarProperty Name="ID_ARTIST" ColumnName="ID_ARTIST" />
+                <ScalarProperty Name="ID_GENRE" ColumnName="ID_GENRE" />
+                <ScalarProperty Name="POINT" ColumnName="POINT" />
+                <ScalarProperty Name="NAME_GENRE" ColumnName="NAME_GENRE" />
+                <ScalarProperty Name="NAME_LABEL" ColumnName="NAME_LABEL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GENRE_LABEL">
+            <EntityTypeMapping TypeName="MusicModel.GENRE_LABEL">
+              <MappingFragment StoreEntitySet="GENRE_LABEL">
+                <ScalarProperty Name="ID_LABEL" ColumnName="ID_LABEL" />
+                <ScalarProperty Name="ID_GENRE" ColumnName="ID_GENRE" />
+                <ScalarProperty Name="NAME_GENRE" ColumnName="NAME_GENRE" />
+                <ScalarProperty Name="POINT" ColumnName="POINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HISTORY_USER">
+            <EntityTypeMapping TypeName="MusicModel.HISTORY_USER">
+              <MappingFragment StoreEntitySet="HISTORY_USER">
+                <ScalarProperty Name="ID_USER" ColumnName="ID_USER" />
+                <ScalarProperty Name="TIME" ColumnName="TIME" />
+                <ScalarProperty Name="ID_TRACK" ColumnName="ID_TRACK" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="RANK" ColumnName="RANK" />
+                <ScalarProperty Name="DISTANCE_NEAR" ColumnName="DISTANCE_NEAR" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HOME_HOT_NEW">
+            <EntityTypeMapping TypeName="MusicModel.HOME_HOT_NEW">
+              <MappingFragment StoreEntitySet="HOME_HOT_NEW">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Home_NewTrack">
+            <EntityTypeMapping TypeName="MusicModel.Home_NewTrack">
+              <MappingFragment StoreEntitySet="Home_NewTrack">
+                <ScalarProperty Name="s" ColumnName="s" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LABELs">
+            <EntityTypeMapping TypeName="MusicModel.LABEL">
+              <MappingFragment StoreEntitySet="LABEL">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="FOUNDED" ColumnName="FOUNDED" />
+                <ScalarProperty Name="FOUNDER" ColumnName="FOUNDER" />
+                <ScalarProperty Name="LOCATION" ColumnName="LOCATION" />
+                <ScalarProperty Name="DESCRIP" ColumnName="DESCRIP" />
+                <ScalarProperty Name="LINK" ColumnName="LINK" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LISTEN_SLIDER">
+            <EntityTypeMapping TypeName="MusicModel.LISTEN_SLIDER">
+              <MappingFragment StoreEntitySet="LISTEN_SLIDER">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME_SONG" ColumnName="NAME_SONG" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="LINK" ColumnName="LINK" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+                <ScalarProperty Name="DESCRIPT" ColumnName="DESCRIPT" />
+                <ScalarProperty Name="GENRE" ColumnName="GENRE" />
+                <ScalarProperty Name="LENGHT" ColumnName="LENGHT" />
+                <ScalarProperty Name="ARTISTS" ColumnName="ARTISTS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NEW_TRACK">
+            <EntityTypeMapping TypeName="MusicModel.NEW_TRACK">
+              <MappingFragment StoreEntitySet="NEW_TRACK">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+                <ScalarProperty Name="LINK" ColumnName="LINK" />
+                <ScalarProperty Name="RANKK" ColumnName="RANKK" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="REMIXes">
+            <EntityTypeMapping TypeName="MusicModel.REMIX">
+              <MappingFragment StoreEntitySet="REMIX">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="TEMPO" ColumnName="TEMPO" />
+                <ScalarProperty Name="KEY_" ColumnName="KEY_" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="LINK" ColumnName="LINK" />
+                <ScalarProperty Name="DATE_RELEASE" ColumnName="DATE_RELEASE" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+                <ScalarProperty Name="ID_TRACK" ColumnName="ID_TRACK" />
+                <ScalarProperty Name="LENGTH" ColumnName="LENGTH" />
+                <ScalarProperty Name="GENRE" ColumnName="GENRE" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+                <ScalarProperty Name="FULL_ARTIST" ColumnName="FULL_ARTIST" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="REMIX_ARTIST">
+            <EntityTypeMapping TypeName="MusicModel.REMIX_ARTIST">
+              <MappingFragment StoreEntitySet="REMIX_ARTIST">
+                <ScalarProperty Name="ID_REMIX" ColumnName="ID_REMIX" />
+                <ScalarProperty Name="ID_ARTIST" ColumnName="ID_ARTIST" />
+                <ScalarProperty Name="NAME_ARTIST" ColumnName="NAME_ARTIST" />
+                <ScalarProperty Name="NAME_LABEL" ColumnName="NAME_LABEL" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+                <ScalarProperty Name="GENRE" ColumnName="GENRE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SALEs">
+            <EntityTypeMapping TypeName="MusicModel.SALE">
+              <MappingFragment StoreEntitySet="SALE">
+                <ScalarProperty Name="LEVEL_" ColumnName="LEVEL_" />
+                <ScalarProperty Name="SALE_INDEX" ColumnName="SALE_INDEX" />
+                <ScalarProperty Name="CONDITION" ColumnName="CONDITION" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SHOWs">
+            <EntityTypeMapping TypeName="MusicModel.SHOW">
+              <MappingFragment StoreEntitySet="SHOW">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ID_ARTIST" ColumnName="ID_ARTIST" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="LOCATION" ColumnName="LOCATION" />
+                <ScalarProperty Name="TIME" ColumnName="TIME" />
+                <ScalarProperty Name="DESCRIBLE" ColumnName="DESCRIBLE" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SHOW_LIST">
+            <EntityTypeMapping TypeName="MusicModel.SHOW_LIST">
+              <MappingFragment StoreEntitySet="SHOW_LIST">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME_SHOW" ColumnName="NAME_SHOW" />
+                <ScalarProperty Name="ARTIST_SHOW" ColumnName="ARTIST_SHOW" />
+                <ScalarProperty Name="LOCATION" ColumnName="LOCATION" />
+                <ScalarProperty Name="TIME" ColumnName="TIME" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+                <ScalarProperty Name="DESCRIBLE" ColumnName="DESCRIBLE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SOUNDS">
+            <EntityTypeMapping TypeName="MusicModel.SOUND">
+              <MappingFragment StoreEntitySet="SOUNDS">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="LABEL_ID" ColumnName="LABEL_ID" />
+                <ScalarProperty Name="RELEASE_DATE" ColumnName="RELEASE_DATE" />
+                <ScalarProperty Name="DATA_SIZE" ColumnName="DATA_SIZE" />
+                <ScalarProperty Name="DESCRIP" ColumnName="DESCRIP" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STATISTIC_ARTIST">
+            <EntityTypeMapping TypeName="MusicModel.STATISTIC_ARTIST">
+              <MappingFragment StoreEntitySet="STATISTIC_ARTIST">
+                <ScalarProperty Name="ID_ARTIST" ColumnName="ID_ARTIST" />
+                <ScalarProperty Name="CLICK_MONTH" ColumnName="CLICK_MONTH" />
+                <ScalarProperty Name="CLICK_ALL" ColumnName="CLICK_ALL" />
+                <ScalarProperty Name="BUY_MONTH" ColumnName="BUY_MONTH" />
+                <ScalarProperty Name="BUY_ALL" ColumnName="BUY_ALL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STATISTIC_REMIX">
+            <EntityTypeMapping TypeName="MusicModel.STATISTIC_REMIX">
+              <MappingFragment StoreEntitySet="STATISTIC_REMIX">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CLICK_ALL" ColumnName="CLICK_ALL" />
+                <ScalarProperty Name="CLICK_MONTH" ColumnName="CLICK_MONTH" />
+                <ScalarProperty Name="BUY_ALL" ColumnName="BUY_ALL" />
+                <ScalarProperty Name="BUY_MONTH" ColumnName="BUY_MONTH" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STATISTIC_TRACK">
+            <EntityTypeMapping TypeName="MusicModel.STATISTIC_TRACK">
+              <MappingFragment StoreEntitySet="STATISTIC_TRACK">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CLICK_ALL" ColumnName="CLICK_ALL" />
+                <ScalarProperty Name="CLICK_MONTH" ColumnName="CLICK_MONTH" />
+                <ScalarProperty Name="BUY_ALL" ColumnName="BUY_ALL" />
+                <ScalarProperty Name="BUY_MONTH" ColumnName="BUY_MONTH" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STEMs">
+            <EntityTypeMapping TypeName="MusicModel.STEM">
+              <MappingFragment StoreEntitySet="STEM">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="TEMPO" ColumnName="TEMPO" />
+                <ScalarProperty Name="KEY_" ColumnName="KEY_" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="LINK" ColumnName="LINK" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+                <ScalarProperty Name="DESCRIP" ColumnName="DESCRIP" />
+                <ScalarProperty Name="LENGTH" ColumnName="LENGTH" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POIN_ALL" ColumnName="POIN_ALL" />
+                <ScalarProperty Name="STEMS_ID" ColumnName="STEMS_ID" />
+                <ScalarProperty Name="GENRE" ColumnName="GENRE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STEM_ARTIST">
+            <EntityTypeMapping TypeName="MusicModel.STEM_ARTIST">
+              <MappingFragment StoreEntitySet="STEM_ARTIST">
+                <ScalarProperty Name="STEM_ID" ColumnName="STEM_ID" />
+                <ScalarProperty Name="ARTIST_ID" ColumnName="ARTIST_ID" />
+                <ScalarProperty Name="ARTIST_NAME" ColumnName="ARTIST_NAME" />
+                <ScalarProperty Name="NAME_LABEL" ColumnName="NAME_LABEL" />
+                <ScalarProperty Name="NAME_STEM" ColumnName="NAME_STEM" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STEMS1">
+            <EntityTypeMapping TypeName="MusicModel.STEM1">
+              <MappingFragment StoreEntitySet="STEMS">
+                <ScalarProperty Name="STEMS_ID" ColumnName="STEMS_ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="DATE_RELEASE" ColumnName="DATE_RELEASE" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="CATALOG" ColumnName="CATALOG" />
+                <ScalarProperty Name="IMG" ColumnName="IMG" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="MusicModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TOP_6_DJ">
+            <EntityTypeMapping TypeName="MusicModel.TOP_6_DJ">
+              <MappingFragment StoreEntitySet="TOP_6_DJ">
+                <ScalarProperty Name="RANK" ColumnName="RANK" />
+                <ScalarProperty Name="ID_ARTIST" ColumnName="ID_ARTIST" />
+                <ScalarProperty Name="NAME_ARTIST" ColumnName="NAME_ARTIST" />
+                <ScalarProperty Name="IMG" ColumnName="IMG" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TRACKs">
+            <EntityTypeMapping TypeName="MusicModel.TRACK">
+              <MappingFragment StoreEntitySet="TRACK">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="TEMPO" ColumnName="TEMPO" />
+                <ScalarProperty Name="KEY_" ColumnName="KEY_" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="LINK" ColumnName="LINK" />
+                <ScalarProperty Name="DATE_RELEASE" ColumnName="DATE_RELEASE" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+                <ScalarProperty Name="DESCRIPT" ColumnName="DESCRIPT" />
+                <ScalarProperty Name="LENGTH" ColumnName="LENGTH" />
+                <ScalarProperty Name="GENRE" ColumnName="GENRE" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+                <ScalarProperty Name="FULL_NAME" ColumnName="FULL_NAME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TRACK_ARTIST">
+            <EntityTypeMapping TypeName="MusicModel.TRACK_ARTIST">
+              <MappingFragment StoreEntitySet="TRACK_ARTIST">
+                <ScalarProperty Name="ID_TRACK" ColumnName="ID_TRACK" />
+                <ScalarProperty Name="ID_ARTIST" ColumnName="ID_ARTIST" />
+                <ScalarProperty Name="NAME_ARTIST" ColumnName="NAME_ARTIST" />
+                <ScalarProperty Name="NAME_LABEL" ColumnName="NAME_LABEL" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="NAME_TRACK" ColumnName="NAME_TRACK" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="GENRE" ColumnName="GENRE" />
+                <ScalarProperty Name="POINT_DAY" ColumnName="POINT_DAY" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USERs">
+            <EntityTypeMapping TypeName="MusicModel.USER">
+              <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="FIRSTNAME" ColumnName="FIRSTNAME" />
+                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
+                <ScalarProperty Name="EMAIL" ColumnName="EMAIL" />
+                <ScalarProperty Name="LEVEL_" ColumnName="LEVEL_" />
+                <ScalarProperty Name="LASTNAME" ColumnName="LASTNAME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_TRACKLIST">
+            <EntityTypeMapping TypeName="MusicModel.USER_TRACKLIST">
+              <MappingFragment StoreEntitySet="USER_TRACKLIST">
+                <ScalarProperty Name="ID_USER" ColumnName="ID_USER" />
+                <ScalarProperty Name="ID_PROD" ColumnName="ID_PROD" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIDEOs">
+            <EntityTypeMapping TypeName="MusicModel.VIDEO">
+              <MappingFragment StoreEntitySet="VIDEO">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="DESCRIPT" ColumnName="DESCRIPT" />
+                <ScalarProperty Name="TIME" ColumnName="TIME" />
+                <ScalarProperty Name="LINK" ColumnName="LINK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="USER_VIDEOLIST" TypeName="MusicModel.USER_VIDEOLIST" StoreEntitySet="USER_VIDEOLIST">
+            <EndProperty Name="USER">
+              <ScalarProperty Name="ID" ColumnName="ID_USER" />
+            </EndProperty>
+            <EndProperty Name="VIDEO">
+              <ScalarProperty Name="ID" ColumnName="ID_VIDEO" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

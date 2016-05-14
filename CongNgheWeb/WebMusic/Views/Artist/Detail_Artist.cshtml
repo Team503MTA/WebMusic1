@@ -1,0 +1,48 @@
+﻿
+@using WebMusic.Models
+@model ARTIST
+
+
+<div class="detail-artist">
+    <div class="col-sm-12">
+        <div class="col-sm-4 detail-artist-left">
+            <img src="@Url.Content(Model.IMG)" alt="">
+        </div>
+        <div class="col-sm-8 detail-artist-right">
+            <p class="detail-artist-nav">ARTIST</p>
+            <p class="detail-artist-name">
+                @Model.NAME
+            </p>
+
+            <br>
+            <p class="detail-artist-genres">GENRES</p>
+            @foreach (var item in ViewBag.GenreArtist)
+            {
+                <a href="#" class="detail-artist-genres">@item</a>
+                <span> . </span>
+            }
+            <br>
+
+            <p class="detail-artist-release">Birthday</p>
+            <span class="detail-artist-release">@Model.DATE</span>
+            <br>
+
+            <p class="detail-artist-label">LABELS</p>
+            <a href="#" class="detail-artist-label">@Model.NAME_LABEL</a>
+            <br>
+            <div class="detail-artist-descrip">
+                <span class="detail-artist-descrip-title">DESCRIPTION</span>
+                <span id="detail-artist-descrip-content">
+                    @Model.DESCRIP
+                </span>
+                <span class="detail-artist-more">More</span>
+                <span class="detail-artist-less">Less</span>
+            </div>
+            <div class="detail-artist-follow">
+                <p>Follow</p>
+                <a target="_blank" href="@Model.FB" class="detail-artist-fb"><i class="fa fa-facebook"></i></a>
+                <a target="_blank" href="@Model.TW" class="detail-artist-tw"><i class="fa fa-twitter"></i></a>
+            </div>
+        </div>
+    </div>
+</div>

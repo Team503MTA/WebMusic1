@@ -1,0 +1,26 @@
+﻿.form-search {
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+    color: #000;
+    margin-top: 7px;
+    margin-left: 10px;
+}
+
+.form-search input {
+    height: 23px;
+    padding: 5px 10px;
+    color: #808080;
+    outline: none;
+
+}
+
+.form-search button {
+    height: 35px;
+    width: 60px;
+    border: 0;
+    border-color:#357ebd;
+    margin-left: -6px;
+    color: #fff;
+    background-color:#428bca;
+}

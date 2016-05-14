@@ -1,0 +1,116 @@
+﻿
+
+@{
+    List<List<string>> listTrack = ViewBag.listTrack;
+    List<List<List<string>>> listInfo = ViewBag.listInfo;
+
+    int quantity = listTrack.Count;
+
+
+    if (quantity % 5 == 0 && quantity > 0)
+    {
+        quantity /= 5;
+    }
+    else if (quantity > 0 && quantity % 5 != 0)
+    {
+        quantity /= 5;
+        quantity++;
+    }
+
+    double tempWidth = quantity - 1;
+    tempWidth *= 0.5;
+    tempWidth = 100 - tempWidth;
+    tempWidth = tempWidth / quantity;
+    string widthButton = tempWidth + "%";
+}
+
+<style>
+    .slider-detail-song-label-button {
+        width: @widthButton;
+    }
+</style>
+
+
+<div class="col-sm-12 detail-song-label">
+    <div class="detail-song-label-title">
+        <span>More Track This Label</span>
+    </div>
+    <div class="detail-song-label-content">
+
+        <div class="slider-detail-song-label">
+            @{
+                var number = listTrack.Count;
+                var count = 0;
+                var check = 0;
+                for (int i = 0; i < quantity; i++)
+                {
+                    <div stt="@i" class="slider-detail-song-label-img">
+                        <ul>
+                            @for (int j = 0; j < 5; j++)
+                            {
+                                <li>
+                                    <div class="detail-song-label-song">
+                                        <div class="detail-song-label-song-top">
+                                            <img src="@Url.Content(listTrack[count][2])" alt="">
+                                            <div class="detail-song-label-song-top-control">
+                                                <button class="detail-song-label-song-play"><i class="fa fa-play"></i></button>
+                                                <button class="detail-song-label-song-buy">$@listTrack[count][4]</button>
+                                                <button class="detail-song-label-song-share"><i class="fa fa-facebook"></i>Share</button>
+                                            </div>
+                                            <p></p>
+                                        </div>
+                                        <div class="detail-song-label-song-bottom">
+                                            <p class="detail-song-label-song-name">
+                                                <a href="#">@listTrack[count][1]</a>
+                                            </p>
+                                            <p class="detail-song-label-song-artist">
+                                                @foreach (var k in listInfo[count][0])
+                                                {
+                                                    <a href="#"> @k </a>
+                                                }
+                                            </p>
+                                            <p class="detail-song-label-song-label">
+                                                @foreach (var k in listInfo[count][1])
+                                                {
+                                                    <a href="#"> @k </a>
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                count = count + 1;
+                                if (count == number - 1)
+                                {
+                                    check = 1;
+                                    break;
+                                }
+                            }
+
+                        </ul>
+                    </div>
+                    if (check == 1)
+                    {
+                        break;
+                    }
+                }
+            }
+            <div class="slider-detail-song-label-control">
+                @{
+                    for (int i = 0; i < quantity; i++)
+                    {
+                        if (i != 0)
+                        {
+                            <div stt="@i" class="slider-detail-song-label-button"></div>
+                        }
+                        else
+                        {
+                            <div stt="0" class="slider-detail-song-label-button-active slider-detail-song-label-button"></div>
+                        }
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

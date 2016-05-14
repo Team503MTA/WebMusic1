@@ -1,0 +1,46 @@
+﻿
+@using WebMusic.Models
+@model LABEL
+    
+@{
+    List<string> lst = ViewBag.InfoLabel;
+}
+
+<div class="detail-label">
+    <div class="col-sm-12">
+        <div class="col-sm-4 detail-label-left">
+            <img src="@Url.Content(Model.LINK_IMG)" alt="">
+        </div>
+        <div class="col-sm-8 detail-label-right">
+            <p class="detail-label-nav">LABEL</p>
+            <p class="detail-label-name">
+                @Model.NAME
+            </p>
+            <br>
+            <p class="detail-label-artist-name">FOUNDED</p>
+            <a href="#" class="detail-label-artist-name">@Model.FOUNDED</a>
+            <br>
+            <p class="detail-label-release">FOUNDER</p>
+            <span class="detail-label-release">@Model.FOUNDER</span>
+            <br>
+            <p class="detail-label-location">LOCATION</p>
+            <a href="#" class="detail-label-location">@Model.LOCATION</a>
+            <div class="detail-label-genres">
+                <p>GENRE</p>
+                @foreach (var item in lst)
+                {
+                    <a href="#">  @item  </a>
+                }
+            </div>
+            <br>
+            <div class="detail-label-descrip">
+                <span class="detail-label-descrip-title">DESCRIPTION</span>
+                <span id="detail-label-descrip-content">
+                    @Model.DESCRIP
+                </span>
+                <span class="detail-label-more">More</span>
+                <span class="detail-label-less">Less</span>
+            </div>
+        </div>
+    </div>
+</div>

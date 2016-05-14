@@ -1,0 +1,42 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scale=no" />
+    <link href="~/Content/Bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/Bootstrap/css/bootstrap-theme.css" rel="stylesheet" />
+    <link href="~/Content/Css/sounds.css" rel="stylesheet" />
+    <title>Sounds</title>
+</head>
+
+<body>
+
+    <!-- Header -->
+    @RenderPage("~/Views/Shared/Navbar_Sounds.cshtml")
+    <!-- end header -->
+    <!-- Menu -->
+    @RenderPage("~/Views/Shared/Menu_Sounds.cshtml")
+    <!-- end menu -->
+    <!-- Banner -->
+    @RenderPage("~/Views/Shared/Banner_Sounds.cshtml")
+    <!-- end banner -->
+    <!-- Content -->
+    @RenderBody();
+    <!-- end content -->
+    <!-- Footer -->
+    @RenderPage("~/Views/Shared/Footer_Sounds.cshtml")
+    <!-- end footer -->
+
+    <script src="~/Content/Bootstrap/js/jquery-1.12.1.min.js"></script>
+    <script src="~/Content/Bootstrap/js/bootstrap.js"></script>
+    <script src="~/Content/Bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Content/Bootstrap/js/npm.js"></script>
+    <script src="~/Content/Javascript/sounds.js"></script>
+</body>
+
+</html>

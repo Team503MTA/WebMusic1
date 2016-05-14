@@ -1,0 +1,186 @@
+﻿
+@using WebMusic.Models
+@model List<ARTIST>
+
+@{
+    int count = 0;
+    char isTest = '1';
+    int loop = 0;
+    if (Model.Count > 3)
+    {
+        loop = Model.Count / 4;
+        if (Model.Count % 4 != 0)
+        {
+            loop++;
+        }
+    }
+
+    double widthButton = 100;
+    if (loop > 1)
+    {
+        widthButton = loop*0.5;
+        widthButton -= 0.5;
+        widthButton = 100 - widthButton;
+        widthButton /= loop;
+    }
+    else
+    {
+        widthButton = 0;
+    }
+
+    var rightWidth = widthButton + "%";
+
+}
+
+
+<style>
+    .detail-label-artist-pages-li{
+        width: @rightWidth !important;
+    }
+</style>
+
+
+
+<div class="detail-label-artist">
+    <p class="detail-label-artist-title">Artist of this label</p>
+
+    @for (int i = 0; i < loop; i++)
+    {
+
+        if (i != loop - 1)
+        {
+            <div stt="@i" class="detail-label-artist-info">
+                <ul>
+                    <li>
+                        <div class="detail-label-artist-child">
+                            <img src="@Url.Content(Model[count].IMG)" alt="">
+                            <div class="detail-label-artist-child-control">
+                                <span>Follow</span>
+                                <a href="@Model[count].FB" class="detail-label-artist-child-fb">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                                <a href="@Model[count].TW" class="detail-label-artist-child-tw">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </div>
+                            <div class="detail-label-artist-child-name">
+                                <a href="@Url.Action("Index", "Artist", new {@nameArtist = Model[count].NAME})">@Model[count].NAME</a>
+                            </div>
+                        </div>
+                    </li>
+                    @{ count = count + 1; }
+
+                    <li>
+                        <div class="detail-label-artist-child">
+                            <img src="@Url.Content(Model[count].IMG)" alt="">
+                            <div class="detail-label-artist-child-control">
+                                <span>Follow</span>
+                                <a href="@Model[count].FB" class="detail-label-artist-child-fb">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                                <a href="@Model[count].TW" class="detail-label-artist-child-tw">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </div>
+                            <div class="detail-label-artist-child-name">
+                                <a href="@Url.Action("Index", "Artist", new {@nameArtist = Model[count].NAME})">@Model[count].NAME</a>
+                            </div>
+                        </div>
+                    </li>
+                    @{ count = count + 1; }
+
+                    <li>
+                        <div class="detail-label-artist-child">
+                            <img src="@Url.Content(Model[count].IMG)" alt="">
+                            <div class="detail-label-artist-child-control">
+                                <span>Follow</span>
+                                <a href="@Model[count].FB" class="detail-label-artist-child-fb">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                                <a href="@Model[count].TW" class="detail-label-artist-child-tw">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </div>
+                            <div class="detail-label-artist-child-name">
+                                <a href="@Url.Action("Index", "Artist", new {@nameArtist = Model[count].NAME})">@Model[count].NAME</a>
+                            </div>
+                        </div>
+                    </li>
+                    @{ count = count + 1; }
+
+                    <li>
+                        <div class="detail-label-artist-child">
+                            <img src="@Url.Content(Model[count].IMG)" alt="">
+                            <div class="detail-label-artist-child-control">
+                                <span>Follow</span>
+                                <a href="@Model[count].FB" class="detail-label-artist-child-fb">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                                <a href="@Model[count].TW" class="detail-label-artist-child-tw">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                            </div>
+                            <div class="detail-label-artist-child-name">
+                                <a href="@Url.Action("Index", "Artist", new {@nameArtist = Model[count].NAME})">@Model[count].NAME</a>
+                            </div>
+                        </div>
+                    </li>
+                    @{ count = count + 1; }
+
+
+                </ul>
+            </div>
+                        }
+                        else
+                        {
+                            <div stt="@i" class="detail-label-artist-info">
+                                <ul>
+                                    @while (1 == 1)
+                                    {
+                                        <li>
+                                            <div class="detail-label-artist-child">
+                                                <img src="@Url.Content(Model[count].IMG)" alt="">
+                                                <div class="detail-label-artist-child-control">
+                                                    <span>Follow</span>
+                                                    <a href="@Model[count].FB" class="detail-label-artist-child-fb">
+                                                        <i class="fa fa-facebook"></i>
+                                                    </a>
+                                                    <a href="@Model[count].TW" class="detail-label-artist-child-tw">
+                                                        <i class="fa fa-twitter"></i>
+                                                    </a>
+                                                </div>
+                                                <div class="detail-label-artist-child-name">
+                                                    <a href="@Url.Action("Index", "Artist", new {@nameArtist = Model[count].NAME})">@Model[count].NAME</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                                count = count + 1;
+                                                if (count == Model.Count)
+                                                {
+                                                    isTest = '0';
+                                                    break;
+                                                }
+                                            }
+                                </ul>
+                            </div>
+                            }
+
+                            if (isTest == '0')
+                            {
+                                break;
+                            }
+
+                        }
+
+
+
+    <div class="detail-label-artist-pages">
+        <ul>
+            <li stt="0" class="detail-label-artist-pages-li detail-label-artist-pages-li-active"></li>
+            @for (int i = 1; i < loop; i++)
+            {
+                <li stt="@i" class="detail-label-artist-pages-li"></li>
+            }
+        </ul>
+    </div>
+</div>

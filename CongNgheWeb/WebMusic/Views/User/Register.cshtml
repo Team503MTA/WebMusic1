@@ -1,0 +1,61 @@
+﻿
+
+
+<div class="register-form">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-4">
+                <h1>Register</h1>
+                <hr/>
+
+                <div id="register-form-name">
+                    <input type="text" placeholder="First Name*" id="register-firstname"/>
+                    <input type="text" placeholder="Last Name*" id="register-lastname"/>
+                </div>
+
+                <div class="register-form-email">
+                    <input type="email" id="register-email" placeholder="Email*"/>
+                </div>
+
+                <div id="register-form-password">
+                    <input type="password" id="register-password" placeholder="Password*"/>
+                </div>
+
+                <div class="register-form-button">
+                    <input type="button" value="Register" id="register-form-button-register"/>
+                    <div id="register-form-button-cancel">Cancel</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(function() {
+        $("#register-form-button-register").click(function () {
+            $.ajax({
+                url: '@Url.Action("Register","User")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    FIRSTNAME: $("#register-firstname").val(),
+                    PASSWORD: $("#register-password").val(),
+                    EMAIL: $("#register-email").val(),
+                    LEVEL_: 1,
+                    LASTNAME: $("#register-lastname").val()
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    alert(data);
+                    //document.getElementById("register-form").style.display = 'none';
+                    $(".register-form").hide();
+                    $(".extra").hide();
+                },
+                error: function (xhr) {
+                    alert("loi roi");
+                }
+            });
+        });
+    });
+</script>

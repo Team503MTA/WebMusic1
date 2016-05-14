@@ -1,0 +1,301 @@
+@font-face {
+    font-family: 'Conv_Snake Jacket12';
+    src: url('fonts/Snake Jacket12.eot');
+    src: local('☺'), url('fonts/Snake Jacket12.woff') format('woff'), url('fonts/Snake Jacket12.ttf') format('truetype'), url('fonts/Snake Jacket12.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Conv_Player One';
+    src: url('fonts/Player One.eot');
+    src: local('☺'), url('fonts/Player One.woff') format('woff'), url('fonts/Player One.ttf') format('truetype'), url('fonts/Player One.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Conv_AUBREY1__';
+    src: url('fonts/AUBREY1__.eot');
+    src: local('☺'), url('fonts/AUBREY1__.woff') format('woff'), url('fonts/AUBREY1__.ttf') format('truetype'), url('fonts/AUBREY1__.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    background: #151515;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+}
+
+
+
+
+/* Header */
+header {
+    font-size: 17px;
+    border: 0;
+    font-family: 'Conv_AUBREY1__';
+}
+
+header .navbar-inverse {
+    margin-bottom: 0;
+    display: inline-block;
+    width:100%;
+}
+
+header .navbar {
+    background: linear-gradient(0deg, #050505, #151515, #050505);
+}
+
+.navbar-header{
+    display: inline-block;
+    margin-left: 5%;
+    float: left;
+}
+
+header .navbar-header .navbar-brand {
+    width:100%;
+    padding: 0;
+    display: inline-block;
+    margin-left: 
+}
+
+header .collapse {
+    width:80%;
+    display: inline-block;
+}
+
+.header-logo img {
+    height: 50px;
+}
+
+
+#left{
+    display: inline-block;
+    width:75%;
+    float:left;
+    padding: 0;
+    margin-left: 1em;
+    transform: translateY(-25%);
+    -webkit-transform: translateY(-25%);
+    -moz-transform: translateY(-25%);
+    -o-transform: translateY(-25%);
+}
+
+#left>li{
+    list-style-type: none;
+    display: inline;
+    font-size: 25px;
+    margin: 0 0.5em 0 0.5em;
+    padding: 0;
+    font-family:sans-serif;
+}
+
+#left>li>a{
+    text-decoration: none;
+    color:white;
+}
+
+#right{
+    display: inline-block;
+    width: 15%;
+}
+
+
+#login-button{
+    padding: 0;
+    width:60%;
+    display: inline-block;
+    color: #fff;
+    font-size: 15px;
+    font-family: cursive;
+    float: left;
+    text-align: left;
+    text-decoration: none;
+}
+
+#img-admin{
+    text-align: center;
+    padding: 0;
+    display: inline-block;
+    width: 30%;
+    float: left;
+}
+
+#img-admin img{
+    width: 40%;
+    
+}
+
+
+#login-button:hover, #register-button:hover{
+    font-size: 20px;
+}
+
+#login-form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999999;
+    width: 100%;
+    height: 100%;
+    color: #eee;
+    display: none;
+}
+
+#login-form .col-sm-4 {
+    background: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -moz-transform:translateX(-50%) translateY(-50%);
+    -o-transform:translateX(-50%) translateY(-50%);
+   
+    border: 0;
+    padding: 20px 0;
+    border-radius: 10px;
+    width:50%;
+}
+
+.login-title{
+    width: 100%;
+    display: block;
+    border-left: 5px solid #ed2552;
+}
+
+#login-form h1{
+    text-align: left;
+    border: 0;
+    width: 80%;
+    color: #ed2552;
+    margin: 0 auto;
+}
+
+.form-element{
+    display: block;
+    height: 35px;
+    width: 80%;
+    border: none;
+    padding: 6px 12px;
+    color: #000;
+    border-bottom: 2px solid #ddd;
+    outline: none;
+}
+
+.form-element::-webkit-input-placeholder{
+    color: #ccc;
+}
+
+.form-element:focus{
+    border-bottom: 2px solid #ed2552;
+}
+
+#username-form {
+    margin: 50px auto 0 auto;
+}
+
+#password-form {
+    margin: 50px auto 0 auto;
+}
+
+.remember-user{
+    display: block;
+    width: 80%;
+    margin: 30px auto 0 auto;
+}
+
+.remember-user label{
+    color: #aaa;
+    font-size: 90%;
+}
+
+.login-form-button-group {
+    margin: 30px auto 0 auto;
+    text-align: center;
+    height: 35px;
+}
+
+.button-me {
+    color: #666;
+    height: 35px;
+    width: 80px;
+    border: none;
+    border-radius: 4px;
+    width: 20%;
+    margin: 0 1%;
+    height: 100%;
+}
+
+.button-me:hover{
+    transition: all 0.2s;
+    width: 25%;
+    height: 150%;
+    margin: 0;
+}
+
+#button-me-login {
+    display: inline-block;
+}
+
+#button-me-cancel {
+    display: inline-block;
+}
+
+#fogotten-password{
+    margin: 30px auto 0 auto;
+    text-align: center;
+}
+
+#fogotten-password a{
+    text-decoration: none;
+}
+
+#fogotten-password a:hover{
+    color: #0cc;
+}
+/* End Header */
+
+.Them{
+    display:inline-block;
+    width:25%;
+    margin-left:5%;
+    
+    text-align:center;
+}
+
+.Them a {
+    text-decoration:none;
+    font-size:30px;
+    color: #009b03;
+}  
+
+.Sua{
+    display:inline-block;
+    width:25%;
+    margin-left:5%;
+    text-align:center;
+}
+
+.Sua a{
+    text-decoration:none;
+    font-size:30px;
+    color: #009b03;
+}
+
+.Xoa{
+    display:inline-block;
+    width:25%;
+    margin-left:5%;
+    text-align:center;
+}
+
+.Xoa a{
+    text-decoration:none;
+    font-size:30px;
+    color: #009b03;
+}
+
+

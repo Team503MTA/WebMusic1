@@ -1,0 +1,66 @@
+﻿@model List<MusicWeb.Model.STEM>
+<div class="stem-detail">
+    <div class="stem-title">
+        <h3>@ViewBag.quantum STEMS TOTAL</h3>
+    </div>
+    <div class="stem-list">
+        <div class="stem-fields">
+            <hr />
+            <span>TITLE</span>
+            <span>ARTIST</span>
+            <span>GENRE</span>
+            <span>BPM</span>
+            <span>KEY</span>
+            <span>LENGTH</span>
+        </div>
+        @{
+            var count = 0;
+            var i = 0;
+            foreach (var item in Model)
+            {
+                i++;
+                <div class="stem">
+                    <div class="div-stem-img">
+                        <img src="@Url.Content("~/Image/stems/"+@item.LINK_IMG)" alt="">
+                    </div>
+                    <div class="div-stem-number">
+                        <span>@i</span>
+                    </div>
+                    <div class="div-stem-play">
+                        <span class="play glyphicon glyphicon-play"></span>
+                        <span class="list glyphicon glyphicon-list"></span>
+                    </div>
+                    <div class="div-stem-title">
+                        <span>@item.NAME</span>
+                    </div>
+                    <div class="div-stem-artist">
+                        @{
+                            foreach (var it in ViewBag.art)
+                            {
+                                <a href="#">@it</a>
+                            }
+
+                        }
+                    </div>
+                    <div class="div-stem-genre">
+                        <a href="#">@item.GENRE</a>
+                    </div>
+                    <div class="div-stem-tempo">
+                        <span>@item.TEMPO</span>
+                    </div>
+                    <div class="div-stem-key">
+                        <span>@item.KEY_</span>
+                    </div>
+                    <div class="div-stem-len">
+                        <a href="#">@item.LENGTH</a>
+                    </div>
+                    <div class="div-stem-cost">
+                        <button class="cost" type="button">$ @item.COST<span class="glyphicon glyphicon-menu-down"></span></button>
+                    </div>
+                </div>
+                                count++;
+                            }
+        }
+    </div>
+</div>
+

@@ -1,0 +1,657 @@
+﻿/* track total */
+
+.detail-song-track-total {
+    margin-top: 60px;
+    display: inline-block;
+}
+
+.detail-song-track-total-title {
+    margin: 0 15px 0 0;
+    color: #fff;
+    font-size: 150%;
+    width: 100%;
+}
+
+.detail-song-track-total ul {
+    list-style: none;
+    margin: 20px 15px 0 0;
+    padding: 0;
+    display: inline-block;
+    width: 100%;
+}
+
+.detail-song-row-title {
+    color: #fff;
+    border-top: 1px solid #505050;
+}
+
+.detail-song-track-total li {
+    display: inline-block;
+    width: 100%;
+    background: #2a2a2a;
+    height: 40px;
+    line-height: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+.detail-song-track-total li .col-sm-12 div {
+    padding: 0;
+    padding-left: 0.5%;
+}
+
+.detail-song-track-total li .col-sm-12 a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+}
+
+.detail-song-track-total li .col-sm-12 {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.detail-song-track-total li:first-child {
+    background: transparent;
+}
+
+.detail-song-track-total-col-play span {
+    display: inline-block;
+    width: 30%;
+    font-size: 120%;
+    color: #eee;
+}
+
+.detail-song-track-total-col-play button {
+    border: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.3);
+    height: 100%;
+    width: 40%;
+}
+
+.detail-song-track-total-col-name {
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.detail-song-track-total-col-name a {
+    color: #fff;
+}
+
+.detail-song-track-total-col-artist {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.detail-song-track-total-col-artist a {
+    color: #22bbdd;
+}
+
+.detail-song-track-total-col-remixer {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.detail-song-track-total-col-remixer a {
+    color: #2bd;
+}
+
+.detail-song-track-total-col-genre {
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.detail-song-track-total-col-genre a {
+    color: #aaa;
+}
+
+.detail-song-track-total-col-bpm {
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.detail-song-track-total-col-key {
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.detail-song-track-total-col-length {
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.detail-song-track-total-col-cost button {
+    border: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(240, 70, 110, 0.5);
+    color: #eee;
+}
+
+/* Let's get this party started */
+#searchRemixAllPage::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+ 
+/* Track */
+#searchRemixAllPage::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 1px rgba(0,0,255,0.5);
+    -ms-border-radius: 10px;
+    border-radius: 10px; 
+  background: rgba(30,30,30,1);
+}
+
+/* Handle */
+#searchRemixAllPage::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+  
+  background: repeating-linear-gradient(30deg,#555,#555 15px,#272 15px,#272 30px);
+  
+    -webkit-box-shadow: inset 0 0 2px rgba(255,0,0,1);
+}
+
+#searchRemixAllPage::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+#searchRemixAllPage li{
+    background: #2a2a2a !important;
+}
+
+/*  end track total */
+
+
+/* More from this artist */
+
+.more-song-artist {
+    display: inline-block;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.more-song-artist-title {
+    margin: 0 30px 20px 30px;
+    font-size: 150%;
+    color: #fff;
+}
+
+.more-song-artist-detail {
+    padding: 0;
+    margin: 0;
+    margin-left: 30px;
+    display: inline-block;
+}
+
+/* end more this from artist */
+
+
+
+/* artist */
+
+.search-artist{
+    display: inline-block;
+    width: 100%;
+}
+
+.search-artist .col-sm-12{
+    display: inline-block;
+    width: 100%;
+}
+
+.search-artist-title{
+    display: inline-block;
+    padding: 0 15px;
+    width: 100%;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.search-artist-title span{
+    color: #fff;
+    font-size: 110%;
+}
+
+.search-artist-title a {
+    color: #888;
+    display: inline-block;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 95%;
+}
+
+.search-artist .col-sm-2{
+    display: inline-block;
+}
+
+/* down-color */
+.down-color{
+    display: inline-block;
+    background: #2f2f2f;
+    position: relative;
+}
+
+.down-color img{
+    width: 100%;
+    display: inline-block;
+}
+
+.down-color-link{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    z-index: 2;
+}
+
+.down-color-name{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: #555;
+    color: #fff;
+    padding: 2px 5px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.down-color:hover .down-color-link {
+    height: 100%;
+    background: #000;
+    -ms-opacity: 0.5;
+    opacity: 0.5;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    transition: 0.5s all;
+}
+
+/* end down-color */
+
+
+
+/* end artist */
+
+.content{
+    margin-bottom: 150px;
+}
+
+/* tracks */
+
+.search-tracks{
+    display: inline-block;
+    width: 100%;
+}
+
+.search-tracks .col-sm-12{
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+}
+
+.col-sm-2-search-track {
+    display: inline-block;
+    width: 16.25%;
+    margin-right: 0.5%;
+}
+
+.col-sm-2-search-track:last-child {
+    margin-right: 0;
+}
+
+.search-tracks-detail{
+    display: inline-block;
+    background: #2f2f2f;
+}
+
+.search-tracks-detail img{
+    width: 100%;
+    display: inline-block;
+}
+
+
+/* Let's get this party started */
+#search-tracks-page::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+ 
+/* Track */
+#search-tracks-page::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 1px rgba(0,0,255,0.5);
+    -ms-border-radius: 10px;
+    border-radius: 10px; 
+  background: rgba(30,30,30,1);
+}
+
+/* Handle */
+#search-tracks-page::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+  
+  background: repeating-linear-gradient(30deg,#555,#555 15px,#272 15px,#272 30px);
+  
+    -webkit-box-shadow: inset 0 0 2px rgba(255,0,0,1);
+}
+
+#search-tracks-page::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(255,0,0,0.4); 
+}
+
+
+.search-tracks-song{
+    margin: 0;
+    padding: 0;
+    margin-top: 5px;
+    margin-left: 5px;
+    width: auto;
+}
+
+.search-tracks-song a{
+    color: #fff;
+    font-size: 105%;
+    text-decoration: none;
+}
+
+.search-tracks-artist{
+    padding: 0;
+    margin: 0;
+    margin-left: 5px;
+}
+
+.search-tracks-artist a{
+    color: #22ccee;
+    font-size: 80%;
+    text-decoration: none;
+}
+
+.search-tracks-label{
+    width: auto;
+    margin-left: 5px;
+}
+
+.search-tracks-label a{
+    color: #888;
+    font-size: 80%;
+    text-decoration: none;
+}
+
+.search-tracks-title{
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+
+/* end tracks */
+
+/* label */
+
+.search-label{
+    display: inline-block;
+    width: 100%;
+}
+
+.search-label .col-sm-12{
+    display: inline-block;
+    width: 100%;
+}
+
+.search-label-title{
+    display: inline-block;
+    padding: 0;
+    width: 100%;
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.search-label-title span{
+    color: #fff;
+    font-size: 110%;
+}
+
+.search-label-title a {
+    color: #888;
+    display: inline-block;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 95%;
+}
+
+.search-label .col-sm-3{
+    display: inline-block;
+    padding: 0;
+}
+
+.search-label-detail{
+    display: inline-block;
+    background: #2f2f2f;
+}
+
+.search-label-detail img{
+    width: 100%;
+    display: inline-block;
+}
+
+ .search-label-name {
+     padding: 2px;
+     -ms-opacity: 0.9;
+     opacity: 0.9;
+     color: #fff;
+     margin: 0;
+     padding: 3px 0;
+     text-align: center;
+ }
+
+.search-label-name a{
+    margin: 0;
+    color: #eee;
+}
+
+/* end label */
+
+
+
+
+
+.search-tracks-content{
+    overflow: scroll; 
+    overflow-y:hidden;  
+    white-space: nowrap; 
+    width: 100%; 
+    display: inline-block;
+}
+
+.song-vertical {
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: #333;
+}
+
+.song-vertical-top{
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+.song-vertical-top img{
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.song-vertical-top-control {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    width: 0;
+    padding: 0;
+    z-index: 2;
+    overflow: hidden;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    transition: 0.5s all;
+}
+
+.song-vertical-top button{
+    padding: 0;
+    border: 0;
+    height: 30px;
+    cursor: pointer;
+}
+
+.song-vertical-play{
+    width: 30px;
+    display: inline-block;
+    vertical-align: top;
+    background: #555;
+    color: #eee;
+    float: left;
+}
+
+.song-vertical-buy{
+    width: 60px;
+    font-family: cursive;
+    display: inline-block;
+    vertical-align: top;
+    background: #ee2577;
+    font-family: cursive;
+    border: 0;
+    float: left;
+    color: #eee;
+    font-weight: bold;
+}
+
+.song-vertical-share{
+    width: 70px;
+    display: inline-block;
+    vertical-align: top;
+    font-family: cursive;
+    background: #2222ee;
+    color: #eee;
+    border: 0;
+    float: left;
+}
+
+.song-vertical-share i{
+    margin-right: 5px;
+    font-size: 130%;
+}
+
+.song-vertical-top p {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    margin: 0;
+    width: 0;
+    height: 0;
+    background: #000;
+    -ms-opacity: 0.3;
+    opacity: 0.3;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    transition: 0.5s all;
+}
+
+.song-vertical:hover .song-vertical-top-control{
+    width: 100%;
+}
+
+.song-vertical:hover .song-vertical-top p{
+    width: 100%;
+    height: 100%;
+}
+
+.song-vertical-bottom{
+    margin: 0;
+    padding: 0;
+    white-space: normal !important;
+}
+
+.song-vertical-bottom a{
+    text-decoration: none;
+}
+
+.wrap-name-level{
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding: 2px 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    white-space: nowrap !important;
+    overflow: hidden;
+}
+
+.name-level-1{
+    color: #eee;
+    font-size: 90% !important;
+}
+.name-level-1:hover {
+    color: #eee;
+    -ms-text-shadow: 0 0 15px #f00;
+    text-shadow: 0 0 15px #f00;
+}
+
+.name-level-2{
+    color: #22bbcc;
+    font-size: 65% !important;
+    white-space: nowrap !important;
+}
+.name-level-2:hover {
+    color: #22bbcc;
+    -ms-text-shadow: 0 0 15px #f00;
+    text-shadow: 0 0 15px #f00;
+}
+
+.name-level-3{
+    color: #777;
+    font-size: 60% !important;
+    white-space: nowrap !important;
+}
+.name-level-3:hover {
+    color: #777;
+    -ms-text-shadow: 0 0 15px #f00;
+    text-shadow: 0 0 15px #f00;
+}

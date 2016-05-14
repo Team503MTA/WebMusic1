@@ -1,0 +1,67 @@
+﻿
+
+<div class="col-sm-12">
+    <div class="detail-song-all-track">
+        <div class="detail-song-all-track-title">
+            <span>@ViewBag.number TRACKS TOTAL</span>
+        </div>
+        <br>
+        <div class="detail-song-all-track-content">
+            <ul>
+                <li>
+                    <div class="detail-song-all-track-play">ORDINAL</div>
+                    <div class="detail-song-all-track-name">TITLE</div>
+                    <div class="detail-song-all-track-artist">ARTIST</div>
+                    <div class="detail-song-all-track-remixer">REMIXER</div>
+                    <div class="detail-song-all-track-genre">GENRE</div>
+                    <div class="detail-song-all-track-bpm">BPM</div>
+                    <div class="detail-song-all-track-key">KEY</div>
+                    <div class="detail-song-all-track-length">LENGTH</div>
+                    <div class="detail-song-all-track-buy">COST</div>
+                </li>
+
+
+                @{
+                    List<List<string>> TrackTotal = ViewBag.TrackTotal;
+                    List<List<List<string>>> ArtistTotal = ViewBag.ArtistTotal;
+                }
+
+
+                @for (var i = 0; i < ViewBag.number; i++)
+                {
+                    <li>
+                        <div class="detail-song-all-track-play">
+                            <span>@i</span>
+                            <button><i class="fa fa-play"></i></button>
+                        </div>
+                        <div class="detail-song-all-track-name">
+                            <a href="#">@TrackTotal[i][2]</a>
+                        </div>
+                        <div class="detail-song-all-track-artist">
+                            @foreach (var itemm in ArtistTotal[i][0])
+                            {
+                                <a href="#">@itemm</a>
+                            }
+                        </div>
+                        <div class="detail-song-all-track-remixer">
+                            @foreach (var itemm in ArtistTotal[i][1])
+                            {
+                                <a href="#">@itemm</a>
+                            }
+                        </div>
+                        <div class="detail-song-all-track-genre">
+                            <a href="#">@TrackTotal[i][3]</a>
+                        </div>
+                        <div class="detail-song-all-track-bpm"><span>@TrackTotal[i][4]</span></div>
+                        <div class="detail-song-all-track-key"><span>@TrackTotal[i][5]</span></div>
+                        <div class="detail-song-all-track-length"><span>@TrackTotal[i][6]</span></div>
+                        <div class="detail-song-all-track-buy">
+                            <button>$@TrackTotal[i][7]</button>
+                        </div>
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</div>

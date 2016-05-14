@@ -1,0 +1,41 @@
+﻿@using WebMusic.Models;
+@model List<SHOW_LIST>
+
+<div class="col-sm-12">
+    <div class="title">
+        <p class="title-shows"> Upcoming Shows Near You</p>
+        <div class="place">
+            <p id="location"> <i class="glyphicon glyphicon-map-marker"> Hanoi,VN</i> |</p>
+            <a href="#"> Change</a>
+        </div>
+    </div>
+    <hr />
+</div>
+<div class="col-sm-12">
+    <div class="show">
+        @{
+            foreach (var item in Model)
+            {
+                <div class="list-show">
+                    <div class="list-show-child">
+                        <a href="@Url.Action("DetailListShow", new {@ID = item.ID })">
+                            <img src="@Url.Content(item.LINK_IMG)" alt="">
+                        </a>
+                        <a href="#">
+                            <p class="club-show">@item.NAME_SHOW</p>
+                        </a>
+                        <a href="#">
+                            <p class="artists-show">@item.ARTIST_SHOW</p>
+                        </a>
+                        <div class="text3">
+                            <a href="#">
+                                <p class="location-show">@item.LOCATION</p>
+                            </a>
+                            <p class="textdateshow"> - @item.TIME</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

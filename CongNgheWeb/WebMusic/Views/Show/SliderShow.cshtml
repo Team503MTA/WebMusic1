@@ -1,0 +1,26 @@
+﻿@using WebMusic.Models;
+@model List<SHOW>
+
+<div class="slider">
+    @{
+        var count = 0;
+        foreach (var item in Model)
+        {
+            <div stt="@count" class="slider-img">
+                <a href="@Url.Action("XemChiTiet", new {@ID = item.ID })">
+                    <img src="@Url.Content(item.LINK_IMG)" alt="">
+                </a>
+            </div>
+            count++;
+        }
+    }
+    <div class="slider-control">
+        <div stt="0" class="slider-button-active slider-button slider-5-button"></div>
+        <div stt="1" class="slider-5-button slider-button"></div>
+        <div stt="2" class="slider-5-button slider-button"></div>
+        <div stt="3" class="slider-5-button slider-button"></div>
+        <div stt="4" class="slider-5-button slider-button"></div>
+    </div>
+</div>
+
+

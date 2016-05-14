@@ -1,0 +1,19 @@
+﻿@using WebMusic.Models;
+@model List<TRACK>
+
+
+
+<div class="hot-playlist">
+    <p class="hot-title">HOT PLAYLIST</p>
+    <hr align=left>
+    @{
+        foreach (var item in Model)
+        {
+            <div class="img-hotplaylist">
+                <a href="#"><img src="@Url.Content(item.LINK_IMG)" alt=""></a>
+
+            </div>
+        }
+    }
+
+</div>

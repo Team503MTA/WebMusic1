@@ -1,0 +1,844 @@
+﻿@using WebMusic.Controllers
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>@ViewBag.Title</title>
+    <link href="~/Content/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-3.3.6-dist/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/MainLayout_CSS/style-layout.css" rel="stylesheet" />
+    <link href="~/Content/MainLayout_CSS/style-cart.css" rel="stylesheet" />
+    <link href="~/Content/MainLayout_CSS/SearchPage.css" rel="stylesheet" />
+    <link href="~/Content/MainLayout_CSS/Track.css" rel="stylesheet" />
+    <link href="~/Content/MainLayout_CSS/music.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    @* Load Ajax *@
+    <script type="text/javascript">
+        function startLoad() {
+            document.getElementById("loadProgress").classList.remove('endLoad');
+            document.getElementById("loadProgress").className += 'loadingProgress';
+        }
+
+        function endLoad() {
+            document.getElementById("loadProgress").classList.remove('loadingProgress');
+            document.getElementById("loadProgress").className += 'endLoad';
+        }
+    </script>
+</head>
+
+<body onscroll="scrollBody()">
+    <header id="header">
+        <nav class="navbar navbar-inverse">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand header-logo" href="#">
+                                <img src="~/IMG/Logo/logo.png" />
+                            </a>
+                        </div>
+                        <div id="navbar" class="collapse navbar-collapse">
+                            <ul class="nav navbar-nav pull-left">
+                                <li class="active" id="HomePageButton"><a href="#">Home</a></li>
+                                <li><a href="#about">Store</a></li>
+                                <li><a href="#contact">Listen</a></li>
+                                <li><a href="#contact">Shows</a></li>
+                                <li><a href="#contact">Video</a></li>
+                                <li><a href="#contact">News</a></li>
+                            </ul>
+                            <ul class="nav navbar-nav login pull-right">
+                                <li><a href="#" id="login-button">Login</a></li>
+                                <li><a href="#" id="register-button">Register</a></li>
+                                <li><a href="#" id="userName_Menu" onclick='userDetailPage()'></a></li>
+                            </ul>
+                        </div>
+                        <!--/.nav-collapse -->
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div id="login-form">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-sm-offset-4">
+                    <div class="login-title">
+                        <h1>Login</h1>
+                    </div>
+                    <input type="text" placeholder="Email" name="userEmail" class="form-element" id="email-form" />
+                    <input type="password" placeholder="Password" name="userPassword" class="form-element" id="password-form" />
+                    <div class="remember-user">
+                        <input type="checkbox" id="remember-me" value="Forget password">
+                        <label for="remember-me">Remember me</label>
+                    </div>
+
+                    <div class="login-form-button-group">
+                        <input type="button" id="button-me-login" class="button-me" value="Login" onclick="login_Fun(null,null)">
+                        <input type="button" id="button-me-cancel" class="button-me" value="Cancel">
+                    </div>
+
+                    <p id="fogotten-password">
+                        <a href="#">Fogotten Password</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="register-form" id="register-form">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-sm-offset-4">
+                    <h1>Register</h1>
+                    <hr />
+
+                    <div id="register-form-name" style="position: relative;">
+                        <input type="text" placeholder="First Name*" id="register_firstname" onkeyup="checkInput('register_firstname')" onclick="checkInput('register_firstname')" onfocusout="focusoutInputRegister('register_firstname')" />
+                        <div class="registerNoti" id="register_firstname_noti" style="display: none;top: -48px; left: 0px;">ban can phai nhap first name</div>
+                        <input type="text" placeholder="Last Name*" id="register_lastname" onkeyup="checkInput('register_lastname')" onclick="checkInput('register_lastname')" onfocusout="focusoutInputRegister('register_lastname')" />
+                        <div class="registerNoti" id="register_lastname_noti" style="display: none;top: -48px; left: 208px;">ban can phai nhap first name</div>
+                    </div>
+
+                    <div class="register-form-email" style="position: relative;">
+                        <input type="text" placeholder="Email*" id="register_email" onkeyup="checkEmail('register_email')" onclick="checkEmail('register_email')" onfocusout="focusoutInputRegister('register_email')" />
+                        <div class="registerNoti" id="register_email_noti" style="display: none;top: -3px; left: 130px;">ban can phai nhap first name</div>
+                    </div>
+
+                    <div id="register-form-password" style="position: relative;">
+                        <input type="password" placeholder="Password*" id="register_password" onkeyup="checkPassword('register_password')" onclick="checkPassword('register_password')" onfocusout="focusoutInputRegister('register_password')" />
+                        <div class="registerNoti" id="register_password_noti" style="display: none;top: -23px; left: 80px;">ban can phai nhap first name</div>
+                    </div>
+
+                    <div id="register-form-rePassword" style="position: relative;">
+                        <input type="password" placeholder="Re-Password*" id="register_rePassword" onkeyup="checkRePassword('register_rePassword')" onclick="checkRePassword('register_rePassword')" onfocusout="focusoutInputRegister('register_rePassword')" />
+                        <div class="registerNoti" id="register_rePassword_noti" style="display: none;top: -23px; left: 130px;">ban can phai nhap first name</div>
+                    </div>
+
+                    <div class="register-form-button">
+                        <button id="register-form-button-register" _isRegister="0" onclick="register_Fun()">Register</button>
+                        <button id="register-form-button-cancel">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="extra"></div>
+
+    <div id="noti-form">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-sm-offset-4">
+                    <div id="notiForm">vuhoangha</div>
+                    <button id="closeNotiForm" onclick="close_NotiForm()">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="menu">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12" id="userControl">
+                    <div class="pull-left">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#" id="genres-button">GENRES <i class="glyphicon glyphicon-menu-down"></i></a></li>
+                            <li><a href="#">TRACKS</a></li>
+                            <li><a href="#">RELEASES</a></li>
+                            <li><a href="#">CHARTS</a></li>
+                            <li><a href="#">STEMS</a></li>
+                            <li><a href="#">SOUNDS</a></li>
+                            <li id="input-form-search">
+                                <form class="form-search" id="input-form-search-child">
+                                    <input type="text" placeholder="Search" id="main-search-input">
+                                    <button type="button" id="searchButtonSubmit"><i class="glyphicon glyphicon-search"></i></button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="pull-right">
+                        <button id="logoCartMenu" onclick="DetailCart_fun()">
+                            <i class="glyphicon glyphicon-shopping-cart" id="cartMenu" style="display: none;"></i>
+                            <span id="total_Debt_Menu"></span>
+                        </button>
+                        <span id="saleUser_Menu"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="show-search">
+    </div>
+
+    <div id="loadProgress" class="endLoad" style="position: fixed; top: 0; left: 0; background: #f00; height: 2px; display: inline-block; z-index: 999999999;">
+    </div>
+
+    <div id="genres-wrap">
+        <div class="container">
+            <div class="col-sm-12">
+                <div class="col-sm-5">
+                    <div id="genres-detail">
+                        <ul>
+                            <li><a href="#">Trap</a></li>
+                            <li><a href="#">Progessive House</a></li>
+                            <li><a href="#">Trance</a></li>
+                            <li><a href="#">Deep House</a></li>
+                            <li><a href="#">Future House</a></li>
+                            <li><a href="#">Tropical House</a></li>
+                            <li><a href="#">Techno House</a></li>
+                            <li><a href="#">Drum Bass</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="#">Hardstyle</a></li>
+                            <li><a href="#">Harddance</a></li>
+                            <li><a href="#">Hardcore</a></li>
+                            <li><a href="#">NightCore</a></li>
+                            <li><a href="#">NightStep</a></li>
+                            <li><a href="#">FutureBass</a></li>
+                            <li><a href="#">ChillStep</a></li>
+                            <li><a href="#">Melodic</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content" id="MainContent">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12" id="content-child-wrap">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footerPage">
+        <div class="container">
+            <div class="row">
+                <div class="footer-top">
+                    <div class="col-sm-12">
+                        <div class="col-sm-3">
+                            <div class="hot-event">
+                                <img src="~/IMG/Footer/kygo.jpg" />
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="magazine">
+                                <p class="magazine-title">
+                                    Magazine
+                                </p>
+                                <a href="#" class="magazine-link">Customer Service</a>
+                                <a href="#" class="magazine-link">Subscribe</a>
+                                <a href="#" class="magazine-link">Buy this issue</a>
+                                <p class="magazine-title">
+                                    Beatport Biz
+                                </p>
+                                <p class="footer-info">
+                                    The online extension of Beatport Magazine, beatport.biz is the essential online destination for the music business.
+                                </p>
+                                <a href="#" class="magazine-link">Learn More</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="sharing">
+                                <p class="sharing-title">Sharing Beatport</p>
+                                <a href="#">
+                                    <i class="fa fa-facebook-square"></i>
+                                    <span>Fabebook</span>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-twitter"></i>
+                                    <span>Twitter</span>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-google-plus"></i>
+                                    <span>Google+</span>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-instagram"></i>
+                                    <span>Instagram</span>
+                                </a>
+                                <a href="#">
+                                    <i class="fa fa-youtube-square"></i>
+                                    <span>Youtube</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="explore-beatport">
+                                <p class="explore-beatport-title">Explore Beatport</p>
+                                <a href="#">Shop</a>
+                                <a href="#">News Archive</a>
+                                <a href="#">Photos Archive</a>
+                                <a href="#">Videos Archive</a>
+                                <a href="#">Magazine Archive</a>
+                                <a href="#">Charts Archive</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="info-beatport">
+                                <p class="info-beatport-title">Information</p>
+                                <a href="#">Mobile</a>
+                                <a href="#">Chart Licensing</a>
+                                <a href="#">Billboard Events</a>
+                                <a href="#">Contact Us</a>
+                                <a href="#">Sitemap</a>
+                                <a href="#">FAQ</a>
+                                <a href="#">Feedback</a>
+                                <a href="#">Lyrics</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="col-sm-12">
+                        <p>© 2016 Billboard. All Rights Reserved.</p>
+                        <a href="#">Terms of Use</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">About Our Ads</a>
+                        <a href="#">Advertising</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tag-playmusic" id="all-tagMusicBottom">
+        <div class="playmusic-info" id="all-playmusic-change">
+            <div class="imgPlayMusic">
+                <img src="~/IMG/Track/Alesso/iwantseeyourwith.jpg" />
+            </div>
+            <div class="textPlayMusic">
+                <a href="#" class="playmusic-name">Clarity</a>
+                <a href="#" class="playmusic-artist">Hayley Williams ft Zedd</a>
+            </div>
+        </div>
+        <div class="playmusic-time">
+            <label id="playmusic-start"></label>
+            <progress id="playmusic-process" value="0" max="100"></progress>
+            <label id="playmusic-end"></label>
+        </div>
+        <div class="playmusic-button">
+            <button id="playmusic-prev" onclick='clickAllPlayMusic(1,1,2)'>
+                <i class="glyphicon glyphicon-backward"></i>
+            </button>
+            <button id="playButton">
+                <i class="glyphicon glyphicon-play"></i>
+                <i class="glyphicon glyphicon-pause"></i>
+            </button>
+            <button id="playmusic-next" onclick='clickAllPlayMusic(1,1,2)'>
+                <i class="glyphicon glyphicon-forward"></i>
+            </button>
+            <button id="loopButton">
+                <i class="glyphicon glyphicon-repeat"></i>
+            </button>
+            <div id="volume">
+                <button id="volumeButton">
+                    <i class="glyphicon glyphicon-volume-down"></i>
+                    <i class="glyphicon glyphicon-volume-up"></i>
+                    <i class="glyphicon glyphicon-volume-off"></i>
+                </button>
+                <progress id="volumeProBar" value="100" max="100"></progress>
+            </div>
+        </div>
+        <audio id="myTune" controls onloadedmetadata="audioLoad()">
+            <source src="~/music/10.mp3">
+        </audio>
+    </div>
+
+    @* script xử lý phần tìm kiếm  *@
+    <script type="text/javascript">
+
+        function searchTrackAllView() {
+            document.getElementById("loadProgress").classList.remove('endLoad');
+            document.getElementById("loadProgress").className += 'loadingProgress';
+
+            $.ajax({
+                url: '@Url.Action("searchTrachAll", "Search")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    keyWord: $("#trackSearchViewAll").attr("keyword")
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("search-tracks-page").innerHTML = '';
+                    document.getElementById("search-tracks-page").innerHTML = data;
+                    document.getElementById("search-tracks-page").style.overflowX = 'scroll';
+                    document.getElementById("trackSearchViewAll").style.display = 'none';
+
+                    document.getElementById("loadProgress").classList.remove('loadingProgress');
+                    document.getElementById("loadProgress").className += 'endLoad';
+                }
+            });
+        }
+
+        function searchRemixAllView() {
+            document.getElementById("loadProgress").classList.remove('endLoad');
+            document.getElementById("loadProgress").className += 'loadingProgress';
+            $.ajax({
+                url: '@Url.Action("searchTotalAll", "Search")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    keyWord: $("#searchRemixAllView").attr("keyword")
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("detail-song-track-total").innerHTML = '';
+                    document.getElementById("detail-song-track-total").innerHTML = data;
+                    document.getElementById("searchRemixAllPage").style.overflowY = 'scroll';
+                    document.getElementById("searchRemixAllPage").style.overflowX = 'hidden';
+                    document.getElementById("searchRemixAllView").style.display = 'none';
+
+                    $(".detail-song-track-total li").hover(function () {
+                        $(this).find(".detail-song-track-total-col-play button").css("color", "rgba(255,255,255,1)");
+                        $(this).find(".detail-song-track-total-col-play button").css("text-shadow", "0px 0px 22px #fff");
+                        $(this).find(".detail-song-track-total-col-cost button").css("background-color", "rgba(240,70,110,1)");
+                    });
+
+                    $(".detail-song-track-total li").mouseleave(function () {
+                        $(this).find(".detail-song-track-total-col-play button").css("color", "rgba(255,255,255,0.3)");
+                        $(this).find(".detail-song-track-total-col-play button").css("text-shadow", "0 0 0 transparent");
+                        $(this).find(".detail-song-track-total-col-cost button").css("background-color", "rgba(240,70,110,0.5)");
+                    });
+
+                    document.getElementById("loadProgress").classList.remove('loadingProgress');
+                    document.getElementById("loadProgress").className += 'endLoad';
+                }
+            });
+        }
+
+        function searchArtistAllView_fun() {
+            $.ajax({
+                url: '@Url.Action("searchArtistAll", "Search")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    keyWord: $("#searchArtistButtonView").attr("keyword")
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("searchArtistViewAll").innerHTML = '';
+                    document.getElementById("searchArtistViewAll").innerHTML = data;
+                    document.getElementById("searchArtistViewAll").style.overflowX = 'scroll';
+                    document.getElementById("searchArtistButtonView").style.display = 'none';
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            var temp = "";
+            temp = (document.getElementById("input-form-search").getBoundingClientRect().top + document.getElementById("input-form-search").offsetHeight).toString();
+            document.getElementById("show-search").style.top = temp + 'px';
+            temp = document.getElementById("input-form-search-child").getBoundingClientRect().left.toString();
+            document.getElementById("show-search").style.left = temp + 'px';
+            $("#main-search-input").keyup(function () {
+                $.ajax({
+                    url: '@Url.Action("Search", "Search")',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        keyWord: $("#main-search-input").val()
+                    }),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        document.getElementById("show-search").innerHTML = '';
+                        document.getElementById("show-search").innerHTML = data;
+                        $("#show-search").show();
+                    }
+                });
+            });
+
+            $("#main-search-input").focusout(function () {
+                $("#show-search").hide();
+            });
+
+            $("#searchButtonSubmit").click(function () {
+                document.getElementById("loadProgress").classList.remove('endLoad');
+                document.getElementById("loadProgress").className += 'loadingProgress';
+                $("#show-search").hide();
+                $.ajax({
+                    url: '@Url.Action("SearchPage", "Search")',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: JSON.stringify({
+                        keyWord: $("#main-search-input").val()
+                    }),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        if (data !== '') {
+                            document.getElementById("MainContent").innerHTML = '';
+                            document.getElementById("content1").innerHTML = '';
+                            document.getElementById("MainContent").innerHTML = data;
+
+                            $(".detail-song-track-total li").hover(function () {
+                                $(this).find(".detail-song-track-total-col-play button").css("color", "rgba(255,255,255,1)");
+                                $(this).find(".detail-song-track-total-col-play button").css("text-shadow", "0px 0px 22px #fff");
+                                $(this).find(".detail-song-track-total-col-cost button").css("background-color", "rgba(240,70,110,1)");
+                            });
+
+                            $(".detail-song-track-total li").mouseleave(function () {
+                                $(this).find(".detail-song-track-total-col-play button").css("color", "rgba(255,255,255,0.3)");
+                                $(this).find(".detail-song-track-total-col-play button").css("text-shadow", "0 0 0 transparent");
+                                $(this).find(".detail-song-track-total-col-cost button").css("background-color", "rgba(240,70,110,0.5)");
+                            });
+
+                            document.getElementById("loadProgress").classList.remove('loadingProgress');
+                            document.getElementById("loadProgress").className += 'endLoad';
+                        } else {
+                            alert("unsuccess");
+                        }
+                    }
+                });
+            });
+        });
+
+    </script>
+
+    @* xu ly phan xem chi tiet Track *@
+    <script type="text/javascript">
+        var isReady = true;
+        function clickAllPlayMusic(id, type,typePlay) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("GetMusic", "PlayMusic")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id,
+                    type: type,
+                    typePlay:typePlay
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        document.getElementById("all-tagMusicBottom").innerHTML = '';
+                        document.getElementById("all-tagMusicBottom").innerHTML = data;
+                        endLoad();
+                    } else {
+                        alert("unsuccess");
+                        endLoad();
+                    }
+                }
+            });
+        }
+
+
+        function clickPlayMusicDetail(id, type) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("GetMusic", "PlayMusic")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id,
+                    type: type,
+                    typePlay:1
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        checkDetailPage_fun();
+                        document.getElementById("all-tagMusicBottom").innerHTML = '';
+                        document.getElementById("all-tagMusicBottom").innerHTML = data;
+
+                        endLoad();
+                    } else {
+                        alert("unsuccess");
+                    }
+                }
+            });
+        }
+
+        //show Page Detail
+        function ViewDetailTrackAll_fun(id) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("AllIndex", "Track")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("MainContent").innerHTML = '';
+                    document.getElementById("MainContent").innerHTML = data;
+
+                    endLoad();
+                }
+            });
+        }
+
+        //show visualize Music
+
+
+    </script>
+
+    @* xu ly phan click mua hang *@
+    <script type="text/javascript">
+        function clickBuy_fun(id, type) {
+            document.getElementById("loadProgress").classList.remove('endLoad');
+            document.getElementById("loadProgress").className += 'loadingProgress';
+            $.ajax({
+                url: '@Url.Action("Add", "Cart")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id,
+                    type: type
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== "") {
+                        $.each(data, function (i, item) {
+                            if (i === 0) {
+                                $("#total_Debt_Menu").text('$' + item);
+                                $(this).prop("disabled", true);
+                            } else {
+                                $("#saleUser_Menu").text('Sale ' + item + '%');
+                            }
+                        });
+                        noti_Fun("Add Successful", "success");
+                    } else {
+                        noti_Fun("Product Exist In Your Cart Or Playlist", "error");
+                    }
+                    document.getElementById("loadProgress").classList.remove('loadingProgress');
+                    document.getElementById("loadProgress").className += 'endLoad';
+                }
+            });
+        }
+
+        function DetailCart_fun() {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("CartDetail","Cart")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        document.getElementById("MainContent").innerHTML = '';
+                        document.getElementById("MainContent").innerHTML = data;
+                    } else {
+                        alert("unsuccess");
+                    }
+                    endLoad();
+                }
+            });
+        }
+
+        function CommitPay() {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("CartBuy","Cart")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    email: $("#cart-pay-email").val(),
+                    password: $("#cart-pay-password").val(),
+                    cardNumber: $("#cart-pay-series").val(),
+                    passwordCard: $("#cart-pay-pass").val()
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data === '1') {
+                        $("#total_Debt_Menu").text('$0');
+                        noti_Fun("Buy Successful", "success");
+                    } else {
+                        noti_Fun("Input Value Fail", "error");
+                    }
+                    endLoad();
+                }
+            });
+        }
+
+        function cartDelete_fun(id, type, count) {
+            $.ajax({
+                url: '@Url.Action("CartDelete","Cart")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id,
+                    type: type
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data.totalMoney !== '') {
+
+                        $("#total_Debt_Menu").text('$' + data.totalMoney);
+                        $("#TotalMoney").text('$' + data.totalMoney);
+                        $("#saleUser_Menu").text('Sale ' + data.sale + '%');
+
+                        $(".row").each(function () {
+                            if ($(this).attr("count") === count.toString()) {
+                                $(this).hide();
+                            }
+                        });
+
+                    } else {
+                        alert("unsuccess");
+                    }
+                }
+            });
+        }
+
+    </script>
+
+    @* Script xu ly phan User *@
+    <script type="text/javascript">
+
+    function register_Fun() {
+        if (document.getElementById('register-form-button-register').getAttribute('_isRegister') === '0') {
+            alert("Value not invalid");
+            return;
+        }
+        $.ajax({
+            url: '@Url.Action("Register", "User")',
+            dataType: 'json',
+            type: 'POST',
+            data: JSON.stringify({
+                FIRSTNAME: $("#register_firstname").val(),
+                PASSWORD: $("#register_password").val(),
+                EMAIL: $("#register_email").val(),
+                LEVEL_: 1,
+                LASTNAME: $("#register_lastname").val()
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function(data) {
+                login_Fun($("#register_email").val(), $("#register_password").val());
+
+                noti_Fun("Register Successful");
+                $(".register-form").hide();
+                $(".extra").hide();
+            },
+            error: function(xhr) {
+                alert("loi roi");
+            }
+        });
+    }
+
+    function login_Fun(email, password) {
+        var _email, _password;
+        if (!email || !password) {
+            _email = $("#email-form").val();
+            _password = $("#password-form").val();
+        } else {
+            _email = email;
+            _password = password;
+        }
+
+        $.ajax({
+            url: '@Url.Action("Login", "User")',
+            dataType: 'json',
+            type: 'POST',
+            data: JSON.stringify({
+                email: _email,
+                password: _password
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function(data) {
+                if (data !== '') {
+                    $("#login-form").hide();
+                    $(".extra").hide();
+                    $("#login-button").hide();
+                    $("#register-button").hide();
+                    $("#userName_Menu").text(data);
+                    $("#total_Debt_Menu").text("$0");
+                    $("#cartMenu").show();
+                } else {
+                    alert("unsuccess");
+                }
+            }
+        });
+    }
+    </script>
+
+    @* Script xu ly phan Playlist  *@
+    <script type="text/javascript">
+
+    function userDetailPage() {
+        startLoad();
+        $.ajax({
+            url: '@Url.Action("PlayList", "PlayMusic")',
+            dataType: 'json',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                document.getElementById("MainContent").innerHTML = data;
+
+                endLoad();
+            },
+            error: function (xhr) {
+                endLoad();
+                alert("ERROR 404");
+            }
+        });
+    }
+
+    function playPlaylist(type) {
+        startLoad();
+        $.ajax({
+            url: '@Url.Action("playPlayList", "PlayMusic")',
+            dataType: 'json',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                type: type
+            }),
+            success: function (data) {
+                if (data === '1') {
+                    clickAllPlayMusic(1, 1, 2);
+                } else {
+                    noti_Fun("Playlist Don't Have Song","success");
+                }
+                endLoad();
+            },
+            error: function (xhr) {
+                endLoad();
+                alert("ERROR 404");
+            }
+        });
+    }
+
+        function select_notSelect_Song(id,type) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("selectSong", "PlayMusic")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    id:id,
+                    type: type
+                }),
+                success: function (data) {
+                    endLoad();
+                },
+                error: function (xhr) {
+                    endLoad();
+                    noti_Fun("ERROR 404", "error");
+                }
+            });
+        }
+
+    </script>
+
+    <script src="~/Scripts/MainLayout_JS/main-layout.js"></script>
+
+</body>
+</html>

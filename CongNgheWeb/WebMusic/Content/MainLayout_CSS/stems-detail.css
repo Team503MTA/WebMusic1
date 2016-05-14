@@ -1,0 +1,208 @@
+﻿.stems-detail{
+    color: #7D7D7D !important;
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 100px;
+}
+.stems-detail a{
+    color: #fff;
+    font-weight: bold;
+    margin-left: 10px;
+    text-decoration: none;
+}
+.stems-detail .div-img{
+    width: 30%;
+    display: inline-block;
+}
+.div-img img{
+    width: 100%;
+    display: block;
+}
+.div-info{
+    width: 65%;
+    margin-left: 4%;
+    display: inline-block;
+    position: absolute;
+    line-height: 30px;
+}
+.div-info .stems-name{
+    margin-top: -25px;
+    font-size: 2em;
+    color: #FCFAFA;  
+}
+.date-created span{
+    color: #fff;
+    margin-left: 10px;
+}
+.stems-label span{
+    color: #fff;
+    margin-left: 10px;
+}
+.stems-label, .stems-artist a {
+    font-size: 1.5em;
+}
+.stems-extra .play{
+    color: #fff;
+    font-size: 1.7em;
+    vertical-align: middle;
+    margin-right: 2%;
+}
+.stems-extra .list{
+    color: #fff;
+    font-size: 1.7em;
+    vertical-align: middle;
+    margin-right: 2%;
+}
+.stems-extra .cost{
+    margin-right: 2%;
+    vertical-align: middle;
+    border: none;
+    background: #FF53A0;
+    color: #fff;
+    font-weight: bold;
+    width: 12%;
+}
+.stems-extra .cost span{
+    margin-left: 10px;
+    color: #fff;
+}
+.stems-descrip{
+    margin-top: 20px;
+}
+.stems-descrip span{
+    margin-left: 10px;
+    color: #fff;
+}
+.stems-extra .play:hover, .list:hover{
+    color: #FF53A0;
+}
+.stem-detail{
+    width: 100%;
+    display: inline-block;
+    color: #fff;
+}
+.stem-list{
+    width: 100%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.stem-list hr{
+    display: block;
+    text-decoration: none;
+    margin-bottom: 5px;
+}
+.stem-list .stem-fields{
+    width: 100%;
+    display: inline-block;
+}
+.stem-list .stem-fields span{
+    display: inline-block;
+}
+.stem-fields span:nth-child(2){
+    margin-left: 12%;
+}
+.stem-fields span:nth-child(3){
+    margin-left: 16.4%;
+}
+.stem-fields span:nth-child(4){
+    margin-left: 15.7%;
+}
+.stem-fields span:nth-child(5){
+    margin-left: 7%;
+}
+.stem-fields span:nth-child(6){
+    margin-left: 7.2%;
+}
+.stem-fields span:nth-child(7) {
+    margin-left: 7.5%;
+}
+.stem{
+    background: #373737;
+    margin-bottom: 2px;
+
+}
+.stem .div-stem-img{
+    width: 4%;
+    display: inline-block;
+}
+.div-stem-img img{
+    width: 100%;
+    display: inline-block;
+}
+.div-stem-number{
+    width: 2%;
+    display: inline-block;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.3em;
+}
+.div-stem-play{
+    width: 5%;
+    display: inline-block;
+}
+.div-stem-play span{
+    margin-right: 5px;
+}
+.div-stem-title{
+    width: 20%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.div-stem-artist{
+    width: 20%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.div-stem-artist a{
+    color: #45B4BE;
+    font-weight: bold;
+}
+.div-stem-tempo{
+    vertical-align: middle;
+    width: 10%;
+    display: inline-block;    
+}
+.div-stem-label a{
+    color: #879187;
+}
+.div-stem-genre{
+    vertical-align: middle;
+    width: 11%;
+    display: inline-block;
+}
+.div-stem-genre a{
+    color: #879187;
+}
+.div-stem-key {
+    width: 10%;
+    vertical-align: middle;
+    display: inline-block;
+}
+.div-stem-len{
+    width: 8.8%;
+    display: inline-block;
+    color: #879187;
+    vertical-align: middle;
+}
+.div-stem-cost{
+    width: 6%;
+    display: inline-block;
+    vertical-align: middle;
+    color: #879187;
+    margin-right: 0;
+}
+.div-stem-cost button{
+    height: 27px;
+    width: 100%;
+    background: #874060;
+    border: none;
+}
+.stem:hover .div-stem-cost button {
+    background: #FF53A0;
+    color: #fff;
+}
+.stem:hover .div-stem-play {
+    color: #FF53A0;
+}
+

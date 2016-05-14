@@ -1,0 +1,30 @@
+﻿@using WebMusic.Models;
+@model List<TRACK_ARTIST>
+
+
+<div class="top-ten-demo">
+    <p class="top-ten-demo-title">STAFF PICK</p>
+    <ul>
+        @{
+            var count = 1;
+            foreach (var item in Model)
+            {
+                <li>
+                    <div class="top-ten-demo-img">
+                        <img src=@Url.Content(item.LINK_IMG) alt="">
+                    </div>
+                    <div class="top-ten-demo-li-left">
+                        @count
+                    </div>
+                    <div class="top-ten-demo-li-right">
+                        <a href="#" class="top-ten-demo-name link-decorate">@item.NAME_TRACK</a>
+                        <a href="#" class="top-ten-demo-artist link-decorate">@item.NAME_ARTIST</a>
+                        <a href="#" class="top-ten-demo-label link-decorate">@item.NAME_LABEL</a>
+                        <hr>
+                    </div>
+                </li>
+                count++;
+            }
+        }
+    </ul>
+</div>

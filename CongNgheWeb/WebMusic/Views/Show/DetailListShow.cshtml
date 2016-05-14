@@ -1,0 +1,52 @@
+﻿@using WebMusic.Models;
+@model SHOW_LIST
+@{
+    ViewBag.Title = "DetailListShow";
+    Layout = "~/Views/Layout/MainLayout.cshtml";
+}
+
+
+
+<link href="~/Content/MainLayout_CSS/style-layout.css" rel="stylesheet" />
+<link href="~/Content/MainLayout_CSS/style-show.css" rel="stylesheet" />
+<link href="~/Content/MainLayout_CSS/Xemchitiet.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="col-sm-7">
+                    <img src="@Url.Content(Model.LINK_IMG)" alt="">
+                </div>
+                <div class="col-sm-5">
+                    <div class="info-show">
+                        <p class="name">Show </p><p class="name text">@Model.NAME_SHOW</p><br />
+                        <p class="artist">ARTIST </p><p class="artist text">@Model.ARTIST_SHOW</p> <br />
+                        <p class="location">Location  </p> <p class="location text">@Model.LOCATION</p><br />
+                        <p class="time">Time  </p> <p class="time text">@Model.TIME</p><br />
+                        <div class="flower">
+                            Flower :
+                            <a href="#"><i class="fa fa-facebook-square"></i></a>
+                            <a href="#"><i class="fa fa-twitter"></i></a>
+                            <a href="#"><i class="fa fa-google-plus"></i></a>
+                        </div>
+                        <hr />
+                        <p class="describle">Discrible  </p><span class="describle text" id="decrib-detail-list-show">@Model.DESCRIBLE</span>
+                        <span class="decrib-detail-list-show-more">More</span>
+                        <span class="decrib-detail-list-show-less">Less</span>
+                    </div>
+                </div>
+                <div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/MainLayout_JS/main-Cuong.js"></script>

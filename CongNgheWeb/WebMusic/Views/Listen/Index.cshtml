@@ -1,0 +1,54 @@
+﻿
+@using WebMusic.Models;
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Layout/MainLayout.cshtml";
+}
+<link href="~/Content/MainLayout_CSS/style-layout.css" rel="stylesheet" />
+<link href="~/Content/MainLayout_CSS/style-listen.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+<div class="content">
+    <div class="container">
+        <div class="col-sm-12">
+            <div class="col-sm-8">
+                <div class="content-left">
+                    <div class="col-sm-12">
+                        @Html.Action("SliderListen", "Listen")
+                    </div>
+                    <div class="col-sm-12">
+                        @Html.Action("DailyRotation", "Listen")
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                @Html.Action("ThePulesChart", "Listen")
+            </div>
+        </div>
+    </div>
+</div>
+<hr class="hr-center">
+
+<div class="PageBody">
+    <div class="container">
+        <div class="col-sm-12">
+            <div class="col-sm-8">
+                <div class="hot-staff-left">
+                    @Html.Action("HotPlayList", "Listen")
+
+                    @Html.Action("Staffpick", "Listen")
+                </div>
+            </div>
+            <div class="col-sm-4">
+                @Html.Action("FeatureArtist", "Listen")
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/MainLayout_JS/main-Cuong.js"></script>
+<script src="~/Scripts/MainLayout_JS/main-layout.js"></script>
+

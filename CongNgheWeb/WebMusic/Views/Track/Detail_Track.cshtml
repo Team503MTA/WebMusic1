@@ -1,0 +1,59 @@
+﻿
+@using WebMusic.Models
+@model TRACK
+
+@{
+
+    <div class="detail-song">
+        <div class="col-sm-12">
+            <div class="col-sm-4 detail-song-left">
+                <img src="@Url.Content(@Model.LINK_IMG)" alt="">
+            </div>
+            <div class="col-sm-8 detail-song-right">
+                <p class="detail-song-nav">RELEASE</p>
+                <p class="detail-song-name">
+                    @Model.NAME
+                </p>
+                <br>
+                <p class="artist">ARTISTS</p>
+                @foreach (var temp in ViewBag.Artist)
+            {
+                    <a href="#" class="artist" title="@temp"> @temp </a>
+                }
+
+                <br>
+                <p class="release-date">RELEASE DATE</p>
+                <span class="release-date">@Model.DATE_RELEASE</span>
+                <br>
+                <p class="labels">LABELS</p>
+                @foreach (var temp in ViewBag.Label)
+            {
+                    <a href="#" class="labels" title="@temp">@temp</a>
+                }
+                <br>
+                <div class="detail-song-play-buy">
+                    <button class="detail-song-play">
+                        <i class="glyphicon glyphicon-play"></i>
+                    </button>
+                    <button class="detail-song-buy">
+                        <p>$@Model.COST</p>
+                    </button>
+                </div>
+                <br>
+                <br>
+                <div class="detail-song-descrip">
+                    <span class="descrip-title">DESCRIPTION</span>
+                    <span id="short-text-content">
+                        @Model.DESCRIPT
+                    </span>
+                    <span class="short-text-content-more">More</span>
+                    <span class="short-text-content-less">Less</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+
