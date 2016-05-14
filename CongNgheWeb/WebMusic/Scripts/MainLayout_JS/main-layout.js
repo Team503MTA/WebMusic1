@@ -363,8 +363,6 @@ function audioLoad() {
 
 // #region GIO HANG
 
-$(document).ready(function () {
-
     $("#button-cart-pay").click(function () {
         $.ajax({
             url: '@Url.Action("CartBuy","Cart")',
@@ -388,54 +386,9 @@ $(document).ready(function () {
         });
     });
 
-    //$("#logoCartMenu").click(function () {
-    //    $.ajax({
-    //        url: '@Url.Action("CartDetail", "Cart")',
-    //        type: 'GET',
-    //        dataType: 'json',
-    //        success: function (data) {
-    //            if (data !== null) {
-    //                document.getElementById("MainContent").innerHTML = '';
-    //                $("#content1").show();
-
-    //                document.getElementById("content1-cartDetail").innerHTML = '';
-    //                var stringData = '';
-    //                var totalMoney = 0;
-    //                $.each(data, function (i, item) {
-    //                    totalMoney += parseFloat(item.cost.toString());
-
-    //                    stringData = stringData + '<div class="row">';
-    //                    stringData = stringData + '<div class="col-sm-4 cart-row cart-name">';
-    //                    stringData = stringData + '<a href="#">' + item.name + '</a>';
-    //                    stringData = stringData + '</div>';
-    //                    stringData = stringData + '<div class="col-sm-3 cart-row cart-artist">';
-    //                    $.each(item.artist, function (j, tempArtist) {
-    //                        stringData = stringData + '<a href ="#">' + tempArtist + '</a>';
-    //                    });
-    //                    stringData = stringData + '</div>';
-    //                    stringData = stringData + '<div class="col-sm-2 cart-row cart-label">';
-    //                    $.each(item.label, function (j, tempLabel) {
-    //                        {
-    //                            stringData = stringData + '<a href="#">' + tempLabel + '</a>';
-    //                        }
-    //                    });
-    //                    stringData = stringData + '</div>';
-    //                    stringData = stringData + '<div class="col-sm-1 cart-row cart-cost">$' + item.cost + '</div>';
-    //                    stringData = stringData + '<div class="col-sm-1 cart-row cart-sale">' + item.sale + '%</div>';
-    //                    stringData = stringData + '<div class="col-sm-1 cart-row cart-delete">';
-    //                    stringData = stringData + '<a href="#">Delete</a>';
-    //                    stringData = stringData + '</div>';
-    //                    stringData = stringData + '</div>';
-    //                });
-    //                document.getElementById("content1-cartDetail").innerHTML = stringData;
-    //                $("#TotalMoney").text('$' + totalMoney);
-
-    //            } else {
-    //                alert("unsuccess");
-    //            }
-    //        }
-    //    });
-    });
+    function BuyNow_fun() {
+        document.getElementById("content-wrap").style.display = 'inline-block';
+    }
 
 
 // #endregion
