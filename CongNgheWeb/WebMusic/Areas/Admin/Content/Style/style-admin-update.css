@@ -6,7 +6,7 @@
 
 #contentUpdateAdmin {
     width: 100%;
-    display: inline-block;
+    display: none;
 }
 
 .update {
@@ -22,30 +22,35 @@
         margin-left: 30%;
     }
 }
+
 @media all and (max-width: 1024px) {
     .update {
         width: 45%;
         margin-left: 28%;
     }
 }
+
 @media all and (max-width: 860px) {
     .update {
         width: 50%;
         margin-left: 25%;
     }
 }
+
 @media all and (max-width: 760px) {
     .update {
         width: 55%;
         margin-left: 23%;
     }
 }
+
 @media all and (max-width: 480px) {
     .update {
         width: 80%;
         margin-left: 10%;
     }
 }
+
 @media all and (max-width: 480px) {
     .update {
         width: 90%;
@@ -87,10 +92,105 @@
     box-sizing: border-box;
 }
 
-#updateAll:hover {
-    color: #0c0;
-    background: #eee;
-    border: 1px solid #0c0;
+    #updateAll:hover {
+        color: #0c0;
+        background: #eee;
+        border: 1px solid #0c0;
+    }
+
+#adminLogin {
+    display: inline-block;
+    background: transparent;
+}
+
+    #adminLogin span {
+        width: 80px;
+        display: inline-block;
+    }
+
+    #adminLogin input {
+        display: inline-block;
+        width: 200px;
+    }
+
+#adminSubmit {
+    display: inline-block;
+    margin-left: 84px;
+    background: #bbb;
+    color: #555;
+    width: 60px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.loadingProgress {
+    width: 98%;
+    -webkit-transition: width 5s 0.1s ease-in-out;
+    -moz-transition: width 5s 0.1s ease-in-out;
+    -ms-transition: width 5s 0.1s ease-in-out;
+    -o-transition: width 5s 0.1s ease-in-out;
+    transition: width 5s 0.1s ease-in-out;
+}
+
+.endLoad {
+    width: 0;
 }
 
 
+#noti-form {
+    background: #555;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    -o-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    z-index: 999999999;
+    width: 200px;
+    height: 150px;
+    display: none;
+    border: 0;
+    padding: 20px 0;
+    -ms-border-top-left-radius: 20px;
+    border-top-left-radius: 20px;
+    -ms-border-bottom-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    text-align: center;
+}
+
+#notiForm {
+    color: #eee;
+    background: #5c4;
+    padding: 10px 0;
+}
+
+#closeNotiForm {
+    font-weight: Bold;
+    color: #333;
+    background: #eaeaea;
+    border: none;
+    display: inline-block;
+    width: 80px;
+    height: 40px;
+    line-height: 40px;
+    margin: 40px 0 0 0;
+}
+
+    #closeNotiForm:hover {
+        border-bottom: 1px solid #f00;
+    }
+
+.extra {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 999999997;
+    background: #000;
+    -ms-opacity: 0.5;
+    opacity: 0.5;
+    display: none;
+}

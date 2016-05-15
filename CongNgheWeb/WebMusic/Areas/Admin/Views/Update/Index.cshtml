@@ -7,31 +7,68 @@
     <meta name="viewport" content="width=device-width , initial-scale=1" />
     <link href="~/Areas/Admin/Content/Libraly/font-awesome-4.6.3/css/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Areas/Admin/Content/Style/style-admin-update.css" rel="stylesheet" />
-    <script src="~/Areas/Admin/Script/Main/main-admin-update.js"></script>
+    <script src="~/Areas/Admin/Script/Libraly/jquery-2.2.3.js"></script>
     <title>View</title>
 </head>
 <body>
-<div id="adminLogin">
-    <input type="text" id="adminUser"/>
-    <input type="password" id="adminPassword"/>
-    <div id="adminSubmit">Login</div>
-</div>
-<div id="contentUpdateAdmin">
-    <div id="updateAll" class="update">Update All</div>
-    <div class="update">
-        <span class="updateTitle">New Track</span>
-        <span class="updateButton" onclick="updateClick(this, 'new-track')">Update</span>
+    <div id="loadProgress" class="endLoad" style="position: fixed; top: 0; left: 0; background: #f00; height: 2px; display: inline-block; z-index: 999999999;">
     </div>
-    <div class="update">
-        <span class="updateTitle">New Track</span>
-        <span class="updateButton" onclick="updateClick(this, 'new-track')">Update</span>
+    <div id="noti-form">
+        <div id="notiForm">vuhoangha</div>
+        <button id="closeNotiForm" onclick="close_NotiForm()">OK</button>
     </div>
-    <div class="update">
-        <span class="updateTitle">New Track</span>
-        <span class="updateButton" onclick="updateClick(this, 'new-track')">Update</span>
+    <div class="extra"></div>
+    <div id="adminLogin" class="update">
+        <span>UserName</span>
+        <input type="text" id="adminUser" class="updateInput" />
+        <br /><br />
+        <span>PassWord</span>
+        <input type="password" id="adminPassword" class="updateInput" />
+        <br /><br />
+        <div id="adminSubmit" onclick="login()">Login</div>
     </div>
-</div>
+    <div id="contentUpdateAdmin">
+        <div id="updateAll" class="update">Update All</div>
+        <div class="update">
+            <span class="updateTitle">New Track</span>
+            <span class="updateButton" onclick="updateClick(this, 'new-track')">Update</span>
+        </div>
+        <div class="update">
+            <span class="updateTitle">New Track</span>
+            <span class="updateButton" onclick="updateClick(this, 'new-track')">Update</span>
+        </div>
+        <div class="update">
+            <span class="updateTitle">New Track</span>
+            <span class="updateButton" onclick="updateClick(this, 'new-track')">Update</span>
+        </div>
+    </div>
 
-<script src="~/Areas/Admin/Script/Main/main-layout.js"></script>
+    <script src="~/Areas/Admin/Script/Main/main-admin-update.js"></script>
+    @* Login *@
+    <script type="text/javascript">
+        function login() {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("Login", "Update")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    username: document.getElementById("adminUser").value,
+                    password: document.getElementById("adminPassword").value
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data === "1") {
+                        document.getElementById("adminLogin").innerHTML = '';
+                        document.getElementById("contentUpdateAdmin").style.display = 'inline-block';
+                        noti_Fun("Successful", "success");
+                    } else {
+                        noti_Fun("Username or Password fail", "error");
+                    }
+                    endLoad();
+                }
+            });
+        }
+    </script>
 </body>
 </html>

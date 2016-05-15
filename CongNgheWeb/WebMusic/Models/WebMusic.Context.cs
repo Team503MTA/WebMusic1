@@ -25,6 +25,7 @@ namespace WebMusic.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<AccountAdmin> AccountAdmins { get; set; }
         public virtual DbSet<ARTIST> ARTISTs { get; set; }
         public virtual DbSet<CARD> CARDs { get; set; }
         public virtual DbSet<CHART> CHARTs { get; set; }

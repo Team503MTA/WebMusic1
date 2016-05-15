@@ -5,6 +5,13 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
       <Schema Namespace="MusicModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AccountAdmin">
+          <Key>
+            <PropertyRef Name="USERNAME" />
+          </Key>
+          <Property Name="USERNAME" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="PASSWORD" Type="nvarchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="ARTIST">
           <Key>
             <PropertyRef Name="ID" />
@@ -744,6 +751,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="MusicModelStoreContainer">
+          <EntitySet Name="AccountAdmin" EntityType="Self.AccountAdmin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ARTIST" EntityType="Self.ARTIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CARD" EntityType="Self.CARD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHART" EntityType="Self.CHART" Schema="dbo" store:Type="Tables" />
@@ -887,6 +895,13 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MusicModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AccountAdmin">
+          <Key>
+            <PropertyRef Name="USERNAME" />
+          </Key>
+          <Property Name="USERNAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PASSWORD" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="ARTIST">
           <Key>
             <PropertyRef Name="ID" />
@@ -1644,6 +1659,7 @@
           <End Role="VIDEO" Type="Self.VIDEO" Multiplicity="*" />
         </Association>
         <EntityContainer Name="MusicEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AccountAdmins" EntityType="Self.AccountAdmin" />
           <EntitySet Name="ARTISTs" EntityType="Self.ARTIST" />
           <EntitySet Name="CARDs" EntityType="Self.CARD" />
           <EntitySet Name="CHARTs" EntityType="Self.CHART" />
@@ -1783,6 +1799,14 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="MusicModelStoreContainer" CdmEntityContainer="MusicEntities">
+          <EntitySetMapping Name="AccountAdmins">
+            <EntityTypeMapping TypeName="MusicModel.AccountAdmin">
+              <MappingFragment StoreEntitySet="AccountAdmin">
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="ARTISTs">
             <EntityTypeMapping TypeName="MusicModel.ARTIST">
               <MappingFragment StoreEntitySet="ARTIST">

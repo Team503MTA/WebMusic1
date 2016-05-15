@@ -201,6 +201,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountAdmin.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ARTIST.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
@@ -369,6 +372,8 @@
     <Content Include="Content\MainLayout_CSS\fonts\Snake Jacket12.otf" />
     <Content Include="Content\MainLayout_CSS\fonts\Snake Jacket12.ttf" />
     <Content Include="Content\MainLayout_CSS\fonts\Snake Jacket12.woff" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Update\Index.cshtml" />
     <EntityDeploy Include="Models\WebMusic.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WebMusic.Designer.cs</LastGenOutput>
@@ -376,8 +381,6 @@
     <Content Include="Models\WebMusic.edmx.diagram">
       <DependentUpon>WebMusic.edmx</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Views\web.config" />
-    <Content Include="Areas\Admin\Views\Update\Index.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
