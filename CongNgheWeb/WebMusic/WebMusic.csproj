@@ -227,6 +227,9 @@
     <Compile Include="Models\GENRE_LABEL.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\HISTORY_UPDATE.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\HISTORY_USER.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>

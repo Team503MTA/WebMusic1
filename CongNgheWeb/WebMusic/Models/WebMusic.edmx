@@ -88,6 +88,13 @@
           <Property Name="NAME_GENRE" Type="nvarchar" MaxLength="50" />
           <Property Name="POINT" Type="int" />
         </EntityType>
+        <EntityType Name="HISTORY_UPDATE">
+          <Key>
+            <PropertyRef Name="TYPE" />
+          </Key>
+          <Property Name="TYPE" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LASTTIME" Type="date" />
+        </EntityType>
         <EntityType Name="HISTORY_USER">
           <Key>
             <PropertyRef Name="ID_USER" />
@@ -759,6 +766,7 @@
           <EntitySet Name="GENRE" EntityType="Self.GENRE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GENRE_ARTIST" EntityType="Self.GENRE_ARTIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GENRE_LABEL" EntityType="Self.GENRE_LABEL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HISTORY_UPDATE" EntityType="Self.HISTORY_UPDATE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HISTORY_USER" EntityType="Self.HISTORY_USER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HOME_HOT_NEW" EntityType="Self.HOME_HOT_NEW" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Home_NewTrack" EntityType="Self.Home_NewTrack" Schema="dbo" store:Type="Tables" />
@@ -992,6 +1000,13 @@
           <Property Name="POINT" Type="Int32" />
           <NavigationProperty Name="GENRE" Relationship="Self.FK_GENRE_LABEL_GENRE" FromRole="GENRE_LABEL" ToRole="GENRE" />
           <NavigationProperty Name="LABEL" Relationship="Self.FK_GENRE_LABEL_LABEL" FromRole="GENRE_LABEL" ToRole="LABEL" />
+        </EntityType>
+        <EntityType Name="HISTORY_UPDATE">
+          <Key>
+            <PropertyRef Name="TYPE" />
+          </Key>
+          <Property Name="TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LASTTIME" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="HISTORY_USER">
           <Key>
@@ -1667,6 +1682,7 @@
           <EntitySet Name="GENREs" EntityType="Self.GENRE" />
           <EntitySet Name="GENRE_ARTIST" EntityType="Self.GENRE_ARTIST" />
           <EntitySet Name="GENRE_LABEL" EntityType="Self.GENRE_LABEL" />
+          <EntitySet Name="HISTORY_UPDATE" EntityType="Self.HISTORY_UPDATE" />
           <EntitySet Name="HISTORY_USER" EntityType="Self.HISTORY_USER" />
           <EntitySet Name="HOME_HOT_NEW" EntityType="Self.HOME_HOT_NEW" />
           <EntitySet Name="Home_NewTrack" EntityType="Self.Home_NewTrack" />
@@ -1884,6 +1900,14 @@
                 <ScalarProperty Name="ID_GENRE" ColumnName="ID_GENRE" />
                 <ScalarProperty Name="NAME_GENRE" ColumnName="NAME_GENRE" />
                 <ScalarProperty Name="POINT" ColumnName="POINT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HISTORY_UPDATE">
+            <EntityTypeMapping TypeName="MusicModel.HISTORY_UPDATE">
+              <MappingFragment StoreEntitySet="HISTORY_UPDATE">
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="LASTTIME" ColumnName="LASTTIME" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

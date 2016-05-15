@@ -31,11 +31,11 @@
         <div id="updateAll" class="update">Update All</div>
         <div class="update">
             <span class="updateTitle">New Track</span>
-            <span class="updateButton" onclick="updateClick(this, 'new-track')">Update</span>
+            <span class="updateButton" onclick="update_NewTrack(this)">Update</span>
         </div>
         <div class="update">
-            <span class="updateTitle">New Track</span>
-            <span class="updateButton" onclick="updateClick(this, 'new-track')">Update</span>
+            <span class="updateTitle">Track and Remix</span>
+            <span class="updateButton" onclick="update_TrackRemix(this)">Update</span>
         </div>
         <div class="update">
             <span class="updateTitle">New Track</span>
@@ -44,31 +44,76 @@
     </div>
 
     <script src="~/Areas/Admin/Script/Main/main-admin-update.js"></script>
-    @* Login *@
-    <script type="text/javascript">
-        function login() {
+    @* Ajax *@
+<script type="text/javascript">
+
+    //Login___***************************************************************************************************************
+    function login() {
+        startLoad();
+        $.ajax({
+            url: '@Url.Action("Login", "Update")',
+            dataType: 'json',
+            type: 'POST',
+            data: JSON.stringify({
+                username: document.getElementById("adminUser").value,
+                password: document.getElementById("adminPassword").value
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data === "1") {
+                    document.getElementById("adminLogin").innerHTML = '';
+                    document.getElementById("contentUpdateAdmin").style.display = 'inline-block';
+                    noti_Fun("Successful", "success");
+                } else {
+                    noti_Fun("Username or Password fail", "error");
+                }
+                endLoad();
+            }
+        });
+    }
+
+    //Update NewTrack___***********************************************************************************************************
+    var isUpdateNewTrack = false;
+    function update_NewTrack(obj) {
+        if (!isUpdateNewTrack) {
             startLoad();
             $.ajax({
-                url: '@Url.Action("Login", "Update")',
+                url: '@Url.Action("update_NewTrack","Update")',
                 dataType: 'json',
                 type: 'POST',
-                data: JSON.stringify({
-                    username: document.getElementById("adminUser").value,
-                    password: document.getElementById("adminPassword").value
-                }),
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
-                    if (data === "1") {
-                        document.getElementById("adminLogin").innerHTML = '';
-                        document.getElementById("contentUpdateAdmin").style.display = 'inline-block';
-                        noti_Fun("Successful", "success");
-                    } else {
-                        noti_Fun("Username or Password fail", "error");
-                    }
+                    obj.style.color = '#777';
+                    obj.style.background = '#fbb';
+                    noti_Fun("Update New Track Successfull", 'success');
                     endLoad();
+                    isUpdateNewTrack = true;
                 }
             });
         }
-    </script>
+    }
+
+    //Update POINT TRACK REMIX____***********************************************************************************************************
+    var isUpdateNewTrack = false;
+    function update_TrackRemix(obj) {
+        if (!isUpdateNewTrack) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("update_Track_Remix","Update")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    obj.style.color = '#777';
+                    obj.style.background = '#fbb';
+                    noti_Fun("Update TRACK REMIX Successfull", 'success');
+                    endLoad();
+                    isUpdateNewTrack = true;
+                }
+            });
+        }
+    }
+
+</script>
 </body>
 </html>
