@@ -1,0 +1,96 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+#contentUpdateAdmin {
+    width: 100%;
+    display: inline-block;
+}
+
+.update {
+    background: #ddd;
+    display: inline-block;
+    height: 30px;
+    margin-top: 5px;
+}
+
+@media all and (max-width: 1920px) {
+    .update {
+        width: 40%;
+        margin-left: 30%;
+    }
+}
+@media all and (max-width: 1024px) {
+    .update {
+        width: 45%;
+        margin-left: 28%;
+    }
+}
+@media all and (max-width: 860px) {
+    .update {
+        width: 50%;
+        margin-left: 25%;
+    }
+}
+@media all and (max-width: 760px) {
+    .update {
+        width: 55%;
+        margin-left: 23%;
+    }
+}
+@media all and (max-width: 480px) {
+    .update {
+        width: 80%;
+        margin-left: 10%;
+    }
+}
+@media all and (max-width: 480px) {
+    .update {
+        width: 90%;
+        margin-left: 5%;
+    }
+}
+
+.updateTitle {
+    float: left;
+    padding: 5px;
+    font-size: 110%;
+}
+
+.updateButton {
+    width: 60px;
+    display: inline-block;
+    border: none;
+    background: #c00;
+    color: #fff;
+    float: right;
+    text-align: center;
+    height: 100%;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+#updateAll {
+    text-align: center;
+    height: 40px;
+    line-height: 30px;
+    font-size: 130%;
+    background: #0c0;
+    cursor: pointer;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    color: #eee;
+    border: none;
+    padding: 5px 10px;
+    box-sizing: border-box;
+}
+
+#updateAll:hover {
+    color: #0c0;
+    background: #eee;
+    border: 1px solid #0c0;
+}
+
+

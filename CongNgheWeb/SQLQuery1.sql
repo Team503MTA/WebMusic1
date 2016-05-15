@@ -1,362 +1,2797 @@
-
-
---CAP NHAT POINT_MONTH CHO STATISTIC_TRACK
-UPDATE STATISTIC_TRACK
-	SET POINT_MONTH = (CLICK_MONTH * (SELECT TOP 1 CLICK FROM FORMULA_HOT) + 
-					   BUY_MONTH * (SELECT TOP 1 BUY FROM FORMULA_HOT)) / 100
-
---CAP NHAT POINT_ALL CHO STATISTIC_TRACK
-UPDATE STATISTIC_TRACK
-	SET POINT_ALL = (CLICK_ALL * (SELECT TOP 1 CLICK FROM FORMULA_HOT) + 
-					   BUY_ALL * (SELECT TOP 1 BUY FROM FORMULA_HOT)) / 100
-
-
---CAP NHAT POINT_MONTH CHO STATISTIC_ARTIST
-UPDATE STATISTIC_ARTIST
-	SET POINT_MONTH = (CLI_PER_MON * (SELECT TOP 1 CLICK FROM FORMULA_HOT) + 
-					   BUY_PER_MON * (SELECT TOP 1 BUY FROM FORMULA_HOT)) / 100
-
---CAP NHAT POINT_ALL CHO STATISTIC_ARTIST
-UPDATE STATISTIC_ARTIST
-	SET POINT_ALL = (CLICK_ALL * (SELECT TOP 1 CLICK FROM FORMULA_HOT) + 
-					   BUY_ALL * (SELECT TOP 1 BUY FROM FORMULA_HOT)) / 100
-
-
---CAP NHAT CHO STATISTIC_REMIX
-INSERT INTO STATISTIC_REMIX
-	SELECT * FROM STATISTIC_TRACK
-
---CAP NHAT STATISTIC_ARTIST SAU KHI STATISTIC_REMIX
-UPDATE STATISTIC_ARTIST
-	SET POINT_MONTH = POINT_MONTH * 2 , 
-		CLICK_MONTH = CLICK_MONTH * 2 , 
-		CLICK_ALL = CLICK_ALL * 2 , 
-		BUY_MONTH = BUY_MONTH * 2 ,
-		BUY_ALL = BUY_ALL * 2
-
-
---XEP HANG DJ
-
-INSERT INTO TOP_6_DJ
-
-SELECT ROW_NUMBER() OVER (ORDER BY POINT_MONTH DESC) AS RK,
-	   ID_ARTIST AS IA,
-	    ARTIST.NAME,
-		ARTIST.IMG
-
-FROM STATISTIC_ARTIST , ARTIST
-
-WHERE POINT_MONTH IN ( SELECT TOP 6 TEMP.T 
-						FROM (SELECT POINT_MONTH AS T FROM STATISTIC_ARTIST ) TEMP 
-						ORDER BY TEMP.T DESC) 
-	  AND ID_ARTIST = ID
-
-
-
-
-
---LAY DANH SACH TRACK MOI
-
-INSERT INTO NEW_TRACK
-SELECT TOP 56 ID , NAME , LINK_IMG , LINK , ROW_NUMBER() OVER(ORDER BY DATE_RELEASE DESC) AS RANKK FROM TRACK
-
-SELECT ID_ARTIST , ARTIST.NAME , LABEL.NAME 
-FROM TRACK_ARTIST , ARTIST , LABEL 
-WHERE ID_TRACK = 9 AND ID_ARTIST = ARTIST.ID AND LABEL.ID = ARTIST.ID_NOW_LABEL
-
-
---SET NAME ARTIST AND NAME LABEL
-
-SELECT * FROM TRACK_ARTIST
-
-DECLARE @TEMP INT
-SET @TEMP = 8;
-WHILE @TEMP < 40
-BEGIN
-	UPDATE TRACK_ARTIST 
-	SET NAME_LABEL = (SELECT LABEL.NAME FROM ARTIST , LABEL WHERE ARTIST.ID = @TEMP AND LABEL.ID = ARTIST.ID_NOW_LABEL)
-	WHERE ID_ARTIST = @TEMP;
-
-	SET @TEMP = @TEMP  +1;
-END
-
-
---SET COST CHO NEW TRACK
-
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 73
-BEGIN
-	UPDATE TRACK_ARTIST
-	SET COST = (SELECT COST FROM TRACK WHERE ID = @TEMP)
-	WHERE ID_TRACK = @TEMP;
-
-	SET @TEMP = @TEMP  +1;
-END
-
-
-
---Split String
-SELECT LINK_IMG FROM TRACK
-
-
-
-
---INSERT IN REMIX
-
-INSERT INTO REMIX( NAME , TEMPO , KEY_ , COST , LINK , DATE_RELEASE , LINK_IMG , ID_TRACK )
-			SELECT NAME , TEMPO , KEY_ , COST + 0.4 , LINK , DATE_RELEASE , LINK_IMG,  ID FROM TRACK WHERE ID >37 AND ID < 72
-
---INSERT IN REMIX_ARTIST
-
-INSERT INTO REMIX_ARTIST ( ID_REMIX , ID_ARTIST , NAME_ARTIST , NAME_LABEL , COST )
-		SELECT ID , (SELECT ARTIST.ID , ARTIST.NAME , LABEL.NAME  
-							FROM ARTIST , LABEL 
-								WHERE ARTIST.ID_NOW_LABEL = LABEL.ID AND ARTIST.ID = ( SELECT FLOOR(RAND()*(39-8)+8)) ) , COST FROM REMIX
-		
-
---INSERT INTO REMIX_ARTIST
-INSERT INTO REMIX_ARTIST ( ID_REMIX , ID_ARTIST , NAME_ARTIST , NAME_LABEL , COST )
-		SELECT REMIX.ID , ARTIST.ID , ARTIST.NAME , LABEL.NAME , REMIX.COST
-			FROM ARTIST , LABEL , REMIX
-				WHERE ARTIST.ID_NOW_LABEL = LABEL.ID AND ARTIST.ID = ( SELECT FLOOR(RAND()*(39-8)+8))
-
---UPDATE REMIX_ARTIST ID_ARTIST , NAME_ARTIST , LABEL_ARTIST
-DECLARE @TEMP INT
-DECLARE @VAR INT
-SET @TEMP = 1;
-WHILE @TEMP < 162
-BEGIN
-	SET @VAR = (SELECT FLOOR(RAND()*(39-8)+8))
-	UPDATE REMIX_ARTIST 
-		SET ID_ARTIST = @VAR 
-			WHERE ID_REMIX = @TEMP;
-
-	SET @TEMP = @TEMP  +1;
-END		
-		
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 162
-BEGIN
-	UPDATE REMIX_ARTIST
-		SET NAME_ARTIST = (SELECT ARTIST.NAME FROM ARTIST , REMIX_ARTIST WHERE ARTIST.ID = REMIX_ARTIST.ID_ARTIST AND REMIX_ARTIST.ID_REMIX = @TEMP) 
-			WHERE ID_REMIX = @TEMP;
-
-	SET @TEMP = @TEMP  +1;
-END							
-
-
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 162
-BEGIN
-	UPDATE REMIX_ARTIST
-		SET NAME_LABEL = (SELECT LABEL.NAME 
-							FROM ARTIST , REMIX_ARTIST , LABEL 
-								WHERE ARTIST.ID = REMIX_ARTIST.ID_ARTIST AND REMIX_ARTIST.ID_REMIX = @TEMP AND ARTIST.ID_NOW_LABEL = LABEL.ID) 
-			WHERE ID_REMIX = @TEMP;
-
-	SET @TEMP = @TEMP  +1;
-END
-
-
---SET LENGTH TRACK AND REMIX
-
-DECLARE @TEMP INT
-SET @TEMP = 55;
-WHILE @TEMP < 63
-BEGIN
-	UPDATE TRACK
-		SET LENGTH = '4:44'
-			WHERE ID = @TEMP;
-
-	SET @TEMP = @TEMP  +1;
-END
-
-
-DECLARE @TEMP INT
-SET @TEMP = 80;
-WHILE @TEMP < 112
-BEGIN
-	UPDATE REMIX
-		SET LENGTH = '4:30'
-			WHERE ID = @TEMP;
-
-	SET @TEMP = @TEMP  +1;
-END
-
-
-
---UPDATE DATA IN TRACK
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 73
-BEGIN
-	
-	UPDATE TRACK
-		SET GENRE = (SELECT NAME FROM GENRE WHERE ID = (SELECT FLOOR(RAND()*(17-1)+1)))
-			WHERE ID = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
---UPDATE DATA IN REMIX
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 162
-BEGIN
-	
-	UPDATE REMIX
-		SET GENRE = (SELECT NAME FROM GENRE WHERE ID = (SELECT FLOOR(RAND()*(17-1)+1)))
-			WHERE ID = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
---UPDATE  ARTIST_TRACK
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 73
-BEGIN
-	
-	UPDATE TRACK_ARTIST
-		SET NAME_TRACK = (SELECT NAME FROM TRACK WHERE ID = @TEMP)
-			WHERE ID_TRACK = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
---INSERT DU LIEU GENRE_ARTIST
-DECLARE @TEMP INT
-SET @TEMP = 8;
-WHILE @TEMP < 40
-BEGIN
-	
-	INSERT INTO GENRE_ARTIST
-		SELECT @TEMP , (SELECT FLOOR(RAND()*(17-1)+1)) , (SELECT FLOOR(RAND()*(101-0)+0))
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
---UPDATE DU LIEU CHO GENRE_ARTIST
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 17
-BEGIN
-	
-	UPDATE GENRE_ARTIST
-		SET NAME_GENRE = (SELECT NAME FROM GENRE WHERE ID = @TEMP)
-			WHERE ID_GENRE = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
---UPDATE ARTIST NAME_LABEL
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 6
-BEGIN
-	
-	UPDATE ARTIST
-		SET NAME_LABEL = (SELECT NAME FROM LABEL WHERE ID = @TEMP)
-			WHERE ID_LABEL = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
---CAP NHAT POINT_MONTH VA POINT_ALL CHO TRACK
-
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 73
-BEGIN
-	
-	UPDATE TRACK
-		SET POINT_ALL = (SELECT POINT_ALL FROM STATISTIC_TRACK WHERE ID = @TEMP)
-			WHERE ID = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
---CAP NHAT POINT_MONTH VA POINT_ALL CHO STATISTIC_REMIX
-
-INSERT INTO STATISTIC_REMIX(ID,CLICK_ALL , BUY_ALL)
-	SELECT ID,FLOOR(RAND()*(1000-1)+1) , FLOOR(RAND()*(200-1)+1) FROM REMIX
-
-
-INSERT INTO (ID,CLICK_MONTH , BUY_MONTH)
-	SELECT ID,FLOOR(RAND()*(500-1)+1) , FLOOR(RAND()*(100-1)+1) FROM REMIX
-
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 162
-BEGIN
-	UPDATE STATISTIC_REMIX
-		SET CLICK_MONTH = (SELECT CLICK_ALL FROM STATISTIC_REMIX WHERE ID = @TEMP) ,
-			BUY_MONTH = (SELECT BUY_ALL FROM STATISTIC_REMIX WHERE ID = @TEMP)
-			WHERE ID = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
-UPDATE STATISTIC_REMIX
-	SET POINT_MONTH = (CLICK_MONTH * (SELECT TOP 1 CLICK FROM FORMULA_HOT) + 
-					   BUY_MONTH * (SELECT TOP 1 BUY FROM FORMULA_HOT)) / 100
-
-
---CAP NHAT POINT_MONTH VA POINT_ALL CHO REMIX
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 162
-BEGIN
-	UPDATE REMIX
-		SET POINT_MONTH = (SELECT POINT_MONTH FROM STATISTIC_REMIX WHERE ID = @TEMP) ,
-			POINT_ALL = (SELECT POINT_ALL FROM STATISTIC_REMIX WHERE ID = @TEMP)
-			WHERE ID = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
-
---CAP NHAT POINT_MONTH CHO TRACK_ARTIST
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 161
-BEGIN
-	UPDATE REMIX
-		SET FULL_ARTIST = 'ZEDD ft VICENTON'
-			WHERE ID = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
---CAP NHAT POINT_DAY CHO TRACK_ARTIST
-DECLARE @TEMP INT
-SET @TEMP = 1;
-WHILE @TEMP < 74
-BEGIN
-	UPDATE TRACK_ARTIST
-		SET POINT_DAY = ID_TRACK
-			WHERE ID_TRACK = @TEMP
-	
-	SET @TEMP = @TEMP  +1;
-END
-
-
-
-
-
-
-
-
-						
+USE [master]
+GO
+/****** Object:  Database [Music]    Script Date: 5/15/2016 12:53:41 PM ******/
+CREATE DATABASE [Music]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'Music', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\Music.mdf' , SIZE = 5120KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
+ LOG ON 
+( NAME = N'Music_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL11.SQLEXPRESS\MSSQL\DATA\Music_log.ldf' , SIZE = 1536KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+GO
+ALTER DATABASE [Music] SET COMPATIBILITY_LEVEL = 110
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [Music].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [Music] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [Music] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [Music] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [Music] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [Music] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [Music] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [Music] SET AUTO_CREATE_STATISTICS ON 
+GO
+ALTER DATABASE [Music] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [Music] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [Music] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [Music] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [Music] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [Music] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [Music] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [Music] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [Music] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [Music] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [Music] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [Music] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [Music] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [Music] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [Music] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [Music] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [Music] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [Music] SET  MULTI_USER 
+GO
+ALTER DATABASE [Music] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [Music] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [Music] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [Music] SET TARGET_RECOVERY_TIME = 0 SECONDS 
+GO
+USE [Music]
+GO
+/****** Object:  Table [dbo].[ARTIST]    Script Date: 5/15/2016 12:53:41 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ARTIST](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](100) NULL,
+	[BORN] [nvarchar](100) NULL,
+	[DATE] [date] NULL,
+	[DESCRIP] [nvarchar](4000) NULL,
+	[TW] [nvarchar](100) NULL,
+	[FB] [nvarchar](100) NULL,
+	[ID_LABEL] [smallint] NULL,
+	[IMG] [nvarchar](150) NULL,
+	[NAME_LABEL] [nvarchar](100) NULL,
+	[POINT_MONTH] [int] NULL,
+	[POINT_ALL] [int] NULL,
+ CONSTRAINT [PK_ARTIST] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[CARD]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CARD](
+	[NUMBER] [nvarchar](30) NOT NULL,
+	[PASSWORD] [nvarchar](20) NULL,
+ CONSTRAINT [PK_CARD] PRIMARY KEY CLUSTERED 
+(
+	[NUMBER] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[CHART]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[CHART](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](50) NULL,
+	[DATE_RELEASE] [date] NULL,
+	[DESCRIP] [nvarchar](500) NULL,
+	[NAME_GENRE] [nvarchar](50) NULL,
+	[LINK_IMG] [nchar](50) NULL,
+	[COST] [float] NULL,
+	[ID_GENRE] [smallint] NULL,
+	[TYPE] [tinyint] NULL,
+ CONSTRAINT [PK_CHART] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[FORMULA_HOT]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[FORMULA_HOT](
+	[CLICK] [int] NOT NULL,
+	[BUY] [int] NOT NULL,
+ CONSTRAINT [PK_FORMULA_HOT] PRIMARY KEY CLUSTERED 
+(
+	[CLICK] ASC,
+	[BUY] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[GENRE]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GENRE](
+	[ID] [smallint] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](50) NULL,
+	[DESCRIP] [nvarchar](4000) NULL,
+	[TEMPO] [tinyint] NULL,
+ CONSTRAINT [PK_GENRE] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[GENRE_ARTIST]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GENRE_ARTIST](
+	[ID_ARTIST] [int] NOT NULL,
+	[ID_GENRE] [smallint] NOT NULL,
+	[POINT] [tinyint] NULL,
+	[NAME_GENRE] [nvarchar](50) NULL,
+	[NAME_LABEL] [nvarchar](100) NULL,
+ CONSTRAINT [PK_GENRE_ARTIST] PRIMARY KEY CLUSTERED 
+(
+	[ID_ARTIST] ASC,
+	[ID_GENRE] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[GENRE_LABEL]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[GENRE_LABEL](
+	[ID_LABEL] [smallint] NOT NULL,
+	[ID_GENRE] [smallint] NOT NULL,
+	[NAME_GENRE] [nvarchar](50) NULL,
+	[POINT] [int] NULL,
+ CONSTRAINT [PK_GENRE_LABEL] PRIMARY KEY CLUSTERED 
+(
+	[ID_LABEL] ASC,
+	[ID_GENRE] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[HISTORY_USER]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[HISTORY_USER](
+	[ID_USER] [int] NOT NULL,
+	[TIME] [date] NOT NULL,
+	[ID_TRACK] [int] NOT NULL,
+	[COST] [float] NULL,
+	[TYPE] [tinyint] NOT NULL,
+	[RANK] [tinyint] NULL,
+	[DISTANCE_NEAR] [smallint] NULL,
+ CONSTRAINT [PK_HISTORY_USER] PRIMARY KEY CLUSTERED 
+(
+	[ID_USER] ASC,
+	[ID_TRACK] ASC,
+	[TYPE] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[HOME_HOT_NEW]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[HOME_HOT_NEW](
+	[ID] [int] NOT NULL,
+	[LINK_IMG] [nvarchar](100) NULL,
+ CONSTRAINT [PK_HOME_HOT_NEW_1] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[Home_NewTrack]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Home_NewTrack](
+	[s] [nchar](10) NOT NULL,
+ CONSTRAINT [PK_Home_NewTrack] PRIMARY KEY CLUSTERED 
+(
+	[s] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[LABEL]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LABEL](
+	[ID] [smallint] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](100) NULL,
+	[FOUNDED] [date] NULL,
+	[FOUNDER] [nvarchar](100) NULL,
+	[LOCATION] [nvarchar](100) NULL,
+	[DESCRIP] [nvarchar](4000) NULL,
+	[LINK] [nvarchar](150) NULL,
+	[LINK_IMG] [nvarchar](150) NULL,
+ CONSTRAINT [PK_LABEL] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[LISTEN_SLIDER]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[LISTEN_SLIDER](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME_SONG] [nvarchar](200) NULL,
+	[COST] [float] NULL,
+	[LINK] [nvarchar](200) NULL,
+	[LINK_IMG] [nvarchar](200) NULL,
+	[DESCRIPT] [nvarchar](max) NULL,
+	[GENRE] [nvarchar](200) NULL,
+	[LENGHT] [nvarchar](200) NULL,
+	[ARTISTS] [nvarchar](200) NULL,
+ CONSTRAINT [PK_LISTEN_SLIDER] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[NEW_TRACK]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NEW_TRACK](
+	[ID] [int] NOT NULL,
+	[NAME] [nvarchar](100) NULL,
+	[LINK_IMG] [nvarchar](150) NULL,
+	[LINK] [nvarchar](150) NULL,
+	[RANKK] [tinyint] NULL,
+	[COST] [float] NULL,
+ CONSTRAINT [PK_NEW_TRACK] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[REMIX]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[REMIX](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](100) NULL,
+	[TEMPO] [int] NULL,
+	[KEY_] [nvarchar](20) NULL,
+	[COST] [float] NULL,
+	[LINK] [nvarchar](150) NULL,
+	[DATE_RELEASE] [date] NULL,
+	[LINK_IMG] [nvarchar](150) NULL,
+	[ID_TRACK] [int] NULL,
+	[LENGTH] [nvarchar](10) NULL,
+	[GENRE] [nvarchar](50) NULL,
+	[POINT_MONTH] [int] NULL,
+	[POINT_ALL] [int] NULL,
+	[FULL_ARTIST] [nvarchar](100) NULL,
+ CONSTRAINT [PK_REMIX] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[REMIX_ARTIST]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[REMIX_ARTIST](
+	[ID_REMIX] [int] NOT NULL,
+	[ID_ARTIST] [int] NOT NULL,
+	[NAME_ARTIST] [nvarchar](100) NULL,
+	[NAME_LABEL] [nvarchar](100) NULL,
+	[POINT_MONTH] [int] NULL,
+	[POINT_ALL] [int] NULL,
+	[GENRE] [nvarchar](50) NULL,
+ CONSTRAINT [PK_REMIX_ARTIST] PRIMARY KEY CLUSTERED 
+(
+	[ID_REMIX] ASC,
+	[ID_ARTIST] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[SALE]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SALE](
+	[LEVEL_] [tinyint] NOT NULL,
+	[SALE_INDEX] [tinyint] NULL,
+	[CONDITION] [float] NULL,
+ CONSTRAINT [PK_SALE] PRIMARY KEY CLUSTERED 
+(
+	[LEVEL_] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[SHOW]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SHOW](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ID_ARTIST] [int] NULL,
+	[NAME] [nvarchar](150) NULL,
+	[LOCATION] [nvarchar](150) NULL,
+	[TIME] [date] NULL,
+	[DESCRIBLE] [nvarchar](max) NULL,
+	[LINK_IMG] [nchar](150) NULL,
+ CONSTRAINT [PK_SHOW] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[SHOW_LIST]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SHOW_LIST](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME_SHOW] [nvarchar](150) NULL,
+	[ARTIST_SHOW] [nvarchar](150) NULL,
+	[LOCATION] [nvarchar](150) NULL,
+	[TIME] [nvarchar](150) NULL,
+	[LINK_IMG] [nvarchar](150) NULL,
+	[DESCRIBLE] [nvarchar](max) NULL,
+ CONSTRAINT [PK_SHOW_LIST] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[SOUNDS]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[SOUNDS](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](50) NULL,
+	[LABEL_ID] [smallint] NULL,
+	[RELEASE_DATE] [date] NULL,
+	[DATA_SIZE] [nchar](100) NULL,
+	[DESCRIP] [nvarchar](4000) NULL,
+	[COST] [float] NULL,
+	[POINT_MONTH] [int] NULL,
+	[POINT_ALL] [int] NULL,
+	[LINK_IMG] [nchar](50) NULL,
+ CONSTRAINT [PK_SOUNDS] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[STATISTIC_ARTIST]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[STATISTIC_ARTIST](
+	[ID_ARTIST] [int] NOT NULL,
+	[CLICK_MONTH] [int] NULL,
+	[CLICK_ALL] [int] NULL,
+	[BUY_MONTH] [int] NULL,
+	[BUY_ALL] [int] NULL,
+ CONSTRAINT [PK_STATISTIC_ARTIST] PRIMARY KEY CLUSTERED 
+(
+	[ID_ARTIST] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[STATISTIC_REMIX]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[STATISTIC_REMIX](
+	[ID] [int] NOT NULL,
+	[CLICK_ALL] [int] NULL,
+	[CLICK_MONTH] [int] NULL,
+	[BUY_ALL] [int] NULL,
+	[BUY_MONTH] [int] NULL,
+	[POINT_MONTH] [int] NULL,
+	[POINT_ALL] [int] NULL,
+ CONSTRAINT [PK_STATISTIC_REMIX] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[STATISTIC_TRACK]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[STATISTIC_TRACK](
+	[ID] [int] NOT NULL,
+	[CLICK_ALL] [int] NULL,
+	[CLICK_MONTH] [int] NULL,
+	[BUY_ALL] [int] NULL,
+	[BUY_MONTH] [int] NULL,
+ CONSTRAINT [PK_STATISTIC_TRACK] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[STEM]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[STEM](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](50) NULL,
+	[TEMPO] [tinyint] NULL,
+	[KEY_] [nchar](20) NULL,
+	[COST] [float] NULL,
+	[LINK] [nchar](50) NULL,
+	[LINK_IMG] [nchar](50) NULL,
+	[DESCRIP] [nvarchar](500) NULL,
+	[LENGTH] [nchar](20) NULL,
+	[POINT_MONTH] [int] NULL,
+	[POIN_ALL] [int] NULL,
+	[STEMS_ID] [int] NULL,
+	[GENRE] [nvarchar](50) NULL,
+ CONSTRAINT [PK_STEM] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[STEM_ARTIST]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[STEM_ARTIST](
+	[STEM_ID] [int] NOT NULL,
+	[ARTIST_ID] [int] NOT NULL,
+	[ARTIST_NAME] [nvarchar](50) NULL,
+	[NAME_LABEL] [nvarchar](50) NULL,
+	[NAME_STEM] [nvarchar](50) NULL,
+ CONSTRAINT [PK_STEM_ARTIST] PRIMARY KEY CLUSTERED 
+(
+	[STEM_ID] ASC,
+	[ARTIST_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[STEMS]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[STEMS](
+	[STEMS_ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](50) NULL,
+	[DATE_RELEASE] [date] NULL,
+	[COST] [float] NULL,
+	[CATALOG] [nvarchar](50) NULL,
+	[IMG] [nchar](50) NULL,
+ CONSTRAINT [PK_STEMS] PRIMARY KEY CLUSTERED 
+(
+	[STEMS_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[TOP_6_DJ]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TOP_6_DJ](
+	[RANK] [int] NOT NULL,
+	[ID_ARTIST] [int] NULL,
+	[NAME_ARTIST] [nvarchar](100) NULL,
+	[IMG] [nvarchar](150) NULL,
+ CONSTRAINT [PK_TOP_6_DJ] PRIMARY KEY CLUSTERED 
+(
+	[RANK] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[TRACK]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TRACK](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](100) NULL,
+	[TEMPO] [tinyint] NULL,
+	[KEY_] [nvarchar](20) NULL,
+	[COST] [float] NULL,
+	[LINK] [nvarchar](150) NULL,
+	[DATE_RELEASE] [date] NULL,
+	[LINK_IMG] [nvarchar](150) NULL,
+	[DESCRIPT] [nvarchar](4000) NULL,
+	[LENGTH] [nvarchar](10) NULL,
+	[GENRE] [nvarchar](50) NULL,
+	[POINT_MONTH] [int] NULL,
+	[POINT_ALL] [int] NULL,
+	[FULL_NAME] [nvarchar](300) NULL,
+ CONSTRAINT [PK_TRACK] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[TRACK_ARTIST]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TRACK_ARTIST](
+	[ID_TRACK] [int] NOT NULL,
+	[ID_ARTIST] [int] NOT NULL,
+	[NAME_ARTIST] [nvarchar](100) NULL,
+	[NAME_LABEL] [nvarchar](100) NULL,
+	[COST] [float] NULL,
+	[NAME_TRACK] [nvarchar](100) NULL,
+	[POINT_ALL] [int] NULL,
+	[POINT_MONTH] [int] NULL,
+	[GENRE] [nvarchar](50) NULL,
+	[POINT_DAY] [int] NULL,
+ CONSTRAINT [PK_TRACK_ARTIST] PRIMARY KEY CLUSTERED 
+(
+	[ID_TRACK] ASC,
+	[ID_ARTIST] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[USER]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[USER](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[FIRSTNAME] [nvarchar](100) NULL,
+	[PASSWORD] [nvarchar](100) NULL,
+	[EMAIL] [nvarchar](100) NULL,
+	[LEVEL_] [tinyint] NULL,
+	[LASTNAME] [nvarchar](100) NULL,
+ CONSTRAINT [PK_USER] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[USER_TRACKLIST]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[USER_TRACKLIST](
+	[ID_USER] [int] NOT NULL,
+	[ID_PROD] [int] NOT NULL,
+	[TYPE] [tinyint] NOT NULL,
+	[NAME] [nvarchar](300) NULL,
+ CONSTRAINT [PK_USER_TRACKLIST] PRIMARY KEY CLUSTERED 
+(
+	[ID_USER] ASC,
+	[ID_PROD] ASC,
+	[TYPE] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[USER_VIDEOLIST]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[USER_VIDEOLIST](
+	[ID_USER] [int] NOT NULL,
+	[ID_VIDEO] [int] NOT NULL,
+ CONSTRAINT [PK_USER_VIDEOLIST] PRIMARY KEY CLUSTERED 
+(
+	[ID_USER] ASC,
+	[ID_VIDEO] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[VIDEO]    Script Date: 5/15/2016 12:53:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[VIDEO](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NAME] [nvarchar](150) NULL,
+	[DESCRIPT] [nvarchar](200) NULL,
+	[TIME] [date] NULL,
+	[LINK] [nvarchar](150) NULL,
+ CONSTRAINT [PK_VIDEO] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET IDENTITY_INSERT [dbo].[ARTIST] ON 
+
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (8, N'DASH BERLIN', N'BEIJIN', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/dashberlin', N'https://www.facebook.com/DashBerlinOfficial1', 1, N'./IMG/Artist/dashberlin.jpg', N'Spinnin'' Records', 384, 384)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (9, N'DAVID GUETTA', N'HANAM', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/davidguetta', N'https://www.facebook.com/DavidGuetta', 1, N'./IMG/Artist/davidgueta.jpg', N'Spinnin'' Records', 573, 573)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (10, N'DIMITRI VEGAS AND LIKE MIKE', N'NEWYORK', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/dimitrivegas', N'https://www.facebook.com/dimitrivegasandlikemike', 1, N'./IMG/Artist/dimitrivegas.jpg', N'Spinnin'' Records', 361, 361)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (11, N'DIPLO', N'CALIFORNIA', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/diplo', N'https://www.facebook.com/diplo', 1, N'./IMG/Artist/diplo.jpg', N'Spinnin'' Records', 336, 336)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (12, N'DJ SNAKE', N'MOSCOW', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/djsnake', N'https://www.facebook.com/djsnake.fr?sk=wall', 1, N'./IMG/Artist/djsnake.jpg', N'Spinnin'' Records', 570, 570)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (13, N'DON DIABLO', N'OTAWA', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/dondiablo', N'https://www.facebook.com/OfficialDonDiablo', 1, N'./IMG/Artist/dondiablo.jpg', N'Spinnin'' Records', 396, 396)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (14, N'DVBBS', N'BUDDAPES', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/dvbbs', N'https://www.facebook.com/dvbbs/', 2, N'./IMG/Artist/dvbbs.jpg', N'Armada Music', 484, 484)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (15, N'GALANTIS', N'THIMBU', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/wearegalantis', N'https://www.facebook.com/wearegalantis', 2, N'./IMG/Artist/galantis.jpg', N'Armada Music', 398, 398)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (16, N'HARDWELL', N'NEWDEHI', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/hardwell', N'https://www.facebook.com/djhardwell', 2, N'./IMG/Artist/hardwell.jpg', N'Armada Music', 498, 498)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (17, N'KSHMR', N'MANCHESTER', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/kshmrmusic', N'https://www.facebook.com/KSHMRmusic', 2, N'./IMG/Artist/kshmr.jpg', N'Armada Music', 463, 463)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (18, N'KYGO', N'OSLO', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/kygomusic', N'https://www.facebook.com/kygoofficial/', 2, N'./IMG/Artist/kygo.jpg', N'Armada Music', 509, 509)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (19, N'MARTIN GARRIX', N'ROSTERDAM', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/martingarrix', N'https://www.facebook.com/martin.garrix', 2, N'./IMG/Artist/martingarrix.jpg', N'Armada Music', 579, 579)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (20, N'NICKY ROMERO', N'FRANKFURCH', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/nickyromero', N'https://www.facebook.com/djnickyromero', 3, N'./IMG/Artist/nickyromero.jpg', N'Big Beat', 539, 539)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (21, N'OLIVER HELDENS', N'COPENHAGEN', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/oliverheldens', N'https://www.facebook.com/OliverHeldens', 3, N'./IMG/Artist/oliverheldden.jpg', N'Big Beat', 468, 468)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (22, N'PORTER ROBINSON', N'ZURICH', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/porterrobinson', N'https://www.facebook.com/porterrobinsonmusic', 3, N'./IMG/Artist/porterrobinson.jpg', N'Big Beat', 176, 176)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (23, N'R3HAB', N'TOKYO', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/r3hab', N'https://www.facebook.com/r3hab', 3, N'./IMG/Artist/r3hab.jpg', N'Big Beat', 426, 426)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (24, N'SKRILLEX', N'OSSANA', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/skrillex', N'https://www.facebook.com/skrillex', 3, N'./IMG/Artist/skrillex.jpg', N'Big Beat', 462, 462)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (25, N'STEVE AOKI', N'PUETORICO', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/steveaoki', N'https://www.facebook.com/Steve.Aoki', 3, N'./IMG/Artist/steveaoki.jpg', N'Big Beat', 383, 383)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (26, N'TIESTO', N'PANAMA', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/tiesto', N'https://www.facebook.com/tiesto', 4, N'./IMG/Artist/tiesto.jpg', N'Dim Mak', 360, 360)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (27, N'UMMET OZCAN', N'HAITI', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/ummetozcan', N'https://www.facebook.com/UmmetOzcanOfficial', 4, N'./IMG/Artist/ummet ozcan.jpg', N'Dim Mak', 483, 483)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (28, N'WnW', N'COSMO', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/wandwmusic', N'https://www.facebook.com/wandwofficial/', 4, N'./IMG/Artist/wnw.jpg', N'Dim Mak', 427, 427)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (29, N'ZEDD', N'MADAGASCA', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/zedd', N'https://www.facebook.com/Zedd/', 4, N'./IMG/Artist/zedd.jpg', N'Dim Mak', 337, 337)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (30, N'ALESSO', N'TUNISSIA', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 4, N'./IMG/Artist/alesso.jpg', N'Dim Mak', 398, 398)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (33, N'AFROJACK', N'MALI', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 4, N'./IMG/Artist/afrojack.jpg', N'Dim Mak', 392, 392)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (34, N'ARMIN VAN BUUREN', N'ROTERDAM', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 5, N'./IMG/Artist/arminvanbuuren.jpg', N'Owsla', 421, 421)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (35, N'AVICII', N'DUTCH', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 5, N'./IMG/Artist/avicii.jpg', N'Owsla', 569, 569)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (36, N'AXWELL', N'MANCHESTER', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 5, N'./IMG/Artist/axwell.jpg', N'Owsla', 546, 546)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (37, N'BRENNAN HEART', N'OSLO', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 5, N'./IMG/Artist/brennanheart.jpg', N'Owsla', 437, 437)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (38, N'CALVIN HARRIS', N'USA', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 5, N'./IMG/Artist/calvinharris.jpg', N'Owsla', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (39, N'DANNIC', N'DENMARK', CAST(0xFB180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 5, N'./IMG/Artist/dannic.jpg', N'Owsla', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (40, N'MADEON', N'USA', CAST(0x9B1B0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 6, N'./IMG/Artist/madeon.jpg', N'Bit To Bit Records', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (41, N'TCHAMI', N'Lon Don', CAST(0x40190B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 7, N'./IMG/Artist/tchami.jpg', N'Fresco Records', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (42, N'FIREBEATZ', N'USA', CAST(0x4B1A0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 8, N'./IMG/Artist/firebeatz.jpg', N'Intec', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (43, N'CART COX', N'USA', CAST(0x6A1A0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 8, N'./IMG/Artist/cartcox.jpg', N'Intec', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (44, N'LAIDBACK LUKE', N'USA', CAST(0x3E1B0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 9, N'./IMG/Artist/laidbackluke.jpg', N'Break New Soil', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (45, N'BORGORE', N'USA', CAST(0xC01C0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 9, N'./IMG/Artist/borgore.jpg', N'Break New Soil', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (46, N'DAFT PUNK', N'Newziland', CAST(0x2B1A0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 10, N'./IMG/Artist/daftpunk.jpg', N'Cr2 Underground', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (47, N'PART HOX', N'Dubai', CAST(0xF21E0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 11, N'./IMG/Artist/cartcox.jpg', N'Terminal M', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (48, N'LAIDBACK LUKE', N'USA', CAST(0xF11B0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 12, N'./IMG/Artist/laidbackluke.jpg', N'SCI+TEC', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (49, N'FIRE BEATSZ', N'New York', CAST(0x131C0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 13, N'./IMG/Artist/firebeatz.jpg', N'SoulForce', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (50, N'UMEK', N'New York', CAST(0xB81B0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 13, N'./IMG/Artist/umek.jpg', N'SoulForce', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (51, N'TENISHIA', N'USA', CAST(0xD71B0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 14, N'./IMG/Artist/tenishia.jpg', N'Ocean Trax', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (52, N'FRONTLINER', N'New York', CAST(0x9B1B0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 15, N'./IMG/Artist/frontliner.jpg', N'Mind Ability Records', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (53, N'BORGEOUS', N'USA', CAST(0xA91A0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 16, N'./IMG/Artist/borgeous.jpg', N'Boxberglounge', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (54, N'NETSKY', N'USA', CAST(0x9B1B0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 16, N'./IMG/Artist/netsky.jpg', N'Boxberglounge', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (55, N'YELLOW CLAW', N'USA', CAST(0x9C1B0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 17, N'./IMG/Artist/yellowclaw.jpg', N'4te Etage Records', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (56, N'CHUCKIE', N'USA', CAST(0x631D0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 17, N'./IMG/Artist/chuckie.jpg', N'4te Etage Records', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (57, N'WILL SPARKS', N'New York', CAST(0xDE180B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 18, N'./IMG/Artist/willsparks.jpg', N'Moody Recordings', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (58, N'KREWELLA', N'New York', CAST(0x2F1A0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 18, N'./IMG/Artist/krewella.jpg', N'Moody Recordings', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (59, N'ATB', N'New York', CAST(0x741E0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 19, N'./IMG/Artist/atb.jpg', N'Ephemeral', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (60, N'MAKJ', N'New York', CAST(0x4A1A0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 19, N'./IMG/Artist/makj.jpg', N'Ephemeral', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (61, N'KASKADE', N'USA', CAST(0x9B1B0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 20, N'./IMG/Artist/kaskade.jpg', N'Symphonic', 378, 378)
+INSERT [dbo].[ARTIST] ([ID], [NAME], [BORN], [DATE], [DESCRIP], [TW], [FB], [ID_LABEL], [IMG], [NAME_LABEL], [POINT_MONTH], [POINT_ALL]) VALUES (62, N'ZATOX', N'Dubai', CAST(0x2F1A0B00 AS Date), N'Pierre David Guetta (French pronunciation: ​[david geta]; born 7 November 1967) is a French DJ, record producer and remixer. He co-founded Gum Productions with Lisa Dodgson and released his first album, Just a Little More Love, in 2002. Later, he released Guetta Blaster (2004) and Pop Life (2007) featuring 2 tracks with the UK''s Tara McDonald.Guetta achieved mainstream success with his 2009 album One Love which included the hit singles "When Love Takes Over", "Gettin'' Over You", "Sexy Bitch", and "Memories", the first three of which reached #1 in the United Kingdom. The 2011 follow-up album, Nothing but the Beat, continued this success, containing the hit singles "Where Them Girls At", "Little Bad Girl", "Without You", "Titanium" and "Turn Me On".Guetta has sold over nine million albums and 30 million singles worldwide.[2] In 2011 Guetta was voted as the #1 DJ in the ''DJ Mag Top 100 DJs'' fan poll.[3]In 2013, Billboard crowned "When Love Takes Over" as the number one dance-pop collaboration of all time', N'https://twitter.com/alesso', N'https://www.facebook.com/AlessoOfficial', 11, N'./IMG/Artist/zatox.jpg', N'Terminal M', 378, 378)
+SET IDENTITY_INSERT [dbo].[ARTIST] OFF
+INSERT [dbo].[CARD] ([NUMBER], [PASSWORD]) VALUES (N'0962095492', N'1')
+INSERT [dbo].[CARD] ([NUMBER], [PASSWORD]) VALUES (N'0977712157', N'1')
+SET IDENTITY_INSERT [dbo].[CHART] ON 
+
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (1, N'Future House Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang nhac House', N'FUTURE HOUSE', NULL, 4.15, 2, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (2, N'Trap Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang nhac trap', N'TRAP', NULL, 4.15, 1, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (3, N'Progressive House Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang progressive house', N'PROGRESSIVE HOUSE', NULL, 4.15, 3, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (4, N'Trance Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang Trance 2016', N'TRANCE', NULL, 4.15, 4, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (5, N'Deep House Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang Tropical House 2016', N'TROPICAL HOUSE', NULL, 4.15, 5, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (6, N'Techno House Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang Techno House 2016', N'TECHNO HOUSE', NULL, 4.15, 6, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (7, N'Drum Bass Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang Drum Bass 2016', N'DRUM BASS', NULL, 4.15, 7, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (8, N'Hardstyle', CAST(0x4C3B0B00 AS Date), N'bang xep hang Hardstyle 2016', N'HARDSTYLE', NULL, 4.15, 8, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (9, N'Harddance Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang Harddance 2016', N'HARDDANCE', NULL, 4.15, 9, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (10, N'Hardcore Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang Hardcore', N'HARDCORE', NULL, 4.15, 10, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (11, N'Nightcore Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang Nightcore 2016', N'NIGHTCORE', NULL, 4.15, 11, NULL)
+INSERT [dbo].[CHART] ([ID], [NAME], [DATE_RELEASE], [DESCRIP], [NAME_GENRE], [LINK_IMG], [COST], [ID_GENRE], [TYPE]) VALUES (12, N'Nightstep Chart 2016', CAST(0x4C3B0B00 AS Date), N'bang xep hang Nightstep', N'NIGHTSTEP', NULL, 4.15, 12, NULL)
+SET IDENTITY_INSERT [dbo].[CHART] OFF
+INSERT [dbo].[FORMULA_HOT] ([CLICK], [BUY]) VALUES (25, 75)
+SET IDENTITY_INSERT [dbo].[GENRE] ON 
+
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (1, N'TRAP', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 130)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (2, N'FUTURE HOUSE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 150)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (3, N'PROGRESSIVE HOUSE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 140)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (4, N'TRANCE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 135)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (5, N'DEEP HOUSE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 145)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (6, N'TROPICAL HOUSE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 125)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (7, N'TECHNO HOUSE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 150)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (8, N'DRUM BASS', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 160)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (9, N'HARDSTYLE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 154)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (10, N'HARDDANCE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 145)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (11, N'HARDCORE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 135)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (12, N'NIGHTCORE', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 160)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (13, N'NIGHTSTEP', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 145)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (14, N'FUTURE BASS', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 135)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (15, N'CHILLSTEP', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 140)
+INSERT [dbo].[GENRE] ([ID], [NAME], [DESCRIP], [TEMPO]) VALUES (16, N'MELODIC', N'Trap music fist emerged coming primarily from the south, a genre filled with a hard attitude that you can feel in the sound of the brass, triangle, triplet hi hats, loud kicks, snappy snares and low end 808 bass samples that are used when composing tracks. The percussion samples of choice when making trap music are usually originate from the Roland TR-808 Drum Machine.  When speaking of the “originators” in the trap music game, southern rappers like Waka Flocka Flame, Gucci Mane, Young Jeezy, Three 6 Mafia, and Manny Fresh come to mind. As well as some of the iconic trap music producers like Lex Luger, Zaytoven, and up and comer Young Chop', 160)
+SET IDENTITY_INSERT [dbo].[GENRE] OFF
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 1, 71, N'TRAP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 2, 30, N'FUTURE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 3, 0, N'PROGRESSIVE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 4, 0, N'TRANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 5, 3, N'DEEP HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 6, 31, N'TROPICAL HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 7, 0, N'TECHNO HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 8, 43, N'DRUM BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 9, 33, N'HARDSTYLE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 10, 25, N'HARDDANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 11, 0, N'HARDCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 12, 62, N'NIGHTCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 13, 0, N'NIGHTSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 14, 32, N'FUTURE BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 15, 116, N'CHILLSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (8, 16, 36, N'MELODIC', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 1, 0, N'TRAP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 2, 134, N'FUTURE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 3, 0, N'PROGRESSIVE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 4, 0, N'TRANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 5, 0, N'DEEP HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 6, 74, N'TROPICAL HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 7, 0, N'TECHNO HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 8, 98, N'DRUM BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 9, 93, N'HARDSTYLE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 10, 0, N'HARDDANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 11, 53, N'HARDCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 12, 0, N'NIGHTCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 13, 0, N'NIGHTSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 14, 0, N'FUTURE BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 15, 28, N'CHILLSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (9, 16, 0, N'MELODIC', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 1, 19, N'TRAP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 2, 0, N'FUTURE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 3, 0, N'PROGRESSIVE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 4, 39, N'TRANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 5, 20, N'DEEP HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 6, 71, N'TROPICAL HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 7, 42, N'TECHNO HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 8, 0, N'DRUM BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 9, 39, N'HARDSTYLE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 10, 0, N'HARDDANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 11, 0, N'HARDCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 12, 29, N'NIGHTCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 13, 32, N'NIGHTSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 14, 19, N'FUTURE BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 15, 0, N'CHILLSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (10, 16, 0, N'MELODIC', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 1, 32, N'TRAP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 2, 0, N'FUTURE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 3, 0, N'PROGRESSIVE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 4, 0, N'TRANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 5, 0, N'DEEP HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 6, 0, N'TROPICAL HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 7, 0, N'TECHNO HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 8, 0, N'DRUM BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 9, 24, N'HARDSTYLE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 10, 0, N'HARDDANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 11, 0, N'HARDCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 12, 62, N'NIGHTCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 13, 0, N'NIGHTSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 14, 18, N'FUTURE BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 15, 0, N'CHILLSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (11, 16, 0, N'MELODIC', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 1, 24, N'TRAP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 2, 129, N'FUTURE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 3, 67, N'PROGRESSIVE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 4, 0, N'TRANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 5, 36, N'DEEP HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 6, 0, N'TROPICAL HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 7, 0, N'TECHNO HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 8, 0, N'DRUM BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 9, 125, N'HARDSTYLE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 10, 0, N'HARDDANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 11, 0, N'HARDCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 12, 0, N'NIGHTCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 13, 0, N'NIGHTSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 14, 0, N'FUTURE BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 15, 51, N'CHILLSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (12, 16, 0, N'MELODIC', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 1, 0, N'TRAP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 2, 0, N'FUTURE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 3, 36, N'PROGRESSIVE HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 4, 64, N'TRANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 5, 0, N'DEEP HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 6, 0, N'TROPICAL HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 7, 71, N'TECHNO HOUSE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 8, 27, N'DRUM BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 9, 0, N'HARDSTYLE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 10, 37, N'HARDDANCE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 11, 0, N'HARDCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 12, 35, N'NIGHTCORE', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 13, 0, N'NIGHTSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 14, 0, N'FUTURE BASS', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 15, 0, N'CHILLSTEP', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (13, 16, 0, N'MELODIC', N'Spinnin'' Records')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 1, 66, N'TRAP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 2, 58, N'FUTURE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 3, 93, N'PROGRESSIVE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 4, 0, N'TRANCE', N'Armada Music')
+GO
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 5, 0, N'DEEP HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 6, 0, N'TROPICAL HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 7, 0, N'TECHNO HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 8, 0, N'DRUM BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 9, 0, N'HARDSTYLE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 10, 41, N'HARDDANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 11, 46, N'HARDCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 12, 0, N'NIGHTCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 13, 0, N'NIGHTSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 14, 0, N'FUTURE BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 15, 37, N'CHILLSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (14, 16, 0, N'MELODIC', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 1, 0, N'TRAP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 2, 63, N'FUTURE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 3, 44, N'PROGRESSIVE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 4, 0, N'TRANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 5, 68, N'DEEP HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 6, 0, N'TROPICAL HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 7, 0, N'TECHNO HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 8, 29, N'DRUM BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 9, 0, N'HARDSTYLE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 10, 0, N'HARDDANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 11, 44, N'HARDCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 12, 10, N'NIGHTCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 13, 0, N'NIGHTSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 14, 0, N'FUTURE BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 15, 0, N'CHILLSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (15, 16, 59, N'MELODIC', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 1, 22, N'TRAP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 2, 24, N'FUTURE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 3, 69, N'PROGRESSIVE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 4, 0, N'TRANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 5, 94, N'DEEP HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 6, 0, N'TROPICAL HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 7, 0, N'TECHNO HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 8, 0, N'DRUM BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 9, 93, N'HARDSTYLE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 10, 0, N'HARDDANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 11, 0, N'HARDCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 12, 0, N'NIGHTCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 13, 0, N'NIGHTSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 14, 0, N'FUTURE BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 15, 46, N'CHILLSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (16, 16, 0, N'MELODIC', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 1, 33, N'TRAP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 2, 45, N'FUTURE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 3, 0, N'PROGRESSIVE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 4, 64, N'TRANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 5, 68, N'DEEP HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 6, 0, N'TROPICAL HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 7, 17, N'TECHNO HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 8, 0, N'DRUM BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 9, 32, N'HARDSTYLE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 10, 0, N'HARDDANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 11, 0, N'HARDCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 12, 29, N'NIGHTCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 13, 60, N'NIGHTSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 14, 34, N'FUTURE BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 15, 68, N'CHILLSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (17, 16, 0, N'MELODIC', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 1, 13, N'TRAP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 2, 56, N'FUTURE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 3, 54, N'PROGRESSIVE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 4, 41, N'TRANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 5, 0, N'DEEP HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 6, 72, N'TROPICAL HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 7, 0, N'TECHNO HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 8, 0, N'DRUM BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 9, 0, N'HARDSTYLE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 10, 0, N'HARDDANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 11, 56, N'HARDCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 12, 0, N'NIGHTCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 13, 0, N'NIGHTSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 14, 0, N'FUTURE BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 15, 56, N'CHILLSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (18, 16, 0, N'MELODIC', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 1, 19, N'TRAP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 2, 0, N'FUTURE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 3, 0, N'PROGRESSIVE HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 4, 0, N'TRANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 5, 0, N'DEEP HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 6, 131, N'TROPICAL HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 7, 0, N'TECHNO HOUSE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 8, 0, N'DRUM BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 9, 0, N'HARDSTYLE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 10, 0, N'HARDDANCE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 11, 0, N'HARDCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 12, 0, N'NIGHTCORE', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 13, 0, N'NIGHTSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 14, 0, N'FUTURE BASS', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 15, 83, N'CHILLSTEP', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (19, 16, 0, N'MELODIC', N'Armada Music')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 1, 72, N'TRAP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 2, 102, N'FUTURE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 3, 0, N'PROGRESSIVE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 4, 42, N'TRANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 5, 0, N'DEEP HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 6, 0, N'TROPICAL HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 7, 33, N'TECHNO HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 8, 40, N'DRUM BASS', N'Big Beat')
+GO
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 9, 0, N'HARDSTYLE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 10, 48, N'HARDDANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 11, 0, N'HARDCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 12, 56, N'NIGHTCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 13, 49, N'NIGHTSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 14, 0, N'FUTURE BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 15, 40, N'CHILLSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (20, 16, 27, N'MELODIC', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 1, 80, N'TRAP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 2, 50, N'FUTURE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 3, 38, N'PROGRESSIVE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 4, 0, N'TRANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 5, 0, N'DEEP HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 6, 41, N'TROPICAL HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 7, 0, N'TECHNO HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 8, 0, N'DRUM BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 9, 67, N'HARDSTYLE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 10, 60, N'HARDDANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 11, 0, N'HARDCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 12, 43, N'NIGHTCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 13, 0, N'NIGHTSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 14, 45, N'FUTURE BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 15, 66, N'CHILLSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (21, 16, 0, N'MELODIC', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 1, 0, N'TRAP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 2, 30, N'FUTURE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 3, 0, N'PROGRESSIVE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 4, 0, N'TRANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 5, 1, N'DEEP HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 6, 0, N'TROPICAL HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 7, 0, N'TECHNO HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 8, 0, N'DRUM BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 9, 12, N'HARDSTYLE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 10, 0, N'HARDDANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 11, 14, N'HARDCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 12, 10, N'NIGHTCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 13, 0, N'NIGHTSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 14, 0, N'FUTURE BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 15, 28, N'CHILLSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (22, 16, 22, N'MELODIC', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 1, 85, N'TRAP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 2, 29, N'FUTURE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 3, 58, N'PROGRESSIVE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 4, 0, N'TRANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 5, 0, N'DEEP HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 6, 0, N'TROPICAL HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 7, 0, N'TECHNO HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 8, 0, N'DRUM BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 9, 0, N'HARDSTYLE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 10, 0, N'HARDDANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 11, 0, N'HARDCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 12, 0, N'NIGHTCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 13, 32, N'NIGHTSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 14, 0, N'FUTURE BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 15, 0, N'CHILLSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (23, 16, 37, N'MELODIC', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 1, 0, N'TRAP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 2, 0, N'FUTURE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 3, 0, N'PROGRESSIVE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 4, 50, N'TRANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 5, 0, N'DEEP HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 6, 0, N'TROPICAL HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 7, 41, N'TECHNO HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 8, 0, N'DRUM BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 9, 47, N'HARDSTYLE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 10, 0, N'HARDDANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 11, 0, N'HARDCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 12, 55, N'NIGHTCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 13, 0, N'NIGHTSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 14, 110, N'FUTURE BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 15, 0, N'CHILLSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (24, 16, 19, N'MELODIC', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 1, 0, N'TRAP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 2, 49, N'FUTURE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 3, 0, N'PROGRESSIVE HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 4, 18, N'TRANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 5, 0, N'DEEP HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 6, 0, N'TROPICAL HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 7, 0, N'TECHNO HOUSE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 8, 0, N'DRUM BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 9, 0, N'HARDSTYLE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 10, 0, N'HARDDANCE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 11, 6, N'HARDCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 12, 49, N'NIGHTCORE', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 13, 45, N'NIGHTSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 14, 62, N'FUTURE BASS', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 15, 86, N'CHILLSTEP', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (25, 16, 42, N'MELODIC', N'Big Beat')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 1, 15, N'TRAP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 2, 37, N'FUTURE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 3, 50, N'PROGRESSIVE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 4, 0, N'TRANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 5, 47, N'DEEP HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 6, 0, N'TROPICAL HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 7, 0, N'TECHNO HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 8, 0, N'DRUM BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 9, 13, N'HARDSTYLE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 10, 60, N'HARDDANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 11, 55, N'HARDCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 12, 0, N'NIGHTCORE', N'Dim Mak')
+GO
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 13, 0, N'NIGHTSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 14, 0, N'FUTURE BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 15, 28, N'CHILLSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (26, 16, 0, N'MELODIC', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 1, 0, N'TRAP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 2, 64, N'FUTURE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 3, 61, N'PROGRESSIVE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 4, 0, N'TRANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 5, 0, N'DEEP HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 6, 40, N'TROPICAL HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 7, 0, N'TECHNO HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 8, 0, N'DRUM BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 9, 0, N'HARDSTYLE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 10, 0, N'HARDDANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 11, 45, N'HARDCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 12, 31, N'NIGHTCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 13, 18, N'NIGHTSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 14, 69, N'FUTURE BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 15, 0, N'CHILLSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (27, 16, 0, N'MELODIC', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 1, 0, N'TRAP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 2, 0, N'FUTURE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 3, 0, N'PROGRESSIVE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 4, 0, N'TRANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 5, 0, N'DEEP HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 6, 28, N'TROPICAL HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 7, 50, N'TECHNO HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 8, 66, N'DRUM BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 9, 6, N'HARDSTYLE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 10, 0, N'HARDDANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 11, 45, N'HARDCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 12, 0, N'NIGHTCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 13, 0, N'NIGHTSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 14, 0, N'FUTURE BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 15, 0, N'CHILLSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (28, 16, 59, N'MELODIC', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 1, 0, N'TRAP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 2, 0, N'FUTURE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 3, 49, N'PROGRESSIVE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 4, 43, N'TRANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 5, 33, N'DEEP HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 6, 0, N'TROPICAL HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 7, 0, N'TECHNO HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 8, 53, N'DRUM BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 9, 0, N'HARDSTYLE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 10, 0, N'HARDDANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 11, 6, N'HARDCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 12, 10, N'NIGHTCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 13, 0, N'NIGHTSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 14, 0, N'FUTURE BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 15, 0, N'CHILLSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (29, 16, 0, N'MELODIC', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 1, 61, N'TRAP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 2, 66, N'FUTURE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 3, 110, N'PROGRESSIVE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 4, 28, N'TRANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 5, 20, N'DEEP HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 6, 0, N'TROPICAL HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 7, 0, N'TECHNO HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 8, 0, N'DRUM BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 9, 0, N'HARDSTYLE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 10, 0, N'HARDDANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 11, 0, N'HARDCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 12, 0, N'NIGHTCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 13, 0, N'NIGHTSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 14, 0, N'FUTURE BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 15, 14, N'CHILLSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (30, 16, 0, N'MELODIC', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 1, 19, N'TRAP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 2, 13, N'FUTURE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 3, 0, N'PROGRESSIVE HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 4, 49, N'TRANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 5, 20, N'DEEP HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 6, 86, N'TROPICAL HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 7, 0, N'TECHNO HOUSE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 8, 7, N'DRUM BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 9, 0, N'HARDSTYLE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 10, 38, N'HARDDANCE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 11, 0, N'HARDCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 12, 61, N'NIGHTCORE', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 13, 54, N'NIGHTSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 14, 63, N'FUTURE BASS', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 15, 40, N'CHILLSTEP', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (33, 16, 0, N'MELODIC', N'Dim Mak')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 1, 89, N'TRAP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 2, 0, N'FUTURE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 3, 32, N'PROGRESSIVE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 4, 0, N'TRANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 5, 0, N'DEEP HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 6, 0, N'TROPICAL HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 7, 91, N'TECHNO HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 8, 0, N'DRUM BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 9, 45, N'HARDSTYLE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 10, 0, N'HARDDANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 11, 30, N'HARDCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 12, 0, N'NIGHTCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 13, 0, N'NIGHTSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 14, 38, N'FUTURE BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 15, 36, N'CHILLSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (34, 16, 59, N'MELODIC', N'Owsla')
+GO
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 1, 0, N'TRAP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 2, 0, N'FUTURE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 3, 61, N'PROGRESSIVE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 4, 0, N'TRANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 5, 38, N'DEEP HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 6, 0, N'TROPICAL HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 7, 0, N'TECHNO HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 8, 116, N'DRUM BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 9, 0, N'HARDSTYLE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 10, 0, N'HARDDANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 11, 0, N'HARDCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 12, 0, N'NIGHTCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 13, 0, N'NIGHTSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 14, 45, N'FUTURE BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 15, 0, N'CHILLSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (35, 16, 0, N'MELODIC', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 1, 0, N'TRAP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 2, 0, N'FUTURE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 3, 50, N'PROGRESSIVE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 4, 0, N'TRANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 5, 53, N'DEEP HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 6, 72, N'TROPICAL HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 7, 50, N'TECHNO HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 8, 0, N'DRUM BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 9, 0, N'HARDSTYLE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 10, 0, N'HARDDANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 11, 56, N'HARDCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 12, 0, N'NIGHTCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 13, 0, N'NIGHTSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 14, 35, N'FUTURE BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 15, 0, N'CHILLSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (36, 16, 0, N'MELODIC', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 1, 0, N'TRAP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 2, 23, N'FUTURE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 3, 67, N'PROGRESSIVE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 4, 0, N'TRANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 5, 0, N'DEEP HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 6, 0, N'TROPICAL HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 7, 0, N'TECHNO HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 8, 0, N'DRUM BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 9, 0, N'HARDSTYLE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 10, 0, N'HARDDANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 11, 32, N'HARDCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 12, 0, N'NIGHTCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 13, 43, N'NIGHTSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 14, 0, N'FUTURE BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 15, 104, N'CHILLSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (37, 16, 43, N'MELODIC', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 1, 27, N'TRAP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 2, 30, N'FUTURE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 3, 0, N'PROGRESSIVE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 4, 0, N'TRANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 5, 20, N'DEEP HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 6, 71, N'TROPICAL HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 7, 0, N'TECHNO HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 8, 60, N'DRUM BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 9, 0, N'HARDSTYLE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 10, 0, N'HARDDANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 11, 0, N'HARDCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 12, 18, N'NIGHTCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 13, 0, N'NIGHTSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 14, 64, N'FUTURE BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 15, 0, N'CHILLSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (38, 16, 24, N'MELODIC', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 1, 0, N'TRAP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 2, 0, N'FUTURE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 3, 35, N'PROGRESSIVE HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 4, 0, N'TRANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 5, 0, N'DEEP HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 6, 0, N'TROPICAL HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 7, 33, N'TECHNO HOUSE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 8, 0, N'DRUM BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 9, 13, N'HARDSTYLE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 10, 0, N'HARDDANCE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 11, 0, N'HARDCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 12, 88, N'NIGHTCORE', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 13, 0, N'NIGHTSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 14, 0, N'FUTURE BASS', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 15, 0, N'CHILLSTEP', N'Owsla')
+INSERT [dbo].[GENRE_ARTIST] ([ID_ARTIST], [ID_GENRE], [POINT], [NAME_GENRE], [NAME_LABEL]) VALUES (39, 16, 0, N'MELODIC', N'Owsla')
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 1, N'TRAP', 63)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 2, N'FUTURE HOUSE', 112)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 3, N'PROGRESSIVE HOUSE', 57)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 4, N'TRANCE', 104)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 5, N'DEEP HOUSE', 45)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 6, N'TROPICAL HOUSE', 126)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 7, N'TECHNO HOUSE', 73)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 8, N'DRUM BASS', 88)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 9, N'HARDSTYLE', 87)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 10, N'HARDDANCE', 31)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 11, N'HARDCORE', 53)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 12, N'NIGHTCORE', 50)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 13, N'NIGHTSTEP', 32)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 14, N'FUTURE BASS', 44)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 15, N'CHILLSTEP', 93)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (1, 16, N'MELODIC', 36)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 1, N'TRAP', 48)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 2, N'FUTURE HOUSE', 81)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 3, N'PROGRESSIVE HOUSE', 92)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 4, N'TRANCE', 105)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 5, N'DEEP HOUSE', 94)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 6, N'TROPICAL HOUSE', 130)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 7, N'TECHNO HOUSE', 17)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 8, N'DRUM BASS', 29)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 9, N'HARDSTYLE', 63)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 10, N'HARDDANCE', 41)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 11, N'HARDCORE', 47)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 12, N'NIGHTCORE', 20)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 13, N'NIGHTSTEP', 60)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 14, N'FUTURE BASS', 34)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 15, N'CHILLSTEP', 135)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (2, 16, N'MELODIC', 59)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 1, N'TRAP', 103)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 2, N'FUTURE HOUSE', 87)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 3, N'PROGRESSIVE HOUSE', 96)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 4, N'TRANCE', 36)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 5, N'DEEP HOUSE', 1)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 6, N'TROPICAL HOUSE', 41)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 7, N'TECHNO HOUSE', 74)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 8, N'DRUM BASS', 40)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 9, N'HARDSTYLE', 63)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 10, N'HARDDANCE', 56)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 11, N'HARDCORE', 21)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 12, N'NIGHTCORE', 79)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 13, N'NIGHTSTEP', 44)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 14, N'FUTURE BASS', 115)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 15, N'CHILLSTEP', 87)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (3, 16, N'MELODIC', 54)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 1, N'TRAP', 51)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 2, N'FUTURE HOUSE', 65)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 3, N'PROGRESSIVE HOUSE', 109)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 4, N'TRANCE', 75)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 5, N'DEEP HOUSE', 54)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 6, N'TROPICAL HOUSE', 77)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 7, N'TECHNO HOUSE', 50)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 8, N'DRUM BASS', 67)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 9, N'HARDSTYLE', 19)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 10, N'HARDDANCE', 49)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 11, N'HARDCORE', 54)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 12, N'NIGHTCORE', 62)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 13, N'NIGHTSTEP', 36)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 14, N'FUTURE BASS', 133)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 15, N'CHILLSTEP', 62)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (4, 16, N'MELODIC', 59)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 1, N'TRAP', 86)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 2, N'FUTURE HOUSE', 53)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 3, N'PROGRESSIVE HOUSE', 98)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 4, N'TRANCE', 0)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 5, N'DEEP HOUSE', 66)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 6, N'TROPICAL HOUSE', 87)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 7, N'TECHNO HOUSE', 85)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 8, N'DRUM BASS', 130)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 9, N'HARDSTYLE', 34)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 10, N'HARDDANCE', 0)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 11, N'HARDCORE', 79)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 12, N'NIGHTCORE', 53)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 13, N'NIGHTSTEP', 43)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 14, N'FUTURE BASS', 83)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 15, N'CHILLSTEP', 107)
+INSERT [dbo].[GENRE_LABEL] ([ID_LABEL], [ID_GENRE], [NAME_GENRE], [POINT]) VALUES (5, 16, N'MELODIC', 93)
+INSERT [dbo].[HISTORY_USER] ([ID_USER], [TIME], [ID_TRACK], [COST], [TYPE], [RANK], [DISTANCE_NEAR]) VALUES (1, CAST(0x603B0B00 AS Date), 62, 1.425, 1, 5, 32767)
+INSERT [dbo].[HISTORY_USER] ([ID_USER], [TIME], [ID_TRACK], [COST], [TYPE], [RANK], [DISTANCE_NEAR]) VALUES (1, CAST(0x603B0B00 AS Date), 65, 1.1875, 1, 4, 0)
+INSERT [dbo].[HISTORY_USER] ([ID_USER], [TIME], [ID_TRACK], [COST], [TYPE], [RANK], [DISTANCE_NEAR]) VALUES (1, CAST(0x603B0B00 AS Date), 67, 1.25, 1, 2, 0)
+INSERT [dbo].[HISTORY_USER] ([ID_USER], [TIME], [ID_TRACK], [COST], [TYPE], [RANK], [DISTANCE_NEAR]) VALUES (1, CAST(0x603B0B00 AS Date), 68, 1.5, 1, 3, 0)
+INSERT [dbo].[HISTORY_USER] ([ID_USER], [TIME], [ID_TRACK], [COST], [TYPE], [RANK], [DISTANCE_NEAR]) VALUES (1, CAST(0x613B0B00 AS Date), 70, 1.1875, 1, 1, 1)
+INSERT [dbo].[HOME_HOT_NEW] ([ID], [LINK_IMG]) VALUES (1, N'./IMG/Home/HotSlider/1.jpg')
+INSERT [dbo].[HOME_HOT_NEW] ([ID], [LINK_IMG]) VALUES (2, N'./IMG/Home/HotSlider/2.jpg')
+INSERT [dbo].[HOME_HOT_NEW] ([ID], [LINK_IMG]) VALUES (3, N'./IMG/Home/HotSlider/3.jpg')
+INSERT [dbo].[HOME_HOT_NEW] ([ID], [LINK_IMG]) VALUES (4, N'./IMG/Home/HotSlider/4.jpg')
+INSERT [dbo].[HOME_HOT_NEW] ([ID], [LINK_IMG]) VALUES (5, N'./IMG/Home/HotSlider/5.jpg')
+INSERT [dbo].[HOME_HOT_NEW] ([ID], [LINK_IMG]) VALUES (6, N'./IMG/Home/HotSlider/6.jpg')
+INSERT [dbo].[HOME_HOT_NEW] ([ID], [LINK_IMG]) VALUES (7, N'./IMG/Home/HotSlider/7.jpg')
+INSERT [dbo].[HOME_HOT_NEW] ([ID], [LINK_IMG]) VALUES (8, N'./IMG/Home/HotSlider/8.jpg')
+INSERT [dbo].[HOME_HOT_NEW] ([ID], [LINK_IMG]) VALUES (9, N'./IMG/Home/HotSlider/9.jpg')
+SET IDENTITY_INSERT [dbo].[LABEL] ON 
+
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (1, N'Spinnin'' Records', CAST(0x9A220B00 AS Date), N'Roger de Graaf, Eelko van Kooten', N'Steijnlaan 12
+1217 JS Hilversum
+The Netherlands', N'Spinnin'' Records is a Dutch independent record label, founded in 1999 by Eelko van Kooten and Roger de Graaf.Besides their main imprint, Spinnin'' Records hosts approximately forty sub-labels including Doorn Records (run by Sander van Doorn), Skink (run by Showtek) and Musical Freedom (run by Tiësto),[1] all mainly focusing on progressive house, electro house and big room house.[2] Spinnin'' Records started its own artist management company MusicAllStars Management, managing artists like Sander van Doorn, Oliver Heldens, Ummet Ozcan and Firebeatz.', N'https://www.spinninrecords.com/', N'./IMG/Label/spinninrecord.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (2, N'Armada Music', CAST(0x04290B00 AS Date), N'Armin van Buuren - Maykel - Piron David Lewis', N'Amsterdam', N'Armada Music /ɑːrˈmɑːdə/ is a Dutch record label that specializes in releasing electronic music.[1] The name Armada derives from the first two letters of the founders'' first names: Armin van Buuren, Maykel Piron, David Lewis.From 2009-2013, the record label received five consecutive International Dance Music Awards for ''Best Global Dance Label''. Armada received 22 nominations at the 2014 IDMAs, winning 10, including ''Best Compilation'' for A State of Trance.[2] The Academy of Electronic Music, a joint venture between Armada, Google, Point Blank, and DJ Mag, was the recipient of the ''People''s Voice Award'' at the 2014 Webby Awards.[3] CEO Maykel Piron was awarded with a ‘Feather’ — a prize awarded to someone within the Dutch music industry for making an extraordinary contribution to Dutch music.', N'http://www.armadamusic.com/', N'./IMG/Label/armadamusic.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (3, N'Big Beat', CAST(0x56140B00 AS Date), N'ABBA', N'London', N'Big beat is a style of electronic music that typically uses heavy breakbeats and synthesizer-generated loops and patterns common to acid house. The term has been used since the mid-1990s by the British music press to describe music by artists such as The Prodigy, The Chemical Brothers, Fatboy Slim, The Crystal Method, Propellerheads, Cut La Roc, Basement Jaxx and Groove Armada.[2]', N'http://www.wearebigbeat.com/', N'./IMG/Label/bigbeat.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (4, N'Dim Mak', CAST(0x521E0B00 AS Date), N'Steve Aoki', N'Los Angeles , CA', N'Dim Mak is an independent, Los Angeles, CA-based record label, events company, and lifestyle brand founded by Steve Aoki in 1996. The label has released music in punk, indie rock, hardcore, and electronic dance musics. The label is driven by Aoki’s "Do It Yourself" ethos and the company’s "By Any Means Necessary" mantra.[citation needed]Dim Mak has promoted various artists including The Bloody Beetroots, Bloc Party, The Kills, and Battles, The Gossip, Andy''s iLL, Klaxons, MSTRKRFT, Felix Cartal, Datsik, and others. In 2014, the label made its 500th release with the King Babies EP from The Death Set. Dim Mak’s current roster includes releases from Clockwork, Angger Dimas, Azari & III, Keys N Krates, Dirtyphonics, and many more.', N'http://www.dimmak.com/', N'./IMG/Label/dimmak.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (5, N'Owsla', CAST(0x23340B00 AS Date), N'Skrillex', N'Los Angeles , CA', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (6, N'Bit To Bit Records', CAST(0xF72C0B00 AS Date), N'Mohamed', N'Srilanka', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (7, N'Fresco Records', CAST(0x31320B00 AS Date), N'Ytohama', N'Tokyo', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (8, N'Intec', CAST(0x98230B00 AS Date), N'Mary Hana', N'New York', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (9, N'Break New Soil', CAST(0xEE280B00 AS Date), N'MacQ', N'Spain', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (10, N'Cr2 Underground', CAST(0x57210B00 AS Date), N'Johnson', N'Paris', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (11, N'Terminal M', CAST(0x1D230B00 AS Date), N'Lemonna', N'Summorist', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (12, N'SCI + TEC', CAST(0x691A0B00 AS Date), N'Yasuo', N'Noxus', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (13, N'SoulForce', CAST(0xD7310B00 AS Date), N'Katarina', N'Demacia', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (14, N'Ocean Trax', CAST(0x942F0B00 AS Date), N'Leblanc', N'Tropical', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (15, N'Mind Ability Records', CAST(0x6D320B00 AS Date), N'Garen', N'Demacia', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (16, N'Boxberglounge', CAST(0x36340B00 AS Date), N'Ryze', N'Summorist', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (17, N'4te Etage Records', CAST(0xBB2C0B00 AS Date), N'Nidalee', N'Noxus', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (18, N'Moody Recordings', CAST(0x4E2B0B00 AS Date), N'Leesin', N'Summorist', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (19, N'Ephemeral', CAST(0xC72B0B00 AS Date), N'Xinzao', N'BacKinh', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+INSERT [dbo].[LABEL] ([ID], [NAME], [FOUNDED], [FOUNDER], [LOCATION], [DESCRIP], [LINK], [LINK_IMG]) VALUES (20, N'Symphonic', CAST(0xFC290B00 AS Date), N'Jhin', N'Sora', N'OWSLA is a record label[2] and creative collective[3] founded by Sonny "Skrillex" Moore, Tim "Bitvargen" Smith, Kathryn Frazier, and Clayton Blaha. Skrillex announced the label on 17 August 2011.[4] The label''s first release was Porter Robinson''s Spitfire, which reached number one on Beatport.[5]Prior to the record label, Skrillex had teamed up with Zedd, 12th Planet and Flinch to release a free EP titled Skrillex Presents Free Treats Volume:001 in 2011.[6] The 19-track sequel was released on the record label on March 13, 2012', N'http://owsla.com/', N'./IMG/Label/owsla.jpg')
+SET IDENTITY_INSERT [dbo].[LABEL] OFF
+SET IDENTITY_INSERT [dbo].[LISTEN_SLIDER] ON 
+
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (1, N'I WANT SEE YOU WITH ME', 1.3, N'~/music/1.mp3', N'./IMG/Listen/Slider/top1.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'DEEP HOUSE', N'2:48', N'TRAP')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (2, N'AN HOLD US DOWN', 2.8, N'~/music/1.mp3', N'./IMG/Listen/Slider/top2.jpg', N'Still a bit tipsy and really happy: that is how ELLEN ALLIEN reports back with Turn Of Your Mind. The title already gives away that the DJ, producer and Label Boss is all about monotony casted in sounds, the mind has left the body and is only moved by the wind of bass and rhythm. Hoo and Off are the song titles, either fast and captivating, raw like unpolished steel. The tracks have been produced on the legendary Roland Aira TR-8, the Roland TB 303 and a Jupiter Synthie in ELLEN ALLIENs living room a place that is perfect for profound musical time traveling and were finalized at the Studio later on. The journey goes back to the 1990ies in Berlin, a time where she was playing as a guest and resident in the legendary Clubs like E-Werk, Planet and Tresor letting the music absorb her into Techno and Acid spheres. Both tracks stretch into epic 8 minutes of thrilling techno magic, summoning the listener to one of those Lost In Music moments. This powerful EP is made for nights so filled with dancefloor euphoria that they prolong themselves into the next day without anyone noticing. Simultaneously with working on this EP the BPitch Control owner has installed a new regular club night finding a new home in a Berlin warehouse. Next to this she is touring all-around the globe sharing the driving energy of techno and acid with an international audience.', N'HARDWELL', N'2:54', N'DIPLO')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (3, N'UPTOWN', 2.5, N'~/music/1.mp3', N'./IMG/Listen/Slider/top3.jpg', N'Innocent Music presents new release produced by Antony PL & Paul S! They delivered us 2 tracks with remix from F.eht! Innocent Music is played by some major names like: Marco Carola, Matthias Tanzmann, Jamie Jones, Carl Craig, Richie Hawtin, Paco Osuna, Guy Gerber, Joseph Capriati, Dennis Ferrer, Mark Knight, Shlomi Aber, Nicole Moudaber, Leon, East End Dubs, Chris Lattner, Smokin Jo, Kate Simko, Mark Knight, Stefano Noferini, Audiojack, Hermanez, Ronan Portela, Hito, Gel Abril, Nadja Lind, Enzo Siragusa, Sidney Charles, Los Soruba, The Mekanism and many more Follow our Innocence www.innocentmusic.si Distributed by Pressology - www.pressology.net', N'HARDSTYLE', N'2:54', N'DJ SNAKE')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (4, N'CLAP', 1.6, N'~/music/1.mp3', N'./IMG/Listen/Slider/top4.jpg', N'Sven Vath returns with two of his greatest classics. Just in time for the 20th anniversary of the cocoonidea the club-culture pioneer presents two milestones of his first two solo albums "Accident InParadise" (1992) and "The Harlequin, The Robot and The Ballet Dancer" (1994). KiNK is in charge for remix #1 and we all know how much the Bulgarian fancys classic styled houseand techno music which makes him the perfect person for the job. And what can we say? KiNK sremix meets all expectations! His version turns the original into an epic acid monster that appearsalmost like a fusion of Joey Beltrams "Energy Flash" and Rolandos "Knights of the Jaguar - the 2016version of "Accident In Paradise will take us on a journey through 20 years of techno and househistory.This is a big hit and it will bring madness to all the open air floors this season. Rune Reilly Kölsch aka KÖLSCH is probably one of the most hyped names in the current techno andhouse circus. Hailing from Christiania / Kopenhagen Kölsch released a bunch of highly rated clubtracks lately and his remix for Sven Väth''s "Robot" is no exception. Runes remix is not riding the retroacid-train but turns out to be an epic club hit with an enormous festival potential, too. The Kölsch beatsappear dry as a bone and sound highly energetic - they blend in perfectly with the strings- and andsynth-section and create a monster full of drama and emotions.Although both remixes are way over 9 minutes they do not seem to be one second too long. We donot need to have clairvoyant abilities to predict that Sven Väth will have a deep impact on theupcoming party- and festival-summer with this release.', N'FUTURE BASS', N'2:54', N'DON DIABLO')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (5, N'DARK WARRIOS', 1.8, N'~/music/1.mp3', N'./IMG/Listen/Slider/top5.jpg', N'King Arthur and TRM get things moving with this high energy house groove. Featuring sunny piano stabs, tropical chords, sweet vocals and nice string work, Talking About Love is one of those tracks that truly stick. Catchy work for the floor, touching both body and soul, big tune for sure!', N'PROGRESSIVE HOUSE', N'2:54', N'DVBBS')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (6, N'SURVIVORS', 3.1, N'~/music/1.mp3', N'./IMG/Listen/Slider/top6.jpg', N'Dense & Pika''s latest Drumcode release comes in the shape of a heavy four track EP, ''Calf EP''. The four tracks showcase Dense & Pika''s signature industrial and dynamic style, each track bringing its own unique sound to the release whilst being unified by the sledgehammer style intensity throughout. The release is laden with sporadic vocals, clanking samples and serious kick drums throughout - another heavy hitting, ear whipping release from Dense & Pika', N'TROPICAL HOUSE', N'2:54', N'GALANTIS')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (7, N'TILL THE SKY FALL', 2.4, N'~/music/1.mp3', N'./IMG/Listen/Slider/top7.jpg', N'Pioneering an international network of artists since its origin in 1991, together John Digweed and Nick Muir have provided a gateway for the visions of underground musics most profound names to consistently release their innovative and groundbreaking productions. Rooted firmly in the upper tier of electronic musics premier division, Bedrock has rightfully become a pivotal component in the hearts and minds of dance music lovers across the globe.
+', N'NIGHTCORE', N'2:54', N'HARDWELL')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (8, N'WAITING', 2.6, N'~/music/1.mp3', N'./IMG/Listen/Slider/top8.jpg', N'Driving forward from the releases of Structures One and Two in 2010 and 2011, John Digweed proudly announces his next showcase of all the styles and influences that have made Bedrock such an intrinsic element of dance musics tapestry. Featuring three CDs and an exclusive DVD that impeccably captures the trademark Bedrock sound, Re-Structured is yet another exceptional milestone in the history of Bedrock records. 
+
+Consistently enchanting the worlds most prolific dance floors, Re-Structured exhibits thirty-five tracks (twenty-one exclusive), which have been compiled and mixed by label head John Digweed over three discs. Welcoming new artists to Bedrock as well as inviting some revered favorites from over the years, Re-Structured intricately captivates Digweeds electric perception of how music should be experienced. Each of the three discs are merged together by the unyielding and mesmeric production style of Bedrock artists new and old, creating a listening experience no like no other.', N'TRAP', N'2:48', N'KSHMR')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (9, N'YESTERDAY I GONE', 3.1, N'~/music/1.mp3', N'./IMG/Listen/Slider/top9.jpg', N'Titled Re-Structured, CD one includes ten exclusive never before heard tracks, introducing the likes of Montel with his stellar production of At Night, alongside Lee Van Dowski and Joop Junior who all make their debuts on the Bedrock imprint. Never straying too far away from some of the labels most of enthralling releases, Digweed welcomes back leading members of the Bedrock family Dave Angel, Quivver and BOg with the masterfully crafted Ava.
+
+Certain to entice a standing ovation from all types of Bedrock listeners, the second CD boasts a remarkable selection of reworks and remixes from some classics from the labels catalogue. Transforming these eleven tracks into a perfected listening experience, the likes of Electric Rescue, Joeski, and Sian all provide their colossal and limitless production styles re-constructing some of Bedrocks most adored releases.', N'FUTURE HOUSE', N'2:48', N'KYGO')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (10, N'BANG MY HEAD', 3.2, N'~/music/1.mp3', N'./IMG/Listen/Slider/top10.jpg', N'October 1st 2015 saw John Digweed celebrate seventeen years of Bedrock with a momentous party at one of Londons most distinguished venues, XOYO. The third disc holds a very special live recording of Johns set at the anniversary event, capturing the party at its pinnacle point once again demonstrating why he is still one of the most sought after artists in electronic music today. Whether it be supplying assured floor fillers with his own euphoric sounding Track For Life, or mesmerizing the crowd with the melodic synth arrangements of Gel Abrils Carpet Sneak, his set at XOYO will undoubtedly go down in underground music folklore as one of his most memorable to date.
+', N'MELODIC', N'2:48', N'MARTIN GARRIX')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (11, N'CLAP YOU HAND', 3.9, N'~/music/1.mp3', N'./IMG/Listen/Slider/top11.jpg', N'An inconceivable selection of productions fused together into a unique and eclectic release, Re-Structured reiterates the undeniable fact that John Digweed and Bedrock records are musical visionaries, responsible for shaping and inspiring the paths of so many artists to date. Whether it be focusing on the future, or propelled by the past, John Digweed continues to be one of electronic musics most esteemed DJs, producers, and label bosses.', N'DEEP HOUSE', N'2:48', N'NICKY ROMERO')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (12, N'HEY MAMA', 1.9, N'~/music/1.mp3', N'./IMG/Listen/Slider/top12.jpg', N'Diynamic continues to come up with the goods in 2016, this time offering up the new "Essenza EP" from rising Italian talent Andy Bros. He was already introduced to the label as part of the fifth episode of Diynamic''s "Four To The Floor" EP series with his track "Vento". Andy Bros, real name Antimo Argenziano, was brought up on 90s US house, has a taste for soul and jazz and is a formally trained piano player. All of this makes his music richly characterful and musical, as well as devastating on the dance floor. Also a qualified sound engineer, Andy has ten years DJ experience behind him and now confirms he is just as skilled in the studio as he is the booth. The title track "Essenza" is an epic bit of house music that builds to a grand, floor slaying peak.', N'TRANCE', N'2:48', N'OLIVER HELDENS')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (13, N'LISTEN', 0.5, N'~/music/1.mp3', N'./IMG/Listen/Slider/top13.jpg', N' Spine-tingling melodies ripple above deeply rooted drums and big bold bass strokes add real drama. It''s a sombre yet anthemic cut that cannot fail to get the attention of the crowd. "Vino & Fagottini" is another majestic affair that slowly and subtly builds up through classy breakdowns and suspenseful chords. It keeps you hanging on a knife edge with its rolling drums and rasping chords. "Pleiadi" then gets more unhinged, with its freewheeling, kaleidoscopic melodies and grand synth lines. Full of colour and late night theatre, it is another sure fire hit in the making, and it fits perfectly with the sound the label and boss man Solomun are known for.', N'CHILLSTEP', N'2:48', N'PORTER ROBINSON')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (14, N'WHAT I DID FOR LOVE', 4.2, N'~/music/1.mp3', N'./IMG/Listen/Slider/top14.jpg', N'Spine-chilling, spellbinding, and breath-taking... Adorned by Wayward Daughter''s striking voice and empowered by electrifying chord progressions and a soaring melody, this work of art is another one of Gareth Emery''s genuine masterpieces, set to shoot straight into any electronic music fan''s heart as the lead single of his forthcoming and third artist album. Bound to join the ranks of the music pioneer''s timeless tunes, this is ''Reckless''.', N'MELODIC', N'2:34', N'R3HAB')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (15, N'DON''T YOU WANT ME', 0.8, N'~/music/1.mp3', N'./IMG/Listen/Slider/top15.jpg', N'With fellow countrymen Ben Gold and Standerwick set to impress, something very special looms on the horizon. The collision of these two worlds of production allowed for the catchy and recognizable melody to be delivered with such drive and energy, ensuring that ''Vindicta'' is all we wanted and more. In sum: an incredible piece of music, made to shatter expectations.', N'HARDSTYLE', N'2:34', N'SKRILLEX')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (16, N'GREAT HIT REMIX', 2.4, N'~/music/1.mp3', N'./IMG/Listen/Slider/top16.jpg', N'What more is there to say about Trance superstar 4 Strings? Hit after hit launches from the 4 String studio with his most recent ''Illumina'' smashing the Beatport Trance chart firmly placed at number 2. Next up is a vocal collaboration with one of our favourites, the ever talented Carol Lee in ''Emotions Away''. This one has feeling, energy and a classic Trance atmosphere, keep an eye out for the extra special video clip as well!', N'NIGHTCORE', N'2:34', N'STEVE AOKI')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (17, N'BROKEN', 2.6, N'~/music/1.mp3', N'./IMG/Listen/Slider/top17.jpg', N'Enjoy and PLAY LOUD!
+
+TWITTER | twitter.com/4Stringsmusic
+FACEBOOK | www.facebook.com/4stringsofficial
+
+WWW | www.RazNitzanMusic.com
+TWITTER | www.twitter.com/RazNitzan
+FACEBOOK | www.facebook.com/RazNitzanMusic
+YOUTUBE | www.youtube.com/RazNitzanMusic', N'DRUM BASS', N'2:34', N'TIESTO')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (18, N'GREAT HIT REMIX', 2.5, N'~/music/1.mp3', N'./IMG/Listen/Slider/top18.jpg', N'The powerhouse label that is Extrema Global Music continues it''s rich vein of form with the latest music outing from Sholan.
+
+The heavy techno laden bassline and percussion that come in from the very first beat do not relent for this dark and moody trancer.
+
+No remix required. The original says it all!!', N'PROGRESSIVE HOUSE', N'2:34', N'UMMET OZCAN')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (19, N'AFTER LIKE REMIX', 3.2, N'~/music/1.mp3', N'./IMG/Listen/Slider/top19.jpg', N' 2Komplex continues to impress with their latest two track release featuring Trek Trip and Infinity Blue. 2Komplex have created a unique sound that is not just powerful music with a groove but also music that tells a story with each track. In just three short years after combining forces, Brazilian DJs Heimdall (Rodrigo Carvalho) and DJ Janzito (Jan Barbosa) have made a respectable name for themselves in the psy trance community. Trek Trip is 2Komplex at their best, a mesmerizing tack that takes the listener on an epic journey encompassing a variety of baselines, melodies and moods. Trek Trip must be listened to from start to finish to truly appreciate the story contained in this piece of music. Infinity Blue gallops through the airwaves with a bubbly baseline and a slinky acid line. Once again it 2Komplex?s ability to tell a story through their music that makes this progressive psy track unique and hypnotic.', N'MELODIC', N'2:34', N'WnW')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (20, N'SUMMER', 3.3, N'~/music/1.mp3', N'./IMG/Listen/Slider/top20.jpg', N'Two progressive minds are gathered again with full power!! We are present new Single from Shogan & Ascent called 3D Visions! This Psy Progressive duo made a melodic,deep and emotinal touch,combinating their ideas in one conception. Enjoy in this melodic Journey', N'TECHNO HOUSE', N'2:34', N'ZEDD')
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (21, N'PEACE IS THE MISSION', 1.4, N'~/music/1.mp3', N'./IMG/Listen/Slider/top21.jpg', N' 2Komplex continues to impress with their latest two track release featuring Trek Trip and Infinity Blue. 2Komplex have created a unique sound that is not just powerful music with a groove but also music that tells a story with each track. In just three short years after combining forces, Brazilian DJs Heimdall (Rodrigo Carvalho) and DJ Janzito (Jan Barbosa) have made a respectable name for themselves in the psy trance community. Trek Trip is 2Komplex at their best, a mesmerizing tack that takes the listener on an epic journey encompassing a variety of baselines, melodies and moods. Trek Trip must be listened to from start to finish to truly appreciate the story contained in this piece of music. Infinity Blue gallops through the airwaves with a bubbly baseline and a slinky acid line. Once again it 2Komplex?s ability to tell a story through their music that makes this progressive psy track unique and hypnotic.', N'MELODIC', N'2:34', NULL)
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (22, N'AVARM DE BAMIN', NULL, NULL, NULL, NULL, NULL, NULL, NULL)
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (23, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
+INSERT [dbo].[LISTEN_SLIDER] ([ID], [NAME_SONG], [COST], [LINK], [LINK_IMG], [DESCRIPT], [GENRE], [LENGHT], [ARTISTS]) VALUES (24, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)
+SET IDENTITY_INSERT [dbo].[LISTEN_SLIDER] OFF
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (1, N'AHORA', N'./IMG/Track/Alesso/ahora016.jpg', N'./music/1.mp3', 29, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (2, N'BAD THING 3', N'./IMG/Track/Alesso/badthing3.jpg', N'./music/10.mp3', 5, 1.3)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (3, N'CLUBBER GUIDE', N'./IMG/Track/Alesso/clubberguide.jpg', N'./music/13.mp3', 31, 1.41)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (4, N'FOREVER', N'./IMG/Track/Alesso/forever.jpg', N'./music/11.mp3', 20, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (5, N'HEROES', N'./IMG/Track/Alesso/heroes.jpg', N'./music/13.mp3', 50, 1.41)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (14, N'SEE THE LIGHT', N'./IMG/Track/Axwell/sunisshining.jpg
+', N'./music/5.mp3', 30, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (15, N'UPTOWN', N'./IMG/Track/Axwell/thistime.jpg
+', N'./music/17.mp3', 21, 1.3)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (18, N'DARK WARRIOS', N'./IMG/Track/Brennan Heart/captainharder.jpg
+', N'./music/23.mp3', 26, 1.3)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (20, N'FONK', N'./IMG/Track/Brennan Heart/gohartstyleorgohome.jpg
+', N'./music/17.mp3', 48, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (21, N'FUNKY TIME', N'./IMG/Track/Brennan Heart/hardbass.jpg
+', N'./music/2.mp3', 47, 1.3)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (22, N'LIGHT THE SKY', N'./IMG/Track/Brennan Heart/hardstyletheannual.jpg
+', N'./music/19.mp3', 46, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (23, N'MAYDAY', N'./IMG/Track/Brennan Heart/keepingtheravelive.jpg
+', N'./music/19.mp3', 25, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (24, N'SURVIVORS', N'./IMG/Track/Brennan Heart/qlimax.jpg
+', N'./music/5.mp3', 45, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (25, N'ARE YOU WITH ME', N'./IMG/Track/Brennan Heart/reverze2016.jpg
+', N'./music/23.mp3', 44, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (26, N'I TAKE CARE', N'./IMG/Track/Calvin Harris/20yearofbeingskin.jpg
+', N'./music/2.mp3', 23, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (27, N'MAN ON THE RUN', N'./IMG/Track/Calvin Harris/30todo.jpg
+', N'./music/19.mp3', 43, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (28, N'NEW YORK CITY', N'./IMG/Track/Calvin Harris/5yearofbigbeat.jpg
+', N'./music/2.mp3', 42, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (29, N'SHELTER', N'./IMG/Track/Calvin Harris/blame.jpg
+', N'./music/31.mp3', 24, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (30, N'THIS IS WHO WE ARE', N'./IMG/Track/Calvin Harris/forever.jpg
+', N'./music/19.mp3', 41, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (31, N'TILL THE SKY FALL', N'./IMG/Track/Calvin Harris/howdeepisurlove.jpg
+', N'./music/31.mp3', 40, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (32, N'WAITING', N'./IMG/Track/Calvin Harris/praytogod.jpg
+', N'./music/2.mp3', 39, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (33, N'WORLD FALL A PART', N'./IMG/Track/Calvin Harris/seethelight.jpg
+', N'./music/19.mp3', 38, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (34, N'YESTERDAY I GONE', N'./IMG/Track/Calvin Harris/uptown.jpg
+', N'./music/23.mp3', 37, 1.3)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (35, N'BAD', N'./IMG/Track/Calvin Harris/workout.jpg
+', N'./music/5.mp3', 28, 1.3)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (36, N'BANG MY HEAD', N'./IMG/Track/Dannic/clap.jpg
+', N'./music/5.mp3', 36, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (37, N'CLAP YOU HAND', N'./IMG/Track/Dannic/darkwarrios.jpg
+', N'./music/2.mp3', 35, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (38, N'HEY MAMA', N'./IMG/Track/Dannic/feelurlove.jpg
+', N'./music/23.mp3', 27, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (39, N'LISTEN', N'./IMG/Track/Dannic/feelurloveremix.jpg
+', N'./music/9.mp3', 34, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (40, N'SUN GOES DOWN', N'./IMG/Track/Dannic/fonk.jpg
+', N'./music/31.mp3', 22, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (41, N'WHAT I DID FOR LOVE', N'./IMG/Track/Dannic/forever.jpg
+', N'./music/9.mp3', 33, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (42, N'ARMADA', N'./IMG/Track/Dannic/funkytime.jpg
+', N'./music/23.mp3', 32, 1.4)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (46, N'ELECTRO', N'./IMG/Track/Dash Berlin/areuwithme.jpg
+', N'./music/20.mp3', 19, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (48, N'HALLOWEN NIGHT', N'./IMG/Track/Dash Berlin/manontherun.jpg
+', N'./music/15.mp3', 18, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (50, N'I LOVE DEEJAY', N'./IMG/Track/Dash Berlin/shelter.jpg
+', N'./music/23.mp3', 17, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (51, N'REAL I BIZA', N'./IMG/Track/Dash Berlin/thisiswhoweare.jpg
+', N'./music/9.mp3', 16, 1.5)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (52, N'FREAK', N'./IMG/Track/Dash Berlin/tilltheskyfall.jpg
+', N'./music/20.mp3', 56, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (53, N'SUMMER', N'./IMG/Track/Dash Berlin/waiting.jpg
+', N'./music/9.mp3', 15, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (54, N'WHERE ARE YOU NOW', N'./IMG/Track/Dash Berlin/worldfallapart.jpg
+', N'./music/15.mp3', 55, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (55, N'AFTER LIKE REMIX', N'./IMG/Track/Dash Berlin/yesterdayisgone.jpg
+', N'./music/9.mp3', 54, 1.5)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (56, N'DIRTY VIBE', N'./IMG/Track/DavidGuetta/bad.jpg
+', N'./music/15.mp3', 14, 1.5)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (57, N'GET LOW', N'./IMG/Track/DavidGuetta/bangmyhead.jpg
+', N'./music/9.mp3', 53, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (58, N'CLARITY', N'./IMG/Track/DavidGuetta/clapuhand.jpg
+', N'./music/31.mp3', 52, 1.5)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (59, N'LUNATIC', N'./IMG/Track/DavidGuetta/heymama.jpg
+', N'./music/27.mp3', 13, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (60, N'MIDDLE', N'./IMG/Track/DavidGuetta/listen.jpg
+', N'./music/20.mp3', 51, 1.5)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (61, N'PEACE IS THE MISSION', N'./IMG/Track/DavidGuetta/sungoesdown.jpg
+', N'./music/27.mp3', 12, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (62, N'PROPAGANDA', N'./IMG/Track/DavidGuetta/whatididforlove.jpg
+', N'./music/20.mp3', 1, 1.5)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (63, N'TURN DOWN FOR WHAT', N'./IMG/Track/Dimitri Vegas/armada.jpg
+', N'./music/27.mp3', 49, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (64, N'YOU KNOW YOU LIKE IT', N'./IMG/Track/Dimitri Vegas/broken.jpg
+', N'./music/20.mp3', 11, 1.5)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (65, N'CHEMICALS', N'./IMG/Track/Dimitri Vegas/cologrerunner.jpg
+', N'./music/27.mp3', 2, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (66, N'GIVE ME A TRY', N'./IMG/Track/Dimitri Vegas/dontuwantme.jpg
+', N'./music/27.mp3', 10, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (67, N'GOT THE LOVE', N'./IMG/Track/Dimitri Vegas/electro.jpg
+', N'./music/32.mp3', 4, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (68, N'ILL HOUSE', N'./IMG/Track/Dimitri Vegas/greathitremix.jpg
+', N'./music/27.mp3', 3, 1.5)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (69, N'KEEP YOUR HAND UP', N'./IMG/Track/Dimitri Vegas/hallowennight.jpg
+', N'./music/32.mp3', 9, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (70, N'MAKE ME FEEL BETTER', N'./IMG/Track/Dimitri Vegas/headinguphigh.jpg
+', N'./music/32.mp3', 6, 1.25)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (71, N'MY WINDOWS', N'./IMG/Track/Dimitri Vegas/ilovedeejay.jpg
+', N'./music/27.mp3', 8, 1.5)
+INSERT [dbo].[NEW_TRACK] ([ID], [NAME], [LINK_IMG], [LINK], [RANKK], [COST]) VALUES (72, N'ON MY MIND', N'./IMG/Track/Nicky Romero/warriorss.jpg', N'./music/27.mp3', 7, 1.5)
+SET IDENTITY_INSERT [dbo].[REMIX] ON 
+
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (1, N'AHORA', 124, N'D MIN', 1.25, N'/music/1.mp3', CAST(0xFB3A0B00 AS Date), N'/IMG/Track/Alesso/ahora016.jpg', 1, N'3:01', N'DRUM BASS', 515, 515, N'AHORA - DAVID GUETTA ft DJ SNAKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (2, N'BAD THING 3', 130, N'E MIN', 1.3, N'/music/10.mp3', CAST(0x2D3B0B00 AS Date), N'/IMG/Track/Alesso/badthing3.jpg', 2, N'3:01', N'HARDDANCE', 484, 484, N'BAD THING 3 - NICKY ROMERO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (3, N'CLUBBER GUIDE', 110, N'K MIN', 1.41, N'/music/13.mp3', CAST(0xE63A0B00 AS Date), N'/IMG/Track/Alesso/clubberguide.jpg', 3, N'3:01', N'PROGRESSIVE HOUSE', 617, 617, N'CLUBBER GUIDE - DJ SNAKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (4, N'FOREVER', 170, N'E MIN', 1.25, N'/music/11.mp3', CAST(0x173B0B00 AS Date), N'/IMG/Track/Alesso/forever.jpg', 4, N'3:01', N'NIGHTCORE', 447, 447, N'FOREVER - AFROJACK')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (5, N'HEROES', 165, N'E MIN', 1.41, N'/music/13.mp3', CAST(0xC73A0B00 AS Date), N'/IMG/Track/Alesso/heroes.jpg', 5, N'3:01', N'CHILLSTEP', 338, 338, N'HEROES - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (6, N'HOUSE DECADES', 155, N'K MIN', 1.25, N'/music/10.mp3', CAST(0x6E390B00 AS Date), N'/IMG/Track/Alesso/housedecades.jpg', 6, N'3:01', N'DRUM BASS', 387, 387, N'HOUSE DECADES - AVICII')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (7, N'I WANT SEE YOU WITH ME', 144, N'E MIN', 1.3, N'/music/13.mp3', CAST(0x90390B00 AS Date), N'/IMG/Track/Alesso/iwantseeyourwith.jpg', 7, N'3:01', N'HARDCORE', 455, 455, N'I WANT SEE YOU WITH ME - WnW')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (8, N'PROGESSIVE CLUB', 140, N'K MIN', 1.3, N'/music/11.mp3', CAST(0x0A3A0B00 AS Date), N'/IMG/Track/Alesso/progessiveclub.jpg', 8, N'3:01', N'PROGRESSIVE HOUSE', 673, 673, N'PROGESSIVE CLUB - BRENNAN HEART')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (9, N'SWENDEN 12 POINTS', 135, N'E MIN', 1.25, N'/music/1.mp3', CAST(0x693A0B00 AS Date), N'/IMG/Track/Alesso/swenden12point.jpg', 9, N'3:01', N'TROPICAL HOUSE', 716, 716, N'SWENDEN 12 POINTS - DIMITRI VEGAS AND LIKE MIKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (10, N'AN HOLD US DOWN', 140, N'E MIN', 1.25, N'/music/23.mp3', CAST(0x0C3A0B00 AS Date), N'/IMG/Track/Axwell/anholdusdown.jpg', 10, N'3:01', N'FUTURE HOUSE', 233, 233, N'AN HOLD US DOWN - HARDWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (11, N'FOREVER', 155, N'K MIN', 1.3, N'/music/5.mp3', CAST(0xD5390B00 AS Date), N'/IMG/Track/Axwell/dreambigger.jpg', 11, N'3:01', N'CHILLSTEP', 382, 382, N'FOREVER - ARMIN VAN BUUREN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (12, N'HOW DEEP IS YOUR LOVE', 140, N'K MIN', 1.3, N'/music/23.mp3', CAST(0x103A0B00 AS Date), N'/IMG/Track/Axwell/onmyway.jpg', 12, N'3:01', N'CHILLSTEP', 281, 281, N'HOW DEEP IS YOUR LOVE - TIESTO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (13, N'PRAY TO GOD', 130, N'E MIN', 1.3, N'/music/23.mp3', CAST(0x073A0B00 AS Date), N'/IMG/Track/Axwell/somethingnew.jpg', 13, N'3:01', N'HARDSTYLE', 322, 322, N'PRAY TO GOD - DJ SNAKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (14, N'SEE THE LIGHT', 140, N'E MIN', 1.25, N'/music/5.mp3', CAST(0xF83A0B00 AS Date), N'/IMG/Track/Axwell/sunisshining.jpg', 14, N'3:01', N'CHILLSTEP', 146, 146, N'SEE THE LIGHT - ALESSO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (15, N'UPTOWN', 140, N'K MIN', 1.3, N'/music/17.mp3', CAST(0x163B0B00 AS Date), N'/IMG/Track/Axwell/thistime.jpg', 15, N'3:01', N'FUTURE BASS', 649, 649, N'UPTOWN - CALVIN HARRIS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (16, N'WORKOUT', 155, N'E MIN', 1.3, N'/music/23.mp3', CAST(0x1A3A0B00 AS Date), N'/IMG/Track/Brennan Heart/10yearnoisecontroller.jpg', 16, N'3:01', N'HARDDANCE', 739, 739, N'WORKOUT - OLIVER HELDENS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (17, N'CLAP', 130, N'E MIN', 1.4, N'/music/5.mp3', CAST(0x133A0B00 AS Date), N'/IMG/Track/Brennan Heart/bassleader.jpg', 17, N'3:01', N'PROGRESSIVE HOUSE', 509, 509, N'CLAP - TIESTO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (18, N'DARK WARRIOS', 140, N'K MIN', 1.3, N'/music/23.mp3', CAST(0x053B0B00 AS Date), N'/IMG/Track/Brennan Heart/captainharder.jpg', 18, N'3:01', N'CHILLSTEP', 146, 146, N'DARK WARRIOS - HARDWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (19, N'FEEL YOUR LOVE', 155, N'E MIN', 1.25, N'/music/17.mp3', CAST(0x123A0B00 AS Date), N'/IMG/Track/Brennan Heart/cominghome.jpg', 19, N'3:01', N'TROPICAL HOUSE', 319, 319, N'FEEL YOUR LOVE - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (20, N'FONK', 140, N'K MIN', 1.4, N'/music/17.mp3', CAST(0xCA3A0B00 AS Date), N'/IMG/Track/Brennan Heart/gohartstyleorgohome.jpg', 20, N'4:11', N'PROGRESSIVE HOUSE', 449, 449, N'FONK - ZEDD')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (21, N'FUNKY TIME', 130, N'K MIN', 1.3, N'/music/2.mp3', CAST(0xCB3A0B00 AS Date), N'/IMG/Track/Brennan Heart/hardbass.jpg', 21, N'4:11', N'CHILLSTEP', 696, 696, N'FUNKY TIME - KSHMR')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (22, N'LIGHT THE SKY', 140, N'E MIN', 1.25, N'/music/19.mp3', CAST(0xCC3A0B00 AS Date), N'/IMG/Track/Brennan Heart/hardstyletheannual.jpg', 22, N'4:11', N'PROGRESSIVE HOUSE', 663, 663, N'LIGHT THE SKY - DVBBS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (23, N'MAYDAY', 155, N'K MIN', 1.25, N'/music/19.mp3', CAST(0x053B0B00 AS Date), N'/IMG/Track/Brennan Heart/keepingtheravelive.jpg', 23, N'4:11', N'TRANCE', 399, 399, N'MAYDAY - DIMITRI VEGAS AND LIKE MIKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (24, N'SURVIVORS', 140, N'E MIN', 1.4, N'/music/5.mp3', CAST(0xCD3A0B00 AS Date), N'/IMG/Track/Brennan Heart/qlimax.jpg', 24, N'4:11', N'FUTURE HOUSE', 253, 253, N'SURVIVORS - HARDWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (25, N'ARE YOU WITH ME', 140, N'K MIN', 1.25, N'/music/23.mp3', CAST(0xCE3A0B00 AS Date), N'/IMG/Track/Brennan Heart/reverze2016.jpg', 25, N'4:11', N'FUTURE BASS', 627, 627, N'ARE YOU WITH ME - STEVE AOKI')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (26, N'I TAKE CARE', 130, N'K MIN', 1.4, N'/music/2.mp3', CAST(0x093B0B00 AS Date), N'/IMG/Track/Calvin Harris/20yearofbeingskin.jpg', 26, N'4:11', N'TECHNO HOUSE', 407, 407, N'I TAKE CARE - ARMIN VAN BUUREN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (27, N'MAN ON THE RUN', 155, N'E MIN', 1.4, N'/music/19.mp3', CAST(0xCF3A0B00 AS Date), N'/IMG/Track/Calvin Harris/30todo.jpg', 27, N'4:11', N'PROGRESSIVE HOUSE', 327, 327, N'MAN ON THE RUN - ARMIN VAN BUUREN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (28, N'NEW YORK CITY', 130, N'K MIN', 1.25, N'/music/2.mp3', CAST(0xD03A0B00 AS Date), N'/IMG/Track/Calvin Harris/5yearofbigbeat.jpg', 28, N'4:11', N'MELODIC', 587, 587, N'NEW YORK CITY - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (29, N'SHELTER', 155, N'E MIN', 1.25, N'/music/31.mp3', CAST(0x083B0B00 AS Date), N'/IMG/Track/Calvin Harris/blame.jpg', 29, N'4:11', N'FUTURE HOUSE', 416, 416, N'SHELTER - DAVID GUETTA')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (30, N'THIS IS WHO WE ARE', 130, N'K MIN', 1.4, N'/music/19.mp3', CAST(0xD13A0B00 AS Date), N'/IMG/Track/Calvin Harris/forever.jpg', 30, N'4:11', N'HARDSTYLE', 202, 202, N'THIS IS WHO WE ARE - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (31, N'TILL THE SKY FALL', 130, N'E MIN', 1.25, N'/music/31.mp3', CAST(0xD23A0B00 AS Date), N'/IMG/Track/Calvin Harris/howdeepisurlove.jpg', 31, N'4:11', N'HARDSTYLE', 431, 431, N'TILL THE SKY FALL - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (32, N'WAITING', 155, N'E MIN', 1.4, N'/music/2.mp3', CAST(0xD33A0B00 AS Date), N'/IMG/Track/Calvin Harris/praytogod.jpg', 32, N'4:11', N'DEEP HOUSE', 338, 338, N'WAITING - ZEDD')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (33, N'WORLD FALL A PART', 170, N'D MIN', 1.25, N'/music/19.mp3', CAST(0xD43A0B00 AS Date), N'/IMG/Track/Calvin Harris/seethelight.jpg', 33, N'4:11', N'CHILLSTEP', 281, 281, N'WORLD FALL A PART - PORTER ROBINSON')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (34, N'YESTERDAY I GONE', 130, N'D MIN', 1.3, N'/music/23.mp3', CAST(0xD53A0B00 AS Date), N'/IMG/Track/Calvin Harris/uptown.jpg', 34, N'4:11', N'PROGRESSIVE HOUSE', 692, 692, N'YESTERDAY I GONE - HARDWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (35, N'BAD', 130, N'E MIN', 1.3, N'/music/5.mp3', CAST(0xFE3A0B00 AS Date), N'/IMG/Track/Calvin Harris/workout.jpg', 35, N'4:11', N'TRAP', 52, 52, N'BAD - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (36, N'BANG MY HEAD', 170, N'E MIN', 1.4, N'/music/5.mp3', CAST(0xD63A0B00 AS Date), N'/IMG/Track/Dannic/clap.jpg', 36, N'4:11', N'FUTURE BASS', 192, 192, N'BANG MY HEAD - DIMITRI VEGAS AND LIKE MIKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (37, N'CLAP YOU HAND', 155, N'E MIN', 1.25, N'/music/2.mp3', CAST(0xD73A0B00 AS Date), N'/IMG/Track/Dannic/darkwarrios.jpg', 37, N'4:11', N'HARDCORE', 710, 710, N'CLAP YOU HAND - AXWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (38, N'HEY MAMA', 130, N'E MIN', 1.4, N'/music/23.mp3', CAST(0xFF3A0B00 AS Date), N'/IMG/Track/Dannic/feelurlove.jpg', 38, N'4:11', N'MELODIC', 262, 262, N'HEY MAMA - STEVE AOKI')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (39, N'LISTEN', 130, N'D MIN', 1.25, N'/music/9.mp3', CAST(0xD83A0B00 AS Date), N'/IMG/Track/Dannic/feelurloveremix.jpg', 39, N'4:11', N'FUTURE HOUSE', 139, 139, N'LISTEN - AFROJACK')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (40, N'SUN GOES DOWN', 140, N'E MIN', 1.25, N'/music/31.mp3', CAST(0x0F3B0B00 AS Date), N'/IMG/Track/Dannic/fonk.jpg', 40, N'4:11', N'NIGHTCORE', 464, 464, N'SUN GOES DOWN - STEVE AOKI')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (41, N'WHAT I DID FOR LOVE', 155, N'E MIN', 1.4, N'/music/9.mp3', CAST(0xD93A0B00 AS Date), N'/IMG/Track/Dannic/forever.jpg', 41, N'4:11', N'TRAP', 561, 561, N'WHAT I DID FOR LOVE - ARMIN VAN BUUREN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (42, N'ARMADA', 140, N'D MIN', 1.4, N'/music/23.mp3', CAST(0xDA3A0B00 AS Date), N'/IMG/Track/Dannic/funkytime.jpg', 42, N'4:11', N'HARDDANCE', 384, 384, N'ARMADA - AFROJACK')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (43, N'BROKEN', 130, N'E MIN', 1.4, N'/music/15.mp3', CAST(0xBC3A0B00 AS Date), N'/IMG/Track/Dannic/lightthesky.jpg', 43, N'4:11', N'PROGRESSIVE HOUSE', 380, 380, N'BROKEN - OLIVER HELDENS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (44, N'COLOGRE RUNNER', 130, N'D MIN', 1.4, N'/music/31.mp3', CAST(0xBD3A0B00 AS Date), N'/IMG/Track/Dannic/mayday.jpg', 44, N'4:11', N'FUTURE BASS', 530, 530, N'COLOGRE RUNNER - KSHMR')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (45, N'DON''T YOU WANT ME', 140, N'E MIN', 1.4, N'/music/20.mp3', CAST(0xBE3A0B00 AS Date), N'/IMG/Track/Dannic/survivors.jpg', 45, N'4:11', N'CHILLSTEP', 466, 466, N'DON''T YOU WANT ME - HARDWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (46, N'ELECTRO', 130, N'D MIN', 1.25, N'/music/20.mp3', CAST(0x203B0B00 AS Date), N'/IMG/Track/Dash Berlin/areuwithme.jpg', 46, N'4:11', N'TRANCE', 502, 502, N'ELECTRO - SKRILLEX')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (47, N'GREAT HIT REMIX', 140, N'D MIN', 1.5, N'/music/31.mp3', CAST(0xBF3A0B00 AS Date), N'/IMG/Track/Dash Berlin/itakecare.jpg', 47, N'4:11', N'HARDSTYLE', 426, 426, N'GREAT HIT REMIX - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (48, N'HALLOWEN NIGHT', 155, N'E MIN', 1.25, N'/music/15.mp3', CAST(0x213B0B00 AS Date), N'/IMG/Track/Dash Berlin/manontherun.jpg', 48, N'4:11', N'MELODIC', 222, 222, N'HALLOWEN NIGHT - PORTER ROBINSON')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (49, N'HEADING UP HIGH', 140, N'D MIN', 1.25, N'/music/9.mp3', CAST(0xC03A0B00 AS Date), N'/IMG/Track/Dash Berlin/newyorkcity.jpg', 49, N'4:11', N'NIGHTSTEP', 451, 451, N'HEADING UP HIGH - STEVE AOKI')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (50, N'I LOVE DEEJAY', 140, N'E MIN', 1.25, N'/music/23.mp3', CAST(0x223B0B00 AS Date), N'/IMG/Track/Dash Berlin/shelter.jpg', 50, N'4:59', N'CHILLSTEP', 320, 320, N'I LOVE DEEJAY - BRENNAN HEART')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (51, N'REAL I BIZA', 155, N'E MIN', 1.5, N'/music/9.mp3', CAST(0x233B0B00 AS Date), N'/IMG/Track/Dash Berlin/thisiswhoweare.jpg', 51, N'4:59', N'PROGRESSIVE HOUSE', 447, 447, N'REAL I BIZA - GALANTIS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (52, N'FREAK', 140, N'D MIN', 1.25, N'/music/20.mp3', CAST(0xC13A0B00 AS Date), N'/IMG/Track/Dash Berlin/tilltheskyfall.jpg', 52, N'4:59', N'MELODIC', 146, 146, N'FREAK - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (53, N'SUMMER', 155, N'E MIN', 1.25, N'/music/9.mp3', CAST(0x243B0B00 AS Date), N'/IMG/Track/Dash Berlin/waiting.jpg', 53, N'4:59', N'MELODIC', 435, 435, N'SUMMER - BRENNAN HEART')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (54, N'WHERE ARE YOU NOW', 155, N'D MIN', 1.25, N'/music/15.mp3', CAST(0xC23A0B00 AS Date), N'/IMG/Track/Dash Berlin/worldfallapart.jpg', 54, N'4:59', N'HARDCORE', 535, 535, N'WHERE ARE YOU NOW - DAVID GUETTA')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (55, N'AFTER LIKE REMIX', 130, N'D MIN', 1.5, N'/music/9.mp3', CAST(0xC33A0B00 AS Date), N'/IMG/Track/Dash Berlin/yesterdayisgone.jpg', 55, N'4:59', N'NIGHTCORE', 316, 316, N'AFTER LIKE REMIX - UMMET OZCAN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (56, N'DIRTY VIBE', 130, N'E MIN', 1.5, N'/music/15.mp3', CAST(0x253B0B00 AS Date), N'/IMG/Track/DavidGuetta/bad.jpg', 56, N'4:59', N'DRUM BASS', 465, 465, N'DIRTY VIBE - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (57, N'GET LOW', 140, N'D MIN', 1.25, N'/music/9.mp3', CAST(0xC43A0B00 AS Date), N'/IMG/Track/DavidGuetta/bangmyhead.jpg', 57, N'4:59', N'DEEP HOUSE', 276, 276, N'GET LOW - DJ SNAKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (58, N'CLARITY', 130, N'E MIN', 1.5, N'/music/31.mp3', CAST(0xC53A0B00 AS Date), N'/IMG/Track/DavidGuetta/clapuhand.jpg', 58, N'4:59', N'TROPICAL HOUSE', 569, 569, N'CLARITY - MARTIN GARRIX')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (59, N'LUNATIC', 140, N'D MIN', 1.25, N'/music/27.mp3', CAST(0x263B0B00 AS Date), N'/IMG/Track/DavidGuetta/heymama.jpg', 59, N'4:59', N'FUTURE BASS', 403, 403, N'LUNATIC - AXWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (60, N'MIDDLE', 140, N'E MIN', 1.5, N'/music/20.mp3', CAST(0xC63A0B00 AS Date), N'/IMG/Track/DavidGuetta/listen.jpg', 60, N'4:59', N'TRANCE', 420, 420, N'MIDDLE - NICKY ROMERO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (61, N'PEACE IS THE MISSION', 130, N'D MIN', 1.25, N'/music/27.mp3', CAST(0x273B0B00 AS Date), N'/IMG/Track/DavidGuetta/sungoesdown.jpg', 61, N'4:59', N'CHILLSTEP', 665, 665, N'PEACE IS THE MISSION - OLIVER HELDENS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (62, N'PROPAGANDA', 140, N'D MIN', 1.5, N'/music/20.mp3', CAST(0x313B0B00 AS Date), N'/IMG/Track/DavidGuetta/whatididforlove.jpg', 62, N'4:59', N'HARDDANCE', 525, 525, N'PROPAGANDA - DVBBS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (63, N'TURN DOWN FOR WHAT', 140, N'D MIN', 1.25, N'/music/27.mp3', CAST(0xC83A0B00 AS Date), N'/IMG/Track/Dimitri Vegas/armada.jpg', 63, N'4:59', N'FUTURE HOUSE', 298, 298, N'TURN DOWN FOR WHAT - R3HAB')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (64, N'YOU KNOW YOU LIKE IT', 140, N'D MIN', 1.5, N'/music/20.mp3', CAST(0x283B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/broken.jpg', 64, N'4:59', N'DEEP HOUSE', 256, 256, N'YOU KNOW YOU LIKE IT - HARDWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (65, N'CHEMICALS', 130, N'E MIN', 1.25, N'/music/27.mp3', CAST(0x303B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/cologrerunner.jpg', 65, N'4:59', N'MELODIC', 279, 279, N'CHEMICALS - NICKY ROMERO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (66, N'GIVE ME A TRY', 140, N'E MIN', 1.25, N'/music/27.mp3', CAST(0x293B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/dontuwantme.jpg', 66, N'4:59', N'TRANCE', 490, 490, N'GIVE ME A TRY - AFROJACK')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (67, N'GOT THE LOVE', 140, N'D MIN', 1.25, N'/music/32.mp3', CAST(0x2E3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/electro.jpg', 67, N'4:59', N'PROGRESSIVE HOUSE', 485, 485, N'GOT THE LOVE - DVBBS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (68, N'ILL HOUSE', 140, N'D MIN', 1.5, N'/music/27.mp3', CAST(0x2F3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/greathitremix.jpg', 68, N'4:59', N'DEEP HOUSE', 458, 458, N'ILL HOUSE - DJ SNAKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (69, N'KEEP YOUR HAND UP', 155, N'E MIN', 1.25, N'/music/32.mp3', CAST(0x2A3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/hallowennight.jpg', 69, N'4:59', N'FUTURE BASS', 307, 307, N'KEEP YOUR HAND UP - AXWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (70, N'MAKE ME FEEL BETTER', 140, N'D MIN', 1.25, N'/music/32.mp3', CAST(0x2D3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/headinguphigh.jpg', 70, N'6:30', N'TRANCE', 413, 413, N'MAKE ME FEEL BETTER - KYGO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (71, N'MY WINDOWS', 155, N'E MIN', 1.5, N'/music/27.mp3', CAST(0x2B3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/ilovedeejay.jpg', 71, N'6:30', N'FUTURE HOUSE', 503, 503, N'MY WINDOWS - OLIVER HELDENS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (72, N'ON MY MIND', 140, N'E MIN', 1.5, N'/music/27.mp3', CAST(0x2C3B0B00 AS Date), N'/IMG/Track/Nicky Romero/warriorss.jpg', 72, N'6:30', N'CHILLSTEP', 561, 561, N'ON MY MIND - KYGO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (73, N'FOREVER', 170, N'E MIN', 1.25, N'/music/11.mp3', CAST(0x173B0B00 AS Date), N'/IMG/Track/Alesso/forever.jpg', 4, N'6:30', N'TROPICAL HOUSE', 462, 462, N'FOREVER - AFROJACK')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (74, N'HEROES', 165, N'E MIN', 1.41, N'/music/13.mp3', CAST(0xC73A0B00 AS Date), N'/IMG/Track/Alesso/heroes.jpg', 5, N'6:30', N'DRUM BASS', 279, 279, N'HEROES - DON DIABLO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (75, N'HOUSE DECADES', 155, N'K MIN', 1.25, N'/music/10.mp3', CAST(0x6E390B00 AS Date), N'/IMG/Track/Alesso/housedecades.jpg', 6, N'6:30', N'MELODIC', 289, 289, N'HOUSE DECADES - R3HAB')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (76, N'I WANT SEE YOU WITH ME', 144, N'E MIN', 1.3, N'/music/13.mp3', CAST(0x90390B00 AS Date), N'/IMG/Track/Alesso/iwantseeyourwith.jpg', 7, N'6:30', N'FUTURE BASS', 402, 402, N'I WANT SEE YOU WITH ME - AVICII')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (77, N'PROGESSIVE CLUB', 140, N'K MIN', 1.3, N'/music/11.mp3', CAST(0x0A3A0B00 AS Date), N'/IMG/Track/Alesso/progessiveclub.jpg', 8, N'6:30', N'FUTURE BASS', 695, 695, N'PROGESSIVE CLUB - UMMET OZCAN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (78, N'SWENDEN 12 POINTS', 135, N'E MIN', 1.25, N'/music/1.mp3', CAST(0x693A0B00 AS Date), N'/IMG/Track/Alesso/swenden12point.jpg', 9, N'6:30', N'HARDCORE', 300, 300, N'SWENDEN 12 POINTS - ARMIN VAN BUUREN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (79, N'AN HOLD US DOWN', 140, N'E MIN', 1.25, N'/music/23.mp3', CAST(0x0C3A0B00 AS Date), N'/IMG/Track/Axwell/anholdusdown.jpg', 10, N'6:30', N'DEEP HOUSE', 386, 386, N'AN HOLD US DOWN - AVICII')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (80, N'FOREVER', 155, N'K MIN', 1.3, N'/music/5.mp3', CAST(0xD5390B00 AS Date), N'/IMG/Track/Axwell/dreambigger.jpg', 11, N'6:30', N'TRAP', 156, 156, N'FOREVER - OLIVER HELDENS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (81, N'HOW DEEP IS YOUR LOVE', 140, N'K MIN', 1.3, N'/music/23.mp3', CAST(0x103A0B00 AS Date), N'/IMG/Track/Axwell/onmyway.jpg', 12, N'6:30', N'PROGRESSIVE HOUSE', 505, 505, N'HOW DEEP IS YOUR LOVE - AXWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (82, N'PRAY TO GOD', 130, N'E MIN', 1.3, N'/music/23.mp3', CAST(0x073A0B00 AS Date), N'/IMG/Track/Axwell/somethingnew.jpg', 13, N'6:30', N'CHILLSTEP', 377, 377, N'PRAY TO GOD - DVBBS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (83, N'SEE THE LIGHT', 140, N'E MIN', 1.25, N'/music/5.mp3', CAST(0xF83A0B00 AS Date), N'/IMG/Track/Axwell/sunisshining.jpg', 14, N'6:30', N'FUTURE HOUSE', 583, 583, N'SEE THE LIGHT - DVBBS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (84, N'UPTOWN', 140, N'K MIN', 1.3, N'/music/17.mp3', CAST(0x163B0B00 AS Date), N'/IMG/Track/Axwell/thistime.jpg', 15, N'6:30', N'PROGRESSIVE HOUSE', 533, 533, N'UPTOWN - ALESSO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (85, N'WORKOUT', 155, N'E MIN', 1.3, N'/music/23.mp3', CAST(0x1A3A0B00 AS Date), N'/IMG/Track/Brennan Heart/10yearnoisecontroller.jpg', 16, N'6:30', N'MELODIC', 578, 578, N'WORKOUT - STEVE AOKI')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (86, N'CLAP', 130, N'E MIN', 1.4, N'/music/5.mp3', CAST(0x133A0B00 AS Date), N'/IMG/Track/Brennan Heart/bassleader.jpg', 17, N'6:30', N'DEEP HOUSE', 534, 534, N'CLAP - AXWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (87, N'DARK WARRIOS', 140, N'K MIN', 1.3, N'/music/23.mp3', CAST(0x053B0B00 AS Date), N'/IMG/Track/Brennan Heart/captainharder.jpg', 18, N'6:30', N'FUTURE BASS', 500, 500, N'DARK WARRIOS - AVICII')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (88, N'FEEL YOUR LOVE', 155, N'E MIN', 1.25, N'/music/17.mp3', CAST(0x123A0B00 AS Date), N'/IMG/Track/Brennan Heart/cominghome.jpg', 19, N'6:30', N'HARDDANCE', 254, 254, N'FEEL YOUR LOVE - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (89, N'FONK', 140, N'K MIN', 1.4, N'/music/17.mp3', CAST(0xCA3A0B00 AS Date), N'/IMG/Track/Brennan Heart/gohartstyleorgohome.jpg', 20, N'6:30', N'FUTURE HOUSE', 457, 457, N'FONK - KSHMR')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (90, N'FUNKY TIME', 130, N'K MIN', 1.3, N'/music/2.mp3', CAST(0xCB3A0B00 AS Date), N'/IMG/Track/Brennan Heart/hardbass.jpg', 21, N'6:30', N'HARDCORE', 416, 416, N'FUNKY TIME - AXWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (91, N'LIGHT THE SKY', 140, N'E MIN', 1.25, N'/music/19.mp3', CAST(0xCC3A0B00 AS Date), N'/IMG/Track/Brennan Heart/hardstyletheannual.jpg', 22, N'6:30', N'TRANCE', 180, 180, N'LIGHT THE SKY - STEVE AOKI')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (92, N'MAYDAY', 155, N'K MIN', 1.25, N'/music/19.mp3', CAST(0x053B0B00 AS Date), N'/IMG/Track/Brennan Heart/keepingtheravelive.jpg', 23, N'6:30', N'PROGRESSIVE HOUSE', 540, 540, N'MAYDAY - ZEDD')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (93, N'SURVIVORS', 140, N'E MIN', 1.4, N'/music/5.mp3', CAST(0xCD3A0B00 AS Date), N'/IMG/Track/Brennan Heart/qlimax.jpg', 24, N'6:30', N'TRAP', 450, 450, N'SURVIVORS - R3HAB')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (94, N'ARE YOU WITH ME', 140, N'K MIN', 1.25, N'/music/23.mp3', CAST(0xCE3A0B00 AS Date), N'/IMG/Track/Brennan Heart/reverze2016.jpg', 25, N'6:30', N'TECHNO HOUSE', 170, 170, N'ARE YOU WITH ME - KSHMR')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (95, N'I TAKE CARE', 130, N'K MIN', 1.4, N'/music/2.mp3', CAST(0x093B0B00 AS Date), N'/IMG/Track/Calvin Harris/20yearofbeingskin.jpg', 26, N'6:30', N'HARDCORE', 452, 452, N'I TAKE CARE - UMMET OZCAN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (96, N'MAN ON THE RUN', 155, N'E MIN', 1.4, N'/music/19.mp3', CAST(0xCF3A0B00 AS Date), N'/IMG/Track/Calvin Harris/30todo.jpg', 27, N'6:30', N'HARDSTYLE', 283, 283, N'MAN ON THE RUN - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (97, N'NEW YORK CITY', 130, N'K MIN', 1.25, N'/music/2.mp3', CAST(0xD03A0B00 AS Date), N'/IMG/Track/Calvin Harris/5yearofbigbeat.jpg', 28, N'6:30', N'FUTURE BASS', 325, 325, N'NEW YORK CITY - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (98, N'SHELTER', 155, N'E MIN', 1.25, N'/music/31.mp3', CAST(0x083B0B00 AS Date), N'/IMG/Track/Calvin Harris/blame.jpg', 29, N'6:30', N'TROPICAL HOUSE', 311, 311, N'SHELTER - CALVIN HARRIS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (99, N'THIS IS WHO WE ARE', 130, N'K MIN', 1.4, N'/music/19.mp3', CAST(0xD13A0B00 AS Date), N'/IMG/Track/Calvin Harris/forever.jpg', 30, N'6:30', N'TECHNO HOUSE', 427, 427, N'THIS IS WHO WE ARE - DIMITRI VEGAS AND LIKE MIKE')
+GO
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (100, N'TILL THE SKY FALL', 130, N'E MIN', 1.25, N'/music/31.mp3', CAST(0xD23A0B00 AS Date), N'/IMG/Track/Calvin Harris/howdeepisurlove.jpg', 31, N'6:30', N'CHILLSTEP', 671, 671, N'TILL THE SKY FALL - KSHMR')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (101, N'WAITING', 155, N'E MIN', 1.4, N'/music/2.mp3', CAST(0xD33A0B00 AS Date), N'/IMG/Track/Calvin Harris/praytogod.jpg', 32, N'6:30', N'NIGHTCORE', 668, 668, N'WAITING - SKRILLEX')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (102, N'WORLD FALL A PART', 170, N'D MIN', 1.25, N'/music/19.mp3', CAST(0xD43A0B00 AS Date), N'/IMG/Track/Calvin Harris/seethelight.jpg', 33, N'4:59', N'FUTURE BASS', 166, 166, N'WORLD FALL A PART - KSHMR')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (103, N'YESTERDAY I GONE', 130, N'D MIN', 1.3, N'/music/23.mp3', CAST(0xD53A0B00 AS Date), N'/IMG/Track/Calvin Harris/uptown.jpg', 34, N'4:59', N'NIGHTCORE', 433, 433, N'YESTERDAY I GONE - SKRILLEX')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (104, N'BAD', 130, N'E MIN', 1.3, N'/music/5.mp3', CAST(0xFE3A0B00 AS Date), N'/IMG/Track/Calvin Harris/workout.jpg', 35, N'4:59', N'DRUM BASS', 294, 294, N'BAD - GALANTIS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (105, N'BANG MY HEAD', 170, N'E MIN', 1.4, N'/music/5.mp3', CAST(0xD63A0B00 AS Date), N'/IMG/Track/Dannic/clap.jpg', 36, N'4:59', N'HARDSTYLE', 471, 471, N'BANG MY HEAD - SKRILLEX')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (106, N'CLAP YOU HAND', 155, N'E MIN', 1.25, N'/music/2.mp3', CAST(0xD73A0B00 AS Date), N'/IMG/Track/Dannic/darkwarrios.jpg', 37, N'4:59', N'DEEP HOUSE', 209, 209, N'CLAP YOU HAND - ALESSO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (107, N'HEY MAMA', 130, N'E MIN', 1.4, N'/music/23.mp3', CAST(0xFF3A0B00 AS Date), N'/IMG/Track/Dannic/feelurlove.jpg', 38, N'4:59', N'DRUM BASS', 534, 534, N'HEY MAMA - CALVIN HARRIS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (108, N'LISTEN', 130, N'D MIN', 1.25, N'/music/9.mp3', CAST(0xD83A0B00 AS Date), N'/IMG/Track/Dannic/feelurloveremix.jpg', 39, N'4:59', N'NIGHTCORE', 568, 568, N'LISTEN - NICKY ROMERO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (109, N'SUN GOES DOWN', 140, N'E MIN', 1.25, N'/music/31.mp3', CAST(0x0F3B0B00 AS Date), N'/IMG/Track/Dannic/fonk.jpg', 40, N'4:59', N'TRAP', 323, 323, N'SUN GOES DOWN - DIPLO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (110, N'WHAT I DID FOR LOVE', 155, N'E MIN', 1.4, N'/music/9.mp3', CAST(0xD93A0B00 AS Date), N'/IMG/Track/Dannic/forever.jpg', 41, N'4:59', N'HARDCORE', 551, 551, N'WHAT I DID FOR LOVE - TIESTO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (111, N'ARMADA', 140, N'D MIN', 1.4, N'/music/23.mp3', CAST(0xDA3A0B00 AS Date), N'/IMG/Track/Dannic/funkytime.jpg', 42, N'4:59', N'TECHNO HOUSE', 373, 373, N'ARMADA - DON DIABLO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (112, N'BROKEN', 130, N'E MIN', 1.4, N'/music/15.mp3', CAST(0xBC3A0B00 AS Date), N'/IMG/Track/Dannic/lightthesky.jpg', 43, N'4:59', N'DEEP HOUSE', 474, 474, N'BROKEN - TIESTO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (113, N'COLOGRE RUNNER', 130, N'D MIN', 1.4, N'/music/31.mp3', CAST(0xBD3A0B00 AS Date), N'/IMG/Track/Dannic/mayday.jpg', 44, N'4:59', N'NIGHTSTEP', 327, 327, N'COLOGRE RUNNER - DIMITRI VEGAS AND LIKE MIKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (114, N'I TAKE CARE', 130, N'K MIN', 1.9, N'/music/2.mp3', CAST(0x093B0B00 AS Date), N'/IMG/Track/Calvin Harris/20yearofbeingskin.jpg', 26, N'4:59', N'PROGRESSIVE HOUSE', 547, 547, N'I TAKE CARE - KYGO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (115, N'MAN ON THE RUN', 155, N'E MIN', 1.9, N'/music/19.mp3', CAST(0xCF3A0B00 AS Date), N'/IMG/Track/Calvin Harris/30todo.jpg', 27, N'4:59', N'PROGRESSIVE HOUSE', 367, 367, N'MAN ON THE RUN - DON DIABLO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (116, N'NEW YORK CITY', 130, N'K MIN', 1.75, N'/music/2.mp3', CAST(0xD03A0B00 AS Date), N'/IMG/Track/Calvin Harris/5yearofbigbeat.jpg', 28, N'4:59', N'NIGHTCORE', 792, 792, N'NEW YORK CITY - AFROJACK')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (117, N'SHELTER', 155, N'E MIN', 1.75, N'/music/31.mp3', CAST(0x083B0B00 AS Date), N'/IMG/Track/Calvin Harris/blame.jpg', 29, N'4:59', N'FUTURE HOUSE', 208, 208, N'SHELTER - NICKY ROMERO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (118, N'THIS IS WHO WE ARE', 130, N'K MIN', 1.9, N'/music/19.mp3', CAST(0xD13A0B00 AS Date), N'/IMG/Track/Calvin Harris/forever.jpg', 30, N'4:59', N'DRUM BASS', 669, 669, N'THIS IS WHO WE ARE - CALVIN HARRIS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (119, N'TILL THE SKY FALL', 130, N'E MIN', 1.75, N'/music/31.mp3', CAST(0xD23A0B00 AS Date), N'/IMG/Track/Calvin Harris/howdeepisurlove.jpg', 31, N'4:59', N'DRUM BASS', 79, 79, N'TILL THE SKY FALL - AFROJACK')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (120, N'WAITING', 155, N'E MIN', 1.9, N'/music/2.mp3', CAST(0xD33A0B00 AS Date), N'/IMG/Track/Calvin Harris/praytogod.jpg', 32, N'4:59', N'DRUM BASS', 401, 401, N'WAITING - NICKY ROMERO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (121, N'WORLD FALL A PART', 170, N'D MIN', 1.75, N'/music/19.mp3', CAST(0xD43A0B00 AS Date), N'/IMG/Track/Calvin Harris/seethelight.jpg', 33, N'4:59', N'TROPICAL HOUSE', 285, 285, N'WORLD FALL A PART - WnW')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (122, N'YESTERDAY I GONE', 130, N'D MIN', 1.8, N'/music/23.mp3', CAST(0xD53A0B00 AS Date), N'/IMG/Track/Calvin Harris/uptown.jpg', 34, N'4:59', N'CHILLSTEP', 458, 458, N'YESTERDAY I GONE - STEVE AOKI')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (123, N'BAD', 130, N'E MIN', 1.8, N'/music/5.mp3', CAST(0xFE3A0B00 AS Date), N'/IMG/Track/Calvin Harris/workout.jpg', 35, N'4:59', N'MELODIC', 452, 452, N'BAD - R3HAB')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (124, N'BANG MY HEAD', 170, N'E MIN', 1.9, N'/music/5.mp3', CAST(0xD63A0B00 AS Date), N'/IMG/Track/Dannic/clap.jpg', 36, N'4:59', N'CHILLSTEP', 772, 772, N'BANG MY HEAD - HARDWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (125, N'CLAP YOU HAND', 155, N'E MIN', 1.75, N'/music/2.mp3', CAST(0xD73A0B00 AS Date), N'/IMG/Track/Dannic/darkwarrios.jpg', 37, N'4:59', N'FUTURE BASS', 461, 461, N'CLAP YOU HAND - SKRILLEX')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (126, N'HEY MAMA', 130, N'E MIN', 1.9, N'/music/23.mp3', CAST(0xFF3A0B00 AS Date), N'/IMG/Track/Dannic/feelurlove.jpg', 38, N'4:59', N'HARDDANCE', 468, 468, N'HEY MAMA - OLIVER HELDENS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (127, N'LISTEN', 130, N'D MIN', 1.75, N'/music/9.mp3', CAST(0xD83A0B00 AS Date), N'/IMG/Track/Dannic/feelurloveremix.jpg', 39, N'4:59', N'HARDDANCE', 297, 297, N'LISTEN - DVBBS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (128, N'HEY MAMA', 130, N'E MIN', 1.8, N'/music/23.mp3', CAST(0xFF3A0B00 AS Date), N'/IMG/Track/Dannic/feelurlove.jpg', 38, N'4:59', N'DRUM BASS', 398, 398, N'HEY MAMA - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (129, N'LISTEN', 130, N'D MIN', 1.65, N'/music/9.mp3', CAST(0xD83A0B00 AS Date), N'/IMG/Track/Dannic/feelurloveremix.jpg', 39, N'4:59', N'HARDDANCE', 600, 600, N'LISTEN - TIESTO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (130, N'SUN GOES DOWN', 140, N'E MIN', 1.65, N'/music/31.mp3', CAST(0x0F3B0B00 AS Date), N'/IMG/Track/Dannic/fonk.jpg', 40, N'4:59', N'TRAP', 137, 137, N'SUN GOES DOWN - KYGO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (131, N'WHAT I DID FOR LOVE', 155, N'E MIN', 1.8, N'/music/9.mp3', CAST(0xD93A0B00 AS Date), N'/IMG/Track/Dannic/forever.jpg', 41, N'4:59', N'TRAP', 698, 698, N'WHAT I DID FOR LOVE - R3HAB')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (132, N'ARMADA', 140, N'D MIN', 1.8, N'/music/23.mp3', CAST(0xDA3A0B00 AS Date), N'/IMG/Track/Dannic/funkytime.jpg', 42, N'4:11', N'NIGHTSTEP', 326, 326, N'ARMADA - R3HAB')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (133, N'BROKEN', 130, N'E MIN', 1.8, N'/music/15.mp3', CAST(0xBC3A0B00 AS Date), N'/IMG/Track/Dannic/lightthesky.jpg', 43, N'4:11', N'TRAP', 471, 471, N'BROKEN - ALESSO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (134, N'COLOGRE RUNNER', 130, N'D MIN', 1.8, N'/music/31.mp3', CAST(0xBD3A0B00 AS Date), N'/IMG/Track/Dannic/mayday.jpg', 44, N'4:11', N'TROPICAL HOUSE', 418, 418, N'COLOGRE RUNNER - OLIVER HELDENS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (135, N'DON''T YOU WANT ME', 140, N'E MIN', 1.8, N'/music/20.mp3', CAST(0xBE3A0B00 AS Date), N'/IMG/Track/Dannic/survivors.jpg', 45, N'4:11', N'HARDDANCE', 373, 373, N'DON''T YOU WANT ME - DON DIABLO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (136, N'ELECTRO', 130, N'D MIN', 1.65, N'/music/20.mp3', CAST(0x203B0B00 AS Date), N'/IMG/Track/Dash Berlin/areuwithme.jpg', 46, N'4:11', N'FUTURE HOUSE', 478, 478, N'ELECTRO - DJ SNAKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (137, N'GREAT HIT REMIX', 140, N'D MIN', 1.9, N'/music/31.mp3', CAST(0xBF3A0B00 AS Date), N'/IMG/Track/Dash Berlin/itakecare.jpg', 47, N'4:11', N'HARDSTYLE', 302, 302, N'GREAT HIT REMIX - OLIVER HELDENS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (138, N'HALLOWEN NIGHT', 155, N'E MIN', 1.65, N'/music/15.mp3', CAST(0x213B0B00 AS Date), N'/IMG/Track/Dash Berlin/manontherun.jpg', 48, N'4:11', N'FUTURE HOUSE', 253, 253, N'HALLOWEN NIGHT - HARDWELL')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (139, N'HEADING UP HIGH', 140, N'D MIN', 1.65, N'/music/9.mp3', CAST(0xC03A0B00 AS Date), N'/IMG/Track/Dash Berlin/newyorkcity.jpg', 49, N'4:11', N'TRAP', 318, 318, N'HEADING UP HIGH - ALESSO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (140, N'I LOVE DEEJAY', 140, N'E MIN', 1.65, N'/music/23.mp3', CAST(0x223B0B00 AS Date), N'/IMG/Track/Dash Berlin/shelter.jpg', 50, N'4:11', N'PROGRESSIVE HOUSE', 727, 727, N'I LOVE DEEJAY - DJ SNAKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (141, N'REAL I BIZA', 155, N'E MIN', 1.9, N'/music/9.mp3', CAST(0x233B0B00 AS Date), N'/IMG/Track/Dash Berlin/thisiswhoweare.jpg', 51, N'4:11', N'TRAP', 151, 151, N'REAL I BIZA - TIESTO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (142, N'FREAK', 140, N'D MIN', 1.65, N'/music/20.mp3', CAST(0xC13A0B00 AS Date), N'/IMG/Track/Dash Berlin/tilltheskyfall.jpg', 52, N'4:11', N'FUTURE HOUSE', 432, 432, N'FREAK - GALANTIS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (143, N'SUMMER', 155, N'E MIN', 1.65, N'/music/9.mp3', CAST(0x243B0B00 AS Date), N'/IMG/Track/Dash Berlin/waiting.jpg', 53, N'4:11', N'HARDSTYLE', 63, 63, N'SUMMER - WnW')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (144, N'WHERE ARE YOU NOW', 155, N'D MIN', 1.65, N'/music/15.mp3', CAST(0xC23A0B00 AS Date), N'/IMG/Track/Dash Berlin/worldfallapart.jpg', 54, N'4:11', N'CHILLSTEP', 289, 289, N'WHERE ARE YOU NOW - DAVID GUETTA')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (145, N'AFTER LIKE REMIX', 130, N'D MIN', 1.9, N'/music/9.mp3', CAST(0xC33A0B00 AS Date), N'/IMG/Track/Dash Berlin/yesterdayisgone.jpg', 55, N'4:11', N'CHILLSTEP', 329, 329, N'AFTER LIKE REMIX - DASH BERLIN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (146, N'DIRTY VIBE', 130, N'E MIN', 1.9, N'/music/15.mp3', CAST(0x253B0B00 AS Date), N'/IMG/Track/DavidGuetta/bad.jpg', 56, N'4:11', N'HARDCORE', 149, 149, N'DIRTY VIBE - PORTER ROBINSON')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (147, N'GET LOW', 140, N'D MIN', 1.65, N'/music/9.mp3', CAST(0xC43A0B00 AS Date), N'/IMG/Track/DavidGuetta/bangmyhead.jpg', 57, N'4:11', N'NIGHTSTEP', 603, 603, N'GET LOW - KSHMR')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (148, N'CLARITY', 130, N'E MIN', 1.9, N'/music/31.mp3', CAST(0xC53A0B00 AS Date), N'/IMG/Track/DavidGuetta/clapuhand.jpg', 58, N'4:11', N'NIGHTSTEP', 436, 436, N'CLARITY - BRENNAN HEART')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (149, N'LUNATIC', 140, N'D MIN', 1.65, N'/music/27.mp3', CAST(0x263B0B00 AS Date), N'/IMG/Track/DavidGuetta/heymama.jpg', 59, N'4:11', N'NIGHTSTEP', 189, 189, N'LUNATIC - UMMET OZCAN')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (150, N'MIDDLE', 140, N'E MIN', 1.9, N'/music/20.mp3', CAST(0xC63A0B00 AS Date), N'/IMG/Track/DavidGuetta/listen.jpg', 60, N'4:11', N'FUTURE HOUSE', 239, 239, N'MIDDLE - BRENNAN HEART')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (151, N'PEACE IS THE MISSION', 130, N'D MIN', 1.65, N'/music/27.mp3', CAST(0x273B0B00 AS Date), N'/IMG/Track/DavidGuetta/sungoesdown.jpg', 61, N'4:11', N'NIGHTSTEP', 571, 571, N'PEACE IS THE MISSION - NICKY ROMERO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (152, N'PROPAGANDA', 140, N'D MIN', 1.9, N'/music/20.mp3', CAST(0x313B0B00 AS Date), N'/IMG/Track/DavidGuetta/whatididforlove.jpg', 62, N'4:11', N'NIGHTSTEP', 541, 541, N'PROPAGANDA - AFROJACK')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (153, N'TURN DOWN FOR WHAT', 140, N'D MIN', 1.65, N'/music/27.mp3', CAST(0xC83A0B00 AS Date), N'/IMG/Track/Dimitri Vegas/armada.jpg', 63, N'4:11', N'TRANCE', 438, 438, N'TURN DOWN FOR WHAT - ZEDD')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (154, N'YOU KNOW YOU LIKE IT', 140, N'D MIN', 1.9, N'/music/20.mp3', CAST(0x283B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/broken.jpg', 64, N'4:11', N'NIGHTSTEP', 418, 418, N'YOU KNOW YOU LIKE IT - NICKY ROMERO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (155, N'CHEMICALS', 130, N'E MIN', 1.65, N'/music/27.mp3', CAST(0x303B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/cologrerunner.jpg', 65, N'4:11', N'TECHNO HOUSE', 332, 332, N'CHEMICALS - NICKY ROMERO')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (156, N'GIVE ME A TRY', 140, N'E MIN', 1.65, N'/music/27.mp3', CAST(0x293B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/dontuwantme.jpg', 66, N'4:11', N'NIGHTCORE', 380, 380, N'GIVE ME A TRY - STEVE AOKI')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (157, N'GOT THE LOVE', 140, N'D MIN', 1.65, N'/music/32.mp3', CAST(0x2E3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/electro.jpg', 67, N'4:11', N'TRAP', 244, 244, N'GOT THE LOVE - DJ SNAKE')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (158, N'ILL HOUSE', 140, N'D MIN', 1.9, N'/music/27.mp3', CAST(0x2F3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/greathitremix.jpg', 68, N'4:11', N'NIGHTCORE', 629, 629, N'ILL HOUSE - STEVE AOKI')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (159, N'KEEP YOUR HAND UP', 155, N'E MIN', 1.65, N'/music/32.mp3', CAST(0x2A3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/hallowennight.jpg', 69, N'4:11', N'FUTURE BASS', 450, 450, N'KEEP YOUR HAND UP - OLIVER HELDENS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (160, N'MAKE ME FEEL BETTER', 140, N'D MIN', 1.65, N'/music/32.mp3', CAST(0x2D3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/headinguphigh.jpg', 70, N'4:11', N'MELODIC', 244, 244, N'MAKE ME FEEL BETTER - CALVIN HARRIS')
+INSERT [dbo].[REMIX] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [ID_TRACK], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_ARTIST]) VALUES (161, N'MY WINDOWS', 155, N'E MIN', 1.9, N'/music/27.mp3', CAST(0x2B3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/ilovedeejay.jpg', 71, N'4:11', N'CHILLSTEP', 342, 342, N'MY WINDOWS - ARMIN VAN BUUREN')
+SET IDENTITY_INSERT [dbo].[REMIX] OFF
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (1, 9, N'DAVID GUETTA', N'Spinnin'' Records', 515, 515, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (1, 12, N'DJ SNAKE', N'Spinnin'' Records', 515, 515, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (2, 20, N'NICKY ROMERO', N'Big Beat', 484, 484, N'HARDDANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (3, 12, N'DJ SNAKE', N'Spinnin'' Records', 617, 617, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (4, 33, N'AFROJACK', N'Dim Mak', 447, 447, N'NIGHTCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (5, 8, N'DASH BERLIN', N'Spinnin'' Records', 338, 338, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (6, 35, N'AVICII', N'Owsla', 387, 387, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (7, 28, N'WnW', N'Dim Mak', 455, 455, N'HARDCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (8, 37, N'BRENNAN HEART', N'Owsla', 673, 673, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (9, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 716, 716, N'TROPICAL HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (10, 16, N'HARDWELL', N'Armada Music', 233, 233, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (11, 34, N'ARMIN VAN BUUREN', N'Owsla', 382, 382, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (12, 26, N'TIESTO', N'Dim Mak', 281, 281, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (13, 12, N'DJ SNAKE', N'Spinnin'' Records', 322, 322, N'HARDSTYLE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (14, 30, N'ALESSO', N'Dim Mak', 146, 146, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (15, 38, N'CALVIN HARRIS', N'Owsla', 649, 649, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (16, 21, N'OLIVER HELDENS', N'Big Beat', 739, 739, N'HARDDANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (17, 26, N'TIESTO', N'Dim Mak', 509, 509, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (18, 16, N'HARDWELL', N'Armada Music', 146, 146, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (19, 8, N'DASH BERLIN', N'Spinnin'' Records', 319, 319, N'TROPICAL HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (20, 29, N'ZEDD', N'Dim Mak', 449, 449, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (21, 17, N'KSHMR', N'Armada Music', 696, 696, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (22, 14, N'DVBBS', N'Armada Music', 663, 663, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (23, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 399, 399, N'TRANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (24, 16, N'HARDWELL', N'Armada Music', 253, 253, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (25, 25, N'STEVE AOKI', N'Big Beat', 627, 627, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (26, 34, N'ARMIN VAN BUUREN', N'Owsla', 407, 407, N'TECHNO HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (27, 34, N'ARMIN VAN BUUREN', N'Owsla', 327, 327, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (28, 8, N'DASH BERLIN', N'Spinnin'' Records', 587, 587, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (29, 9, N'DAVID GUETTA', N'Spinnin'' Records', 416, 416, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (30, 8, N'DASH BERLIN', N'Spinnin'' Records', 202, 202, N'HARDSTYLE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (31, 8, N'DASH BERLIN', N'Spinnin'' Records', 431, 431, N'HARDSTYLE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (32, 29, N'ZEDD', N'Dim Mak', 338, 338, N'DEEP HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (33, 22, N'PORTER ROBINSON', N'Big Beat', 281, 281, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (34, 16, N'HARDWELL', N'Armada Music', 692, 692, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (35, 8, N'DASH BERLIN', N'Spinnin'' Records', 52, 52, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (36, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 192, 192, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (37, 36, N'AXWELL', N'Owsla', 710, 710, N'HARDCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (38, 25, N'STEVE AOKI', N'Big Beat', 262, 262, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (39, 33, N'AFROJACK', N'Dim Mak', 139, 139, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (40, 25, N'STEVE AOKI', N'Big Beat', 464, 464, N'NIGHTCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (41, 34, N'ARMIN VAN BUUREN', N'Owsla', 561, 561, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (42, 33, N'AFROJACK', N'Dim Mak', 384, 384, N'HARDDANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (43, 21, N'OLIVER HELDENS', N'Big Beat', 380, 380, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (44, 17, N'KSHMR', N'Armada Music', 530, 530, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (45, 16, N'HARDWELL', N'Armada Music', 466, 466, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (46, 24, N'SKRILLEX', N'Big Beat', 502, 502, N'TRANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (47, 8, N'DASH BERLIN', N'Spinnin'' Records', 426, 426, N'HARDSTYLE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (48, 22, N'PORTER ROBINSON', N'Big Beat', 222, 222, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (49, 25, N'STEVE AOKI', N'Big Beat', 451, 451, N'NIGHTSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (50, 37, N'BRENNAN HEART', N'Owsla', 320, 320, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (51, 15, N'GALANTIS', N'Armada Music', 447, 447, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (52, 8, N'DASH BERLIN', N'Spinnin'' Records', 146, 146, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (53, 37, N'BRENNAN HEART', N'Owsla', 435, 435, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (54, 9, N'DAVID GUETTA', N'Spinnin'' Records', 535, 535, N'HARDCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (55, 27, N'UMMET OZCAN', N'Dim Mak', 316, 316, N'NIGHTCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (56, 8, N'DASH BERLIN', N'Spinnin'' Records', 465, 465, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (57, 12, N'DJ SNAKE', N'Spinnin'' Records', 276, 276, N'DEEP HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (58, 19, N'MARTIN GARRIX', N'Armada Music', 569, 569, N'TROPICAL HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (59, 36, N'AXWELL', N'Owsla', 403, 403, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (60, 20, N'NICKY ROMERO', N'Big Beat', 420, 420, N'TRANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (61, 21, N'OLIVER HELDENS', N'Big Beat', 665, 665, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (62, 14, N'DVBBS', N'Armada Music', 525, 525, N'HARDDANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (63, 23, N'R3HAB', N'Big Beat', 298, 298, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (64, 16, N'HARDWELL', N'Armada Music', 256, 256, N'DEEP HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (65, 20, N'NICKY ROMERO', N'Big Beat', 279, 279, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (66, 33, N'AFROJACK', N'Dim Mak', 490, 490, N'TRANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (67, 14, N'DVBBS', N'Armada Music', 485, 485, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (68, 12, N'DJ SNAKE', N'Spinnin'' Records', 458, 458, N'DEEP HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (69, 36, N'AXWELL', N'Owsla', 307, 307, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (70, 18, N'KYGO', N'Armada Music', 413, 413, N'TRANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (71, 21, N'OLIVER HELDENS', N'Big Beat', 503, 503, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (72, 18, N'KYGO', N'Armada Music', 561, 561, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (73, 33, N'AFROJACK', N'Dim Mak', 462, 462, N'TROPICAL HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (74, 13, N'DON DIABLO', N'Spinnin'' Records', 279, 279, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (75, 23, N'R3HAB', N'Big Beat', 289, 289, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (76, 35, N'AVICII', N'Owsla', 402, 402, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (77, 27, N'UMMET OZCAN', N'Dim Mak', 695, 695, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (78, 34, N'ARMIN VAN BUUREN', N'Owsla', 300, 300, N'HARDCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (79, 35, N'AVICII', N'Owsla', 386, 386, N'DEEP HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (80, 21, N'OLIVER HELDENS', N'Big Beat', 156, 156, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (81, 36, N'AXWELL', N'Owsla', 505, 505, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (82, 14, N'DVBBS', N'Armada Music', 377, 377, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (83, 14, N'DVBBS', N'Armada Music', 583, 583, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (84, 30, N'ALESSO', N'Dim Mak', 533, 533, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (85, 25, N'STEVE AOKI', N'Big Beat', 578, 578, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (86, 36, N'AXWELL', N'Owsla', 534, 534, N'DEEP HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (87, 35, N'AVICII', N'Owsla', 500, 500, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (88, 8, N'DASH BERLIN', N'Spinnin'' Records', 254, 254, N'HARDDANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (89, 17, N'KSHMR', N'Armada Music', 457, 457, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (90, 36, N'AXWELL', N'Owsla', 416, 416, N'HARDCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (91, 25, N'STEVE AOKI', N'Big Beat', 180, 180, N'TRANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (92, 29, N'ZEDD', N'Dim Mak', 540, 540, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (93, 23, N'R3HAB', N'Big Beat', 450, 450, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (94, 17, N'KSHMR', N'Armada Music', 170, 170, N'TECHNO HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (95, 27, N'UMMET OZCAN', N'Dim Mak', 452, 452, N'HARDCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (96, 8, N'DASH BERLIN', N'Spinnin'' Records', 283, 283, N'HARDSTYLE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (97, 8, N'DASH BERLIN', N'Spinnin'' Records', 325, 325, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (98, 38, N'CALVIN HARRIS', N'Owsla', 311, 311, N'TROPICAL HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (99, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 427, 427, N'TECHNO HOUSE')
+GO
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (100, 17, N'KSHMR', N'Armada Music', 671, 671, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (101, 24, N'SKRILLEX', N'Big Beat', 668, 668, N'NIGHTCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (102, 17, N'KSHMR', N'Armada Music', 166, 166, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (103, 24, N'SKRILLEX', N'Big Beat', 433, 433, N'NIGHTCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (104, 15, N'GALANTIS', N'Armada Music', 294, 294, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (105, 24, N'SKRILLEX', N'Big Beat', 471, 471, N'HARDSTYLE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (106, 30, N'ALESSO', N'Dim Mak', 209, 209, N'DEEP HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (107, 38, N'CALVIN HARRIS', N'Owsla', 534, 534, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (108, 20, N'NICKY ROMERO', N'Big Beat', 568, 568, N'NIGHTCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (109, 11, N'DIPLO', N'Spinnin'' Records', 323, 323, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (110, 26, N'TIESTO', N'Dim Mak', 551, 551, N'HARDCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (111, 13, N'DON DIABLO', N'Spinnin'' Records', 373, 373, N'TECHNO HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (112, 26, N'TIESTO', N'Dim Mak', 474, 474, N'DEEP HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (113, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 327, 327, N'NIGHTSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (114, 18, N'KYGO', N'Armada Music', 547, 547, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (115, 13, N'DON DIABLO', N'Spinnin'' Records', 367, 367, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (116, 33, N'AFROJACK', N'Dim Mak', 792, 792, N'NIGHTCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (117, 20, N'NICKY ROMERO', N'Big Beat', 208, 208, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (118, 38, N'CALVIN HARRIS', N'Owsla', 669, 669, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (119, 33, N'AFROJACK', N'Dim Mak', 79, 79, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (120, 20, N'NICKY ROMERO', N'Big Beat', 401, 401, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (121, 28, N'WnW', N'Dim Mak', 285, 285, N'TROPICAL HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (122, 25, N'STEVE AOKI', N'Big Beat', 458, 458, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (123, 23, N'R3HAB', N'Big Beat', 452, 452, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (124, 16, N'HARDWELL', N'Armada Music', 772, 772, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (125, 24, N'SKRILLEX', N'Big Beat', 461, 461, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (126, 21, N'OLIVER HELDENS', N'Big Beat', 468, 468, N'HARDDANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (127, 14, N'DVBBS', N'Armada Music', 297, 297, N'HARDDANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (128, 8, N'DASH BERLIN', N'Spinnin'' Records', 398, 398, N'DRUM BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (129, 26, N'TIESTO', N'Dim Mak', 600, 600, N'HARDDANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (130, 18, N'KYGO', N'Armada Music', 137, 137, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (131, 23, N'R3HAB', N'Big Beat', 698, 698, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (132, 23, N'R3HAB', N'Big Beat', 326, 326, N'NIGHTSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (133, 30, N'ALESSO', N'Dim Mak', 471, 471, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (134, 21, N'OLIVER HELDENS', N'Big Beat', 418, 418, N'TROPICAL HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (135, 13, N'DON DIABLO', N'Spinnin'' Records', 373, 373, N'HARDDANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (136, 12, N'DJ SNAKE', N'Spinnin'' Records', 478, 478, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (137, 21, N'OLIVER HELDENS', N'Big Beat', 302, 302, N'HARDSTYLE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (138, 16, N'HARDWELL', N'Armada Music', 253, 253, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (139, 30, N'ALESSO', N'Dim Mak', 318, 318, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (140, 12, N'DJ SNAKE', N'Spinnin'' Records', 727, 727, N'PROGRESSIVE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (141, 26, N'TIESTO', N'Dim Mak', 151, 151, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (142, 15, N'GALANTIS', N'Armada Music', 432, 432, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (143, 28, N'WnW', N'Dim Mak', 63, 63, N'HARDSTYLE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (144, 9, N'DAVID GUETTA', N'Spinnin'' Records', 289, 289, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (145, 8, N'DASH BERLIN', N'Spinnin'' Records', 329, 329, N'CHILLSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (146, 22, N'PORTER ROBINSON', N'Big Beat', 149, 149, N'HARDCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (147, 17, N'KSHMR', N'Armada Music', 603, 603, N'NIGHTSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (148, 37, N'BRENNAN HEART', N'Owsla', 436, 436, N'NIGHTSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (149, 27, N'UMMET OZCAN', N'Dim Mak', 189, 189, N'NIGHTSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (150, 37, N'BRENNAN HEART', N'Owsla', 239, 239, N'FUTURE HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (151, 20, N'NICKY ROMERO', N'Big Beat', 571, 571, N'NIGHTSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (152, 33, N'AFROJACK', N'Dim Mak', 541, 541, N'NIGHTSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (153, 29, N'ZEDD', N'Dim Mak', 438, 438, N'TRANCE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (154, 20, N'NICKY ROMERO', N'Big Beat', 418, 418, N'NIGHTSTEP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (155, 20, N'NICKY ROMERO', N'Big Beat', 332, 332, N'TECHNO HOUSE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (156, 25, N'STEVE AOKI', N'Big Beat', 380, 380, N'NIGHTCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (157, 12, N'DJ SNAKE', N'Spinnin'' Records', 244, 244, N'TRAP')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (158, 25, N'STEVE AOKI', N'Big Beat', 629, 629, N'NIGHTCORE')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (159, 21, N'OLIVER HELDENS', N'Big Beat', 450, 450, N'FUTURE BASS')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (160, 38, N'CALVIN HARRIS', N'Owsla', 244, 244, N'MELODIC')
+INSERT [dbo].[REMIX_ARTIST] ([ID_REMIX], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [POINT_MONTH], [POINT_ALL], [GENRE]) VALUES (161, 34, N'ARMIN VAN BUUREN', N'Owsla', 342, 342, N'CHILLSTEP')
+INSERT [dbo].[SALE] ([LEVEL_], [SALE_INDEX], [CONDITION]) VALUES (1, 5, 5)
+INSERT [dbo].[SALE] ([LEVEL_], [SALE_INDEX], [CONDITION]) VALUES (2, 10, 10)
+INSERT [dbo].[SALE] ([LEVEL_], [SALE_INDEX], [CONDITION]) VALUES (3, 15, 15)
+INSERT [dbo].[SALE] ([LEVEL_], [SALE_INDEX], [CONDITION]) VALUES (4, 20, 20)
+SET IDENTITY_INSERT [dbo].[SHOW] ON 
+
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (1, 10, N'GALANTIS', N'Hanoi,VN', CAST(0x2C3B0B00 AS Date), N'In other changes, Saturday’s Yuma bill has experienced a bit of a shakeup: Amine Edge & DANCE will return to their originally scheduled slot inside the club cave after replacing Lush in the Gobi last week (which means The Black Madonna goes back to her criminally-short hour and a quarter), Mano Le Tough has switched set times with DJ Koze, and Justin Martin has relinquished his closing spot to Nina Kraviz.', N'./IMG/Shows/Slider/top1.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (2, 15, N'DASH BERLIN', N'NgheAn, VN', CAST(0x2C3B0B00 AS Date), N'Meanwhile, the Do Lab has completely overhauled its lineup from Weekend One, scheduling the likes of Sweater Beats, Autograf, Ardalan, Jason Bentley, Bedouin, Sacha Robotti, and Ekali to play its little corner of the Empire Polo Field, in addition to headlining special guests. Despacio will bring the disco bliss as planned.
+
+The only question that remains now is, Are the surprise cameos this week still considered a surprise if they already happened? View all set times below.
+
+', N'./IMG/Shows/Slider/top2.jpeg                                                                                                                          ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (3, 20, N'DVBBS', N'QuangBinh, VN', CAST(0x2C3B0B00 AS Date), N'Its time to ramp things up for this Zerothree favourite, Capa teams up with the majestic voice of Eric Lumiere to bring a different take to the Swedish maestros progressive sound. 
+
+Hot from the success of Endor, Capa felt the urge to try something different, something big and anthemic; the outcome has certainly turned out the way he wanted. With the melodies crafted and vibe cemented the search for that perfect vocal hook started. Please welcome Eric Lumiere. Eric is no stranger to an anthem or two; working with the likes of Cosmic Gate on huge vocal smashes and taking the progressive trance world by storm on a regular basis. The two have really crafted something uplifting, memorable whilst keeping in line with the sound they believe in 
+
+Turn it up loud, this is Colours!', N'./IMG/Shows/Slider/top3.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (4, 21, N'HARDWELL', N'VinhPhuc, VN', CAST(0x2C3B0B00 AS Date), N'King Arthur and TRM get things moving with this high energy house groove. Featuring sunny piano stabs, tropical chords, sweet vocals and nice string work, Talking About Love is one of those tracks that truly stick. Catchy work for the floor, touching both body and soul, big tune for sure!', N'./IMG/Shows/Slider/top4.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (5, 16, N'UMMET OZCAN', N'PhuTho, VN', CAST(0x2C3B0B00 AS Date), N'NULLThe powerhouse label that is Extrema Global Music continues it''s rich vein of form with the latest music outing from Sholan.
+
+The heavy techno laden bassline and percussion that come in from the very first beat do not relent for this dark and moody trancer.
+
+No remix required. The original says it all!!', N'./IMG/Shows/Slider/top5.jpeg                                                                                                                          ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (6, 9, N'R3HAB', N'DienBien, VN', CAST(0x2C3B0B00 AS Date), N'Dense & Pika''s latest Drumcode release comes in the shape of a heavy four track EP, ''Calf EP''. The four tracks showcase Dense & Pika''s signature industrial and dynamic style, each track bringing its own unique sound to the release whilst being unified by the sledgehammer style intensity throughout. The release is laden with sporadic vocals, clanking samples and serious kick drums throughout - another heavy hitting, ear whipping release from Dense & Pika', N'./IMG/Shows/Slider/top6.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (7, 13, N'AFROJACK', N'TuyenQuang, VN', CAST(0x2C3B0B00 AS Date), N'With fellow countrymen Ben Gold and Standerwick set to impress, something very special looms on the horizon. The collision of these two worlds of production allowed for the catchy and recognizable melody to be delivered with such drive and energy, ensuring that ''Vindicta'' is all we wanted and more. In sum: an incredible piece of music, made to shatter expectations.', N'./IMG/Shows/Slider/top7.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (8, 18, N'ARMIN VAN BUUREN', N'ThaiBinh, VN', CAST(0x2C3B0B00 AS Date), N'King Arthur and TRM get things moving with this high energy house groove. Featuring sunny piano stabs, tropical chords, sweet vocals and nice string work, Talking About Love is one of those tracks that truly stick. Catchy work for the floor, touching both body and soul, big tune for sure!', N'./IMG/Shows/Slider/top8.jpeg                                                                                                                          ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (9, 23, N'AVICII', N'ThanhHoa, VN', CAST(0x2C3B0B00 AS Date), N'Driving forward from the releases of Structures One and Two in 2010 and 2011, John Digweed proudly announces his next showcase of all the styles and influences that have made Bedrock such an intrinsic element of dance musics tapestry. Featuring three CDs and an exclusive DVD that impeccably captures the trademark Bedrock sound, Re-Structured is yet another exceptional milestone in the history of Bedrock records. 
+
+Consistently enchanting the worlds most prolific dance floors, Re-Structured exhibits thirty-five tracks (twenty-one exclusive), which have been compiled and mixed by label head John Digweed over three discs. Welcoming new artists to Bedrock as well as inviting some revered favorites from over the years, Re-Structured intricately captivates Digweeds electric perception of how music should be experienced. Each of the three discs are merged together by the unyielding and mesmeric production style of Bedrock artists new and old, creating a listening experience no like no other.', N'./IMG/Shows/Slider/top9.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (10, 26, N'GALANTIS', N'QuangNgai, VN', CAST(0x2C3B0B00 AS Date), N'Dense & Pika''s latest Drumcode release comes in the shape of a heavy four track EP, ''Calf EP''. The four tracks showcase Dense & Pika''s signature industrial and dynamic style, each track bringing its own unique sound to the release whilst being unified by the sledgehammer style intensity throughout. The release is laden with sporadic vocals, clanking samples and serious kick drums throughout - another heavy hitting, ear whipping release from Dense & Pika', N'./IMG/Shows/Slider/top5.jpeg                                                                                                                          ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (11, 30, N'CALVIN HARRIS', N'QuyNhon, VN', CAST(0x2C3B0B00 AS Date), N'Driving forward from the releases of Structures One and Two in 2010 and 2011, John Digweed proudly announces his next showcase of all the styles and influences that have made Bedrock such an intrinsic element of dance musics tapestry. Featuring three CDs and an exclusive DVD that impeccably captures the trademark Bedrock sound, Re-Structured is yet another exceptional milestone in the history of Bedrock records. 
+
+Consistently enchanting the worlds most prolific dance floors, Re-Structured exhibits thirty-five tracks (twenty-one exclusive), which have been compiled and mixed by label head John Digweed over three discs. Welcoming new artists to Bedrock as well as inviting some revered favorites from over the years, Re-Structured intricately captivates Digweeds electric perception of how music should be experienced. Each of the three discs are merged together by the unyielding and mesmeric production style of Bedrock artists new and old, creating a listening experience no like no other.', N'./IMG/Shows/Slider/top8.jpeg                                                                                                                          ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (12, 34, N'MARTIN GARRIX', N'BinhDinh, VN', CAST(0x2C3B0B00 AS Date), N'Diynamic continues to come up with the goods in 2016, this time offering up the new "Essenza EP" from rising Italian talent Andy Bros. He was already introduced to the label as part of the fifth episode of Diynamic''s "Four To The Floor" EP series with his track "Vento". Andy Bros, real name Antimo Argenziano, was brought up on 90s US house, has a taste for soul and jazz and is a formally trained piano player. All of this makes his music richly characterful and musical, as well as devastating on the dance floor. Also a qualified sound engineer, Andy has ten years DJ experience behind him and now confirms he is just as skilled in the studio as he is the booth. The title track "Essenza" is an epic bit of house music that builds to a grand, floor slaying peak.', N'./IMG/Shows/Slider/top3.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (13, 36, N'OLIVER HELDENS', N'KhanhHoa, VN', CAST(0x2C3B0B00 AS Date), N'Still a bit tipsy and really happy: that is how ELLEN ALLIEN reports back with Turn Of Your Mind. The title already gives away that the DJ, producer and Label Boss is all about monotony casted in sounds, the mind has left the body and is only moved by the wind of bass and rhythm. Hoo and Off are the song titles, either fast and captivating, raw like unpolished steel. The tracks have been produced on the legendary Roland Aira TR-8, the Roland TB 303 and a Jupiter Synthie in ELLEN ALLIENs living room a place that is perfect for profound musical time traveling and were finalized at the Studio later on. The journey goes back to the 1990ies in Berlin, a time where she was playing as a guest and resident in the legendary Clubs like E-Werk, Planet and Tresor letting the music absorb her into Techno and Acid spheres. Both tracks stretch into epic 8 minutes of thrilling techno magic, summoning the listener to one of those Lost In Music moments. This powerful EP is made for nights so filled with dancefloor euphoria that they prolong themselves into the next day without anyone noticing. Simultaneously with working on this EP the BPitch Control owner has installed a new regular club night finding a new home in a Berlin warehouse. Next to this she is touring all-around the globe sharing the driving energy of techno and acid with an international audience.', N'./IMG/Shows/Slider/top4.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (14, 23, N'DANNIC', N'SonLa, VN', CAST(0x2C3B0B00 AS Date), N'Two progressive minds are gathered again with full power!! We are present new Single from Shogan & Ascent called 3D Visions! This Psy Progressive duo made a melodic,deep and emotinal touch,combinating their ideas in one conception. Enjoy in this melodic Journey', N'./IMG/Shows/Slider/top6.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (15, 21, N'CALVIN HARRIS', N'HoaBinh, VN', CAST(0x2C3B0B00 AS Date), N' 2Komplex continues to impress with their latest two track release featuring Trek Trip and Infinity Blue. 2Komplex have created a unique sound that is not just powerful music with a groove but also music that tells a story with each track. In just three short years after combining forces, Brazilian DJs Heimdall (Rodrigo Carvalho) and DJ Janzito (Jan Barbosa) have made a respectable name for themselves in the psy trance community. Trek Trip is 2Komplex at their best, a mesmerizing tack that takes the listener on an epic journey encompassing a variety of baselines, melodies and moods. Trek Trip must be listened to from start to finish to truly appreciate the story contained in this piece of music. Infinity Blue gallops through the airwaves with a bubbly baseline and a slinky acid line. Once again it 2Komplex?s ability to tell a story through their music that makes this progressive psy track unique and hypnotic.', N'./IMG/Shows/Slider/top7.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (16, 16, N'SKRILLEX', N'CanTho, VN', CAST(0x2C3B0B00 AS Date), N'Diynamic continues to come up with the goods in 2016, this time offering up the new "Essenza EP" from rising Italian talent Andy Bros. He was already introduced to the label as part of the fifth episode of Diynamic''s "Four To The Floor" EP series with his track "Vento". Andy Bros, real name Antimo Argenziano, was brought up on 90s US house, has a taste for soul and jazz and is a formally trained piano player. All of this makes his music richly characterful and musical, as well as devastating on the dance floor. Also a qualified sound engineer, Andy has ten years DJ experience behind him and now confirms he is just as skilled in the studio as he is the booth. The title track "Essenza" is an epic bit of house music that builds to a grand, floor slaying peak.', N'./IMG/Shows/Slider/top9.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (17, 11, N'ZEDD', N'HaNam, VN', CAST(0x2C3B0B00 AS Date), N'The powerhouse label that is Extrema Global Music continues it''s rich vein of form with the latest music outing from Sholan.
+
+The heavy techno laden bassline and percussion that come in from the very first beat do not relent for this dark and moody trancer.
+
+No remix required. The original says it all!!', N'./IMG/Shows/Slider/top10.jpg                                                                                                                          ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (18, 14, N'WnW', N'QuangNinh, VN', CAST(0x2C3B0B00 AS Date), N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'./IMG/Shows/Slider/top1.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (19, 18, N'ALESSO', N'HoiAn, VN', CAST(0x2C3B0B00 AS Date), N'Victor Ruiz has been riding high on the crest of a wave with remixing Luzon - Baguio Track to great acclaim, to appearing on Herblut, Electric Ballroom and Sprout.', N'./IMG/Shows/Slider/top6.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (20, 13, N'AFROJACK', N'Hue, VN', CAST(0x2C3B0B00 AS Date), N'All this shines through and makes it an all the more engaging listen from start to finish. Kicking off with the spine tingling chords and louche beats of ''Singularity'' cuts like ''Lila'' then continue to confirm that Stephan Bodzin has a classical understanding of melody that is way beyond your average. ''Blue Giant'', ''Wir'' and ''Ix'' all manage to be uplifting and thoughtful at the same time as driven and groovy, whilst ''Birth'' comes on with a hymnal high note, long tailed pads and subtly shifting beats', N'./IMG/Shows/Slider/top8.jpeg                                                                                                                          ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (21, 33, N'NICKY ROMERO', N'DaNang, VN', CAST(0x2C3B0B00 AS Date), N'To complete this amazing work, Olivier did two exclusive tracks, one of them produced together with Kiko. But, what is the definition of “trance” for Coyu? “For me trance is Frankfurt, it is Harthouse, it is the 90s. But...also today, in 2015, it is Dixon, Adam Beyer, Tale Of Us… Trance is not just a style but a state of mind. Trance is spirituality, it''s a piercing, poignant and boundless melody, it is escaping from your comfort zone. That''s why we want to put this feeling in the place where it deserves - it''s time for Kitties On Trance.', N'./IMG/Shows/Slider/top7.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (22, 36, N'AXWELL', N'HoChiMinh, VN', CAST(0x2C3B0B00 AS Date), N'Wade had some appearances on Suara back in 2015 that confirmed the great artist he is. ''Collapsed Jam'', ''Trucco'' or ''Revolution'' showed the amazing skills from this young Spanish Dj & producer. Now we have another awesome EP; chopped vocals, big basslines, dirty synth melodies, acid arpeggios Pure Wade sound. For the remix we count again on Chus & Ceballos, who revisit ''Hypnotic Beat'' adding their infectious and own groove taking the track to another level. Solid beats for the dancefloor!
+Artwork by GaAs
+Mastering by www.pobla.es', N'./IMG/Shows/Slider/top1.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (23, 39, N'KYGO', N'NamDinh, VN', CAST(0x2C3B0B00 AS Date), N'Hot Since 82 steams onto Truesoul with full force releasing two incredible tracks that explode with energy and punch. ''Damage'' packs the power with its chunky drums and huge synth stabs that power through the mix to knock over crowds. ''Veins'' encapsulates the chuggy Truesoul sound that Hot Since 82 is notorious for. Hot Since 82 has engrained rolling beats and shimmering highs throughout each track to propel the EP to climax into a remarkable piece of work.', N'./IMG/Shows/Slider/top1.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (24, 38, N'CALVIN HARRIS', N'HungYen, VN', CAST(0x2C3B0B00 AS Date), N'''Music'' (feat. Beckers & Alex Stein) is a solid gem, where the emotive vibes flow lusciously, while the bass wraps you up like a comforting blanket of sound. This is a melodic gem and a half!
+Rounding things off nicely, we find ''In Between''. This skippy beat laden moodier affair still oozes melodies and fuses the darker side with the light. Hot stuff!', N'./IMG/Shows/Slider/top1.jpg                                                                                                                           ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (25, 37, N'PEACE IS THE MISSION', N'HaiPhong', CAST(0x2C3B0B00 AS Date), NULL, N'top1.jpg                                                                                                                                              ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (26, NULL, NULL, NULL, NULL, NULL, N'                                                                                                                                                      ')
+INSERT [dbo].[SHOW] ([ID], [ID_ARTIST], [NAME], [LOCATION], [TIME], [DESCRIBLE], [LINK_IMG]) VALUES (27, NULL, NULL, NULL, NULL, NULL, N'                                                                                                                                                      ')
+SET IDENTITY_INSERT [dbo].[SHOW] OFF
+SET IDENTITY_INSERT [dbo].[SHOW_LIST] ON 
+
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (1, N'Sick Individuals', N'Kygo', N'HaNoi, VN', N'MARCH 3, 2016', N'./IMG/Shows/ListShows/top1.jpg', N'KSHMR returns with the bombastic and theatrical track Wildcard. The track has a big band sound combined with exotic influences, like The Great Gatsby meeting 1001 Nights. Wildcard is seductive and big. KSHMR''s production in combination with the mesmerizing vocals from Sidnie Tipton will sway you away through the night. HIT!')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (2, N'Revealed Asia', N'Zedd', N'HaNoi, VN', N'FERBUARY 12, 2016', N'./IMG/Shows/ListShows/top2.jpg', N' If youve at all sniffed around the Beatport charts at some stage in the last 12 months, then its highly likely that youll have been hugely impressed by a Berlin-based duo that go under the name Mat.Joe. With a string of releases and remixes in the last year on Snatch! Mother Recordings, Defected, Strictly Rhythm and of course Toolroom Trax, its an outright pleasure to have them return for their debut single release on the governing Toolroom Records this spring.')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (3, N'Sick Individuals', N'Live', N'HaiPhong, VN', N'MAY 8, 2016', N'./IMG/Shows/ListShows/top3.jpg', N'Nighthawk is an all-consuming tech house affair packed with deep grooves, guitar and synth licks and a dimly lit vocal performance, creating a delicately atmospheric personality within the track. Mat.Joe wholly boast their signature warm-yet-rough sound pallet and once again show us why their tracks are in such high demand. ')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (4, N'Revealed Asia', N'Zedd', N'Hanoi, VN', N'MARCH 27, 2016', N'./IMG/Shows/ListShows/top4.jpg', N'The release is graced by a stunning re-work from Dosem who twists up the original elements and creates a dark roller thats crafted to perfection.')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (5, N'Sick Individuals', N'Zedd', N'HaiPhong, VN', N'MARCH 27, 2016', N'./IMG/Shows/ListShows/top5.jpg', N' "I used to love techno in the 90s. How could I cut my dj-ing teeth in Glasgow and not? Records like Positive Education, Altered States and tracks by Hardfloor made a huge impression on me. Then somehow everything got too hard and fast and then it lost me. But now I am back in love. Mars Bill, Enrico Sangiuliano, ANNA, Alan Fitzpatrick and Jel Ford are all making the kind of records that make me tick. Here''s what all that has done to me in the studio with a superb heavyweight remix from Kaiserdisco." Kevin McKay, March 2016')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (6, N'Revealed Asia', N'Acvii', N'HungYen, VN', N'MAY 8, 2016', N'./IMG/Shows/ListShows/top6.jpg', N'Support from: Mark Knight, Davide Squillace, PANDA, Dalfie (Pets Recordings), Funk D/Void, Blonde, Chus & Ceballos, Paco Osuna, Tensnake, Camelphat, Dantiez Sunderson, Austen / Scott, Illyus, Barrientos, Mars Bill, Piemont, Walker & Royce, Steve Mac, Stereo MCs, Spencer K, Harri, Steve Lawler, M.in, TCTS, Paride Saraceni, Mike Vale, Vanilla Ace, Stacey Pullen, Timo Garcia, Alex Caslano, Per QX, Richie Hawtin, Brigado Crew, Solaris Heights / Echomen, John Jones (MoS), Origins Sound, Luigi Rocca, James Organ, Graeme Park, Miky J, Shivas HB, Mia Dora, Marco Resmann, Marco Lys, David Keno, DJ Parlando, Dale Middleton, Brett Gould...')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (7, N'Sick Individuals', N'Vram', N'TPHCM, VN', N'FERBUARY 12, 2016', N'./IMG/Shows/ListShows/top7.jpg', N'Victor Ruiz has been riding high on the crest of a wave with remixing Luzon - Baguio Track to great acclaim, to appearing on Herblut, Electric Ballroom and Sprout.')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (8, N'The Misson', N'Glantis', N'DaNang, VN', N'DECEMBER 12, 2016', N'./IMG/Shows/ListShows/top8.jpg', N'D-Nox again is causing a major fuss with his productions (both solo and working with studio partner Beckers) on Suara, Tronic and his own Sprout imprint to name just a few, and the D-Nox & Beckers remix of Quivver riding high in the Beatport techno charts as we speak.
+Lets start with ''Arise''. The beautiful blend of tinkling light arps and big phat bass sounds combine beautifully. Some tracks just come along and cause major devastation, and this is one of those!Press play, listen, and smile!')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (9, N'Listen to Beat', N'Zedd', N'VinhPhuc, Vn', N'FERBUARY 12, 2016', N'./IMG/Shows/ListShows/top9.jpg', N'Lets start with ''Arise''. The beautiful blend of tinkling light arps and big phat bass sounds combine beautifully. Some tracks just come along and cause major devastation, and this is one of those!Press play, listen, and smile!')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (10, N'BeatVN', N'EDM', N'NamDinh, VN', N'MARCH 25, 2016', N'./IMG/Shows/ListShows/top10.jpg', N'''Music'' (feat. Beckers & Alex Stein) is a solid gem, where the emotive vibes flow lusciously, while the bass wraps you up like a comforting blanket of sound. This is a melodic gem and a half!
+Rounding things off nicely, we find ''In Between''. This skippy beat laden moodier affair still oozes melodies and fuses the darker side with the light. Hot stuff!')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (11, N'Voluntine', N'Beatport', N'HaNam, VN', N'FERBUARY 12, 2016', N'./IMG/Shows/ListShows/top11.jpg', N'Hot Since 82''s trajectory has been nothing short of incredible. x4 Pete Tong ''Essential New Tunes'', x3 BBC ''Essential Mixes'', 2013''s groundbreaking ''Little Black Book'', 2014''s Knee Deep In Sound mix album (on his new label of the same name), Top 10 Beatport seller of all time with his ''Bigger Than Prince'' remix, Mixmag cover star, performing live accompanied by a string quartet, x4 sell out North & South America tours including Coachella, x3 tantalizing Ibiza seasons and most recently his best trick yet, kidnapping fans for TAKEN, one of the most unique clubbing experiences you will ever have.
+')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (12, N'Middle Sun', N'Adam Walker', N'DienBien, VN', N'FERBUARY 12, 2016', N'./IMG/Shows/ListShows/top12.jpg', N'Hot Since 82 steams onto Truesoul with full force releasing two incredible tracks that explode with energy and punch. ''Damage'' packs the power with its chunky drums and huge synth stabs that power through the mix to knock over crowds. ''Veins'' encapsulates the chuggy Truesoul sound that Hot Since 82 is notorious for. Hot Since 82 has engrained rolling beats and shimmering highs throughout each track to propel the EP to climax into a remarkable piece of work.')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (13, N'SunShine Alone', N'Binz', N'LaoCai, VN', N'MARCH 3, 2016', N'./IMG/Shows/ListShows/top13.jpg', N'Global powerhouse Maceo Plex announces a longawaitedforthcoming albumwith the first single on his Ellum Audio imprint, featuring two stunning andspaced out compositions in the Solar Sampler. Aside Wash Away My Tears (12 inch mix) is beautifully deep, dreamy and introspective withemotive synths and luscious melodies. On the flip Solar Detroit is rich in depth and quality as itbuilds into an epic affair with dramatic synth lines, grumbling FX and sonic acid giving us ataste of whats to come on his longplayer.')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (14, N'Radio Show', N'Rhymastic', N'HaNoi, VN', N'FERBUARY 12, 2016', N'./IMG/Shows/ListShows/top14.jpg', N'2015 will see German techno mainstay Stephan Bodzin ready to unleash his next full-length musical vision on the world. Entitled "Powers of Ten", the 10-track album will land in June 2015 on his own Herzblut Recordings and provides another great insight into the melodically rich muscle mind of this modern great. Says Stephan Bodzin of the LP')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (15, N'Dizz Acy', N'Sobin', N'ThanhHoa, VN', N'DECEMBER 12, 2016', N'./IMG/Shows/ListShows/top15.jpg', N'Powers of Ten has been with me all my life and is named after a book that has been my background hiss, its confusing truth is my only real faith and its infinity shows me its finiteness. The album is about harmonies, melodies, rhythms. It is an homage to Bob Moog, full of techno beats and sounds and space and party and ecstasy and dancing and listening, and crying and feeling. It is a journey, a philosophy of life, a view of the world, a vague perception')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (16, N'Gato', N'BigDaddy', N'HaNoi, VN', N'MAY 8, 2016', N'./IMG/Shows/ListShows/top16.jpg', N' It is my wife, my children, my family, my friends, my passion, my enemy, my greatest fulfillment, my fear, my deepest peace, my power, all my love." As such, this album is hugely personal and is filled with cerebral messages and well thought out concepts. All this shines through and makes it an all the more engaging listen from start to finish')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (17, N'Quitinho', N'Justatee', N'HaNoiVN', N'April 8,2016', N'./IMG/Shows/ListShows/top17.jpg', N'All this shines through and makes it an all the more engaging listen from start to finish. Kicking off with the spine tingling chords and louche beats of ''Singularity'' cuts like ''Lila'' then continue to confirm that Stephan Bodzin has a classical understanding of melody that is way beyond your average. ''Blue Giant'', ''Wir'' and ''Ix'' all manage to be uplifting and thoughtful at the same time as driven and groovy, whilst ''Birth'' comes on with a hymnal high note, long tailed pads and subtly shifting beats')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (18, N'Decanme', N'Flatter', N'HaNoi, VN', N'Jun 15, 2016', N'./IMG/Shows/ListShows/top18.jpg', N'The ghostly grooves of ''Zulu'' mark a majestic mid point to the album, which then continues to seduce with spiritual synths and more beautiful melodies on cuts like ''Odyssee'' as well as the album''s standout title track. Unfolding coherently and in soothing fashion, this album once again proves that few producers in the modern world have a knack for melody and an ear for sonic ingenuity quite like Stephan Bodzin.')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (19, N'SQuerEye', N'Klass', N'HaNoi, VN', N'June 19, 2016', N'./IMG/Shows/ListShows/top19.jpg', N' We are proud to introduce you “Kitties On Trance”, the first mixed compilation with all exclusive tracks, never released before. Coyu and Suara’s team selected a bunch of great tracks of pretty big artists from the scene (eventhough a lot of them do not know it, they do trance, too) and Olivier Giacomotto selected 12 of them for a 83 minutes journey plenty of many trance styles: house or techno, but trance; deep or vigorous, but trance; acid, dark, fun, mellow, but trance.')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (20, N'DenZai', N'Lorder', N'VinhPhuc, Vn', N'JULY 3, 2016', N'./IMG/Shows/ListShows/top20.jpg', N'To complete this amazing work, Olivier did two exclusive tracks, one of them produced together with Kiko. But, what is the definition of “trance” for Coyu? “For me trance is Frankfurt, it is Harthouse, it is the 90s. But...also today, in 2015, it is Dixon, Adam Beyer, Tale Of Us… Trance is not just a style but a state of mind. Trance is spirituality, it''s a piercing, poignant and boundless melody, it is escaping from your comfort zone. That''s why we want to put this feeling in the place where it deserves - it''s time for Kitties On Trance.')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (21, N'Universal', N'Zedd', N'DaNang, VN', N'AUGUST 22, 2016', N'./IMG/Shows/ListShows/top21.jpg', N'Wade had some appearances on Suara back in 2015 that confirmed the great artist he is. ''Collapsed Jam'', ''Trucco'' or ''Revolution'' showed the amazing skills from this young Spanish Dj & producer. Now we have another awesome EP; chopped vocals, big basslines, dirty synth melodies, acid arpeggios Pure Wade sound. For the remix we count again on Chus & Ceballos, who revisit ''Hypnotic Beat'' adding their infectious and own groove taking the track to another level. Solid beats for the dancefloor!
+Artwork by GaAs
+Mastering by www.pobla.es')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (22, N'Squavvk', N'oakerfor', N'Saigon, VN', N'Stemper 12, 2016', N'./IMG/Shows/ListShows/top22.jpg', N' Remember when you were just children, trying to build something out of a pile of Lego bricks, and how there was always one annoying brick missing? So often we get the same feeling coming across big compilations: the attempt to remain faithful to a genre or to a label''s flavour sets unnecessary borders to a world that should remain borderless. Then, when we go over all the pieces, we realize that something is missing, that one or two of them were left outside that fence.')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (23, N'Taped za', N'Axel Wayn', N'GiaDinh, Vn', N'DECEMBER 12, 2016', N'./IMG/Shows/ListShows/top23.jpg', N'It is exactly here that Deeperfect demonstrates its power once again. Its current magnificent compilation, "Stefano Noferini presents Club Edition 2016", is a well selected 25 tracker release carefully hand picked by the experienced hands of the label chef Stefano Noferini in order to create the perfect musical tool box (or if you want, Lego collection) for any club night scenario, without being restricted to definitions of genre or even tempo range. This might sound uncomplicated, however it takes decades of experience at the top of the game to allow musical freedom and yet remain faithful to the label''s unique sound signature')
+INSERT [dbo].[SHOW_LIST] ([ID], [NAME_SHOW], [ARTIST_SHOW], [LOCATION], [TIME], [LINK_IMG], [DESCRIBLE]) VALUES (24, N'BassJacker', N'Digweed', N'HaiDuong, VN', N'FERBUARY 12, 2016', N'./IMG/Shows/ListShows/top24.jpg', NULL)
+SET IDENTITY_INSERT [dbo].[SHOW_LIST] OFF
+SET IDENTITY_INSERT [dbo].[SOUNDS] ON 
+
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (1, N'Festival House By Alpharock', 1, CAST(0x493B0B00 AS Date), N'288MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f1.jpg                                            ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (2, N'Progressive ', 2, CAST(0x4A3B0B00 AS Date), N'324MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f12.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (3, N'Euphoric Festival House Vol.2', 3, CAST(0x4B3B0B00 AS Date), N'279MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f13.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (4, N'House Of The Future', 4, CAST(0x4B3B0B00 AS Date), N'312MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f14.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (5, N'BL3R Tribal & Hard House Pack Vol.3', 5, CAST(0x4B3B0B00 AS Date), N'304MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f21.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (6, N'Malibu-Ableton Live Template', 6, CAST(0x4B3B0B00 AS Date), N'301MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f22.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (7, N'Future Melodic Hpuse Sessions', 7, CAST(0x4B3B0B00 AS Date), N'289MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f23.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (8, N'Ultra Inspired Music', 8, CAST(0x4B3B0B00 AS Date), N'300MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f24.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (9, N'Super Wobble House', 9, CAST(0x4C3B0B00 AS Date), N'278MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f31.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (10, N'Techno FX In Key', 10, CAST(0x4C3B0B00 AS Date), N'281MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f32.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (11, N'Future Wobble Drops 2016', 11, CAST(0x4C3B0B00 AS Date), N'277MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f33.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (12, N'Mega Festival Trap', 12, CAST(0x4C3B0B00 AS Date), N'258MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f34.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (13, N'Techno', 13, CAST(0x4C3B0B00 AS Date), N'301MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f41.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (14, N'Future House Bass', 14, CAST(0x4C3B0B00 AS Date), N'298MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f42.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (15, N'Love Story', 15, CAST(0x4C3B0B00 AS Date), N'295MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f43.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (16, N'Qubiko Secret Sounds', 1, CAST(0x4C3B0B00 AS Date), N'321MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 4, N'f44.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (17, N'Vokoder Dizko', 2, CAST(0x4C3B0B00 AS Date), N'312MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 2, 6, N'f51.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (18, N'BBC House', 3, CAST(0x4C3B0B00 AS Date), N'306MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 3, N'f52.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (19, N'Selected sounds', 4, CAST(0x4C3B0B00 AS Date), N'299MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 2, 4, N'f53.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (20, N'Indian Vocals', 5, CAST(0x4C3B0B00 AS Date), N'300MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 3, 5, N'f54.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (21, N'House Vocals with Sandrah', 6, CAST(0x4C3B0B00 AS Date), N'298MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 3, 6, N'f61.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (22, N'Essential FX', 7, CAST(0x4C3B0B00 AS Date), N'277MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 3, 7, N'f62.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (23, N'House Vocals Cuts', 8, CAST(0x4C3B0B00 AS Date), N'279MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 2, 5, N'f63.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (24, N'Trance Master for Spire and  Midi', 9, CAST(0x4C3B0B00 AS Date), N'280MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 6, N'f64.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (25, N'Ultimate Melody Tools', 10, CAST(0x4C3B0B00 AS Date), N'282MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, NULL, NULL, N'f71.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (26, N'Deep Tech Tools', 11, CAST(0x4C3B0B00 AS Date), N'287MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 3, N'f72.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (27, N'Future Pop', 12, CAST(0x4C3B0B00 AS Date), N'288MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 1, N'f73.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (28, N'Tropical House Vibes', 13, CAST(0x4C3B0B00 AS Date), N'289MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 4, N'f74.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (29, N'Power Drum Hits', 14, CAST(0x4C3B0B00 AS Date), N'290MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 1, N'f81.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (30, N'After Party', 15, CAST(0x4C3B0B00 AS Date), N'292MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 5, N'f82.jpg                                           ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (31, N'Techno Tools By Made in Riot', 1, CAST(0x4C3B0B00 AS Date), N'296MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 3, 4, N'n101.jpg                                          ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (32, N'Deep Dub House', 2, CAST(0x4C3B0B00 AS Date), N'298MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 3, 5, N'n102.jpg                                          ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (33, N'The Vocal Library', 3, CAST(0x4C3B0B00 AS Date), N'299MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 2, N'n103.jpg                                          ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (34, N'Future Sounds of Egypt Trance', 4, CAST(0x4C3B0B00 AS Date), N'302MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 1, 2, N'n104.jpg                                          ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (35, N'Smiley Finger Samples', 5, CAST(0x4C3B0B00 AS Date), N'303MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 2, 6, N'n105.jpg                                          ')
+INSERT [dbo].[SOUNDS] ([ID], [NAME], [LABEL_ID], [RELEASE_DATE], [DATA_SIZE], [DESCRIP], [COST], [POINT_MONTH], [POINT_ALL], [LINK_IMG]) VALUES (36, N'EDM Mega Packs', 6, CAST(0x4C3B0B00 AS Date), N'306MB                                                                                               ', N'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry''s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 19.99, 4, 7, N'n106.jpg                                          ')
+SET IDENTITY_INSERT [dbo].[SOUNDS] OFF
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (8, 6640, 6640, 6068, 6068)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (9, 5748, 5748, 7548, 7548)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (10, 4206, 4206, 3580, 3580)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (11, 3340, 3340, 1686, 1686)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (12, 4616, 4616, 5886, 5886)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (13, 1272, 1272, 3142, 3142)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (14, 5540, 5540, 4564, 4564)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (15, 1552, 1552, 4906, 4906)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (16, 2034, 2034, 4232, 4232)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (17, 2766, 2766, 5166, 5166)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (18, 3366, 3366, 5326, 5326)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (19, 3736, 3736, 3470, 3470)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (20, 6570, 6570, 4958, 4958)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (21, 2608, 2608, 3004, 3004)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (22, 2464, 2464, 642, 642)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (23, 1252, 1252, 1904, 1904)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (24, 3892, 3892, 2044, 2044)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (25, 4166, 4166, 1178, 1178)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (26, 3314, 3314, 1248, 1248)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (27, 2328, 2328, 3660, 3660)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (28, 2362, 2362, 3912, 3912)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (29, 1278, 1278, 1442, 1442)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (30, 3780, 3780, 4894, 4894)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (33, 4988, 4988, 3270, 3270)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (34, 3482, 3482, 6140, 6140)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (35, 5346, 5346, 3992, 3992)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (36, 1498, 1498, 2776, 2776)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (37, 4558, 4558, 2128, 2128)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (38, 3834, 3834, 2402, 2402)
+INSERT [dbo].[STATISTIC_ARTIST] ([ID_ARTIST], [CLICK_MONTH], [CLICK_ALL], [BUY_MONTH], [BUY_ALL]) VALUES (39, 3448, 3448, 3416, 3416)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (1, 1365, 1365, 232, 232, 515, 515)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (2, 1792, 1792, 48, 48, 484, 484)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (3, 1874, 1874, 198, 198, 617, 617)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (4, 1597, 1597, 64, 64, 447, 447)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (5, 552, 552, 267, 267, 338, 338)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (6, 1470, 1470, 27, 27, 387, 387)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (7, 788, 788, 344, 344, 455, 455)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (8, 1802, 1802, 297, 297, 673, 673)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (9, 1851, 1851, 338, 338, 716, 716)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (10, 281, 281, 218, 218, 233, 233)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (11, 544, 544, 329, 329, 382, 382)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (12, 41, 41, 362, 362, 281, 281)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (13, 227, 227, 354, 354, 322, 322)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (14, 215, 215, 124, 124, 146, 146)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (15, 1411, 1411, 396, 396, 649, 649)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (16, 1864, 1864, 364, 364, 739, 739)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (17, 940, 940, 366, 366, 509, 509)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (18, 322, 322, 88, 88, 146, 146)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (19, 1087, 1087, 63, 63, 319, 319)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (20, 821, 821, 326, 326, 449, 449)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (21, 1682, 1682, 368, 368, 696, 696)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (22, 1515, 1515, 379, 379, 663, 663)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (23, 663, 663, 311, 311, 399, 399)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (24, 280, 280, 244, 244, 253, 253)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (25, 1894, 1894, 205, 205, 627, 627)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (26, 684, 684, 315, 315, 407, 407)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (27, 348, 348, 321, 321, 327, 327)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (28, 1790, 1790, 186, 186, 587, 587)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (29, 1432, 1432, 78, 78, 416, 416)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (30, 726, 726, 28, 28, 202, 202)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (31, 1482, 1482, 81, 81, 431, 431)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (32, 1121, 1121, 78, 78, 338, 338)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (33, 735, 735, 130, 130, 281, 281)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (34, 1581, 1581, 396, 396, 692, 692)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (35, 39, 39, 57, 57, 52, 52)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (36, 752, 752, 6, 6, 192, 192)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (37, 1866, 1866, 325, 325, 710, 710)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (38, 320, 320, 243, 243, 262, 262)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (39, 553, 553, 1, 1, 139, 139)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (40, 1281, 1281, 192, 192, 464, 464)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (41, 1198, 1198, 349, 349, 561, 561)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (42, 876, 876, 221, 221, 384, 384)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (43, 909, 909, 204, 204, 380, 380)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (44, 1772, 1772, 116, 116, 530, 530)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (45, 868, 868, 332, 332, 466, 466)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (46, 1098, 1098, 304, 304, 502, 502)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (47, 915, 915, 263, 263, 426, 426)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (48, 813, 813, 26, 26, 222, 222)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (49, 853, 853, 317, 317, 451, 451)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (50, 787, 787, 165, 165, 320, 320)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (51, 1690, 1690, 33, 33, 447, 447)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (52, 187, 187, 133, 133, 146, 146)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (53, 590, 590, 384, 384, 435, 435)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (54, 1269, 1269, 291, 291, 535, 535)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (55, 209, 209, 352, 352, 316, 316)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (56, 1708, 1708, 51, 51, 465, 465)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (57, 236, 236, 290, 290, 276, 276)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (58, 1603, 1603, 225, 225, 569, 569)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (59, 1084, 1084, 177, 177, 403, 403)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (60, 1024, 1024, 219, 219, 420, 420)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (61, 1463, 1463, 399, 399, 665, 665)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (62, 1299, 1299, 268, 268, 525, 525)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (63, 910, 910, 95, 95, 298, 298)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (64, 952, 952, 25, 25, 256, 256)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (65, 438, 438, 226, 226, 279, 279)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (66, 1095, 1095, 289, 289, 490, 490)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (67, 939, 939, 334, 334, 485, 485)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (68, 795, 795, 346, 346, 458, 458)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (69, 703, 703, 175, 175, 307, 307)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (70, 1073, 1073, 194, 194, 413, 413)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (71, 991, 991, 341, 341, 503, 503)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (72, 1745, 1745, 167, 167, 561, 561)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (73, 887, 887, 321, 321, 462, 462)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (74, 261, 261, 286, 286, 279, 279)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (75, 584, 584, 191, 191, 289, 289)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (76, 513, 513, 366, 366, 402, 402)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (77, 1949, 1949, 278, 278, 695, 695)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (78, 1032, 1032, 57, 57, 300, 300)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (79, 1340, 1340, 68, 68, 386, 386)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (80, 293, 293, 111, 111, 156, 156)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (81, 1450, 1450, 191, 191, 505, 505)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (82, 587, 587, 308, 308, 377, 377)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (83, 1212, 1212, 374, 374, 583, 583)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (84, 1217, 1217, 306, 306, 533, 533)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (85, 1514, 1514, 267, 267, 578, 578)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (86, 1830, 1830, 102, 102, 534, 534)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (87, 1799, 1799, 68, 68, 500, 500)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (88, 627, 627, 130, 130, 254, 254)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (89, 865, 865, 322, 322, 457, 457)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (90, 1169, 1169, 166, 166, 416, 416)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (91, 360, 360, 120, 120, 180, 180)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (92, 1952, 1952, 70, 70, 540, 540)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (93, 753, 753, 350, 350, 450, 450)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (94, 454, 454, 76, 76, 170, 170)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (95, 796, 796, 338, 338, 452, 452)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (96, 407, 407, 242, 242, 283, 283)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (97, 1084, 1084, 72, 72, 325, 325)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (98, 983, 983, 88, 88, 311, 311)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (99, 1236, 1236, 158, 158, 427, 427)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (100, 1492, 1492, 398, 398, 671, 671)
+GO
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (101, 1502, 1502, 391, 391, 668, 668)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (102, 297, 297, 123, 123, 166, 166)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (103, 762, 762, 324, 324, 433, 433)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (104, 918, 918, 86, 86, 294, 294)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (105, 716, 716, 390, 390, 471, 471)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (106, 257, 257, 193, 193, 209, 209)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (107, 1650, 1650, 162, 162, 534, 534)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (108, 1772, 1772, 167, 167, 568, 568)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (109, 352, 352, 314, 314, 323, 323)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (110, 1217, 1217, 330, 330, 551, 551)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (111, 568, 568, 308, 308, 373, 373)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (112, 999, 999, 300, 300, 474, 474)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (113, 1113, 1113, 66, 66, 327, 327)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (114, 1976, 1976, 71, 71, 547, 547)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (115, 910, 910, 186, 186, 367, 367)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (116, 1986, 1986, 394, 394, 792, 792)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (117, 207, 207, 209, 209, 208, 208)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (118, 1540, 1540, 379, 379, 669, 669)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (119, 248, 248, 23, 23, 79, 79)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (120, 1094, 1094, 171, 171, 401, 401)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (121, 1013, 1013, 43, 43, 285, 285)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (122, 1756, 1756, 26, 26, 458, 458)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (123, 1031, 1031, 260, 260, 452, 452)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (124, 1903, 1903, 395, 395, 772, 772)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (125, 815, 815, 344, 344, 461, 461)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (126, 1387, 1387, 162, 162, 468, 468)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (127, 1053, 1053, 46, 46, 297, 297)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (128, 1343, 1343, 83, 83, 398, 398)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (129, 1935, 1935, 155, 155, 600, 600)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (130, 208, 208, 114, 114, 137, 137)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (131, 1877, 1877, 305, 305, 698, 698)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (132, 764, 764, 181, 181, 326, 326)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (133, 1215, 1215, 224, 224, 471, 471)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (134, 480, 480, 398, 398, 418, 418)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (135, 579, 579, 305, 305, 373, 373)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (136, 961, 961, 318, 318, 478, 478)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (137, 454, 454, 252, 252, 302, 302)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (138, 794, 794, 73, 73, 253, 253)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (139, 493, 493, 260, 260, 318, 318)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (140, 1801, 1801, 369, 369, 727, 727)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (141, 115, 115, 163, 163, 151, 151)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (142, 1582, 1582, 49, 49, 432, 432)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (143, 240, 240, 5, 5, 63, 63)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (144, 636, 636, 174, 174, 289, 289)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (145, 663, 663, 218, 218, 329, 329)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (146, 30, 30, 189, 189, 149, 149)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (147, 1477, 1477, 312, 312, 603, 603)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (148, 1083, 1083, 221, 221, 436, 436)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (149, 467, 467, 97, 97, 189, 189)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (150, 302, 302, 219, 219, 239, 239)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (151, 1512, 1512, 258, 258, 571, 571)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (152, 1851, 1851, 105, 105, 541, 541)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (153, 1083, 1083, 224, 224, 438, 438)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (154, 1435, 1435, 79, 79, 418, 418)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (155, 1277, 1277, 17, 17, 332, 332)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (156, 449, 449, 358, 358, 380, 380)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (157, 198, 198, 260, 260, 244, 244)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (158, 1592, 1592, 308, 308, 629, 629)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (159, 1550, 1550, 84, 84, 450, 450)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (160, 522, 522, 152, 152, 244, 244)
+INSERT [dbo].[STATISTIC_REMIX] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH], [POINT_MONTH], [POINT_ALL]) VALUES (161, 1251, 1251, 39, 39, 342, 342)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (1, 49, 49, 0, 0)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (2, 255, 255, 985, 985)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (3, 746, 746, 246, 246)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (4, 534, 534, 142, 142)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (5, 102, 102, 371, 371)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (6, 167, 167, 800, 800)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (7, 433, 433, 740, 740)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (8, 90, 90, 562, 562)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (9, 879, 879, 954, 954)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (10, 656, 656, 215, 215)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (11, 391, 391, 489, 489)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (12, 410, 410, 119, 119)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (13, 691, 691, 768, 768)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (14, 91, 91, 549, 549)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (15, 156, 156, 91, 91)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (16, 527, 527, 202, 202)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (17, 207, 207, 195, 195)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (18, 988, 988, 214, 214)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (19, 404, 404, 207, 207)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (20, 463, 463, 706, 706)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (21, 74, 74, 772, 772)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (22, 210, 210, 12, 12)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (23, 858, 858, 96, 96)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (24, 78, 78, 512, 512)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (25, 710, 710, 274, 274)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (26, 743, 743, 566, 566)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (27, 120, 120, 633, 633)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (28, 799, 799, 701, 701)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (29, 481, 481, 212, 212)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (30, 93, 93, 446, 446)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (31, 221, 221, 1, 1)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (32, 979, 979, 906, 906)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (33, 214, 214, 205, 205)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (34, 380, 380, 123, 123)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (35, 632, 632, 760, 760)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (36, 266, 266, 361, 361)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (37, 754, 754, 267, 267)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (38, 323, 323, 159, 159)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (39, 104, 104, 259, 259)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (40, 225, 225, 318, 318)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (41, 70, 70, 734, 734)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (42, 686, 686, 766, 766)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (43, 911, 911, 639, 639)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (44, 467, 467, 707, 707)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (45, 645, 645, 186, 186)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (46, 99, 99, 750, 750)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (47, 935, 935, 242, 242)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (48, 885, 885, 363, 363)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (49, 368, 368, 54, 54)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (50, 623, 623, 612, 612)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (51, 987, 987, 551, 551)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (52, 273, 273, 618, 618)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (53, 242, 242, 961, 961)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (54, 804, 804, 585, 585)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (55, 126, 126, 858, 858)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (56, 943, 943, 879, 879)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (57, 629, 629, 755, 755)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (58, 726, 726, 96, 96)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (59, 499, 499, 86, 86)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (60, 997, 997, 847, 847)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (61, 177, 177, 391, 391)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (62, 75, 75, 163, 163)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (63, 382, 382, 44, 44)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (64, 756, 756, 578, 578)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (65, 695, 695, 858, 858)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (66, 203, 203, 410, 410)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (67, 764, 764, 733, 733)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (68, 173, 173, 738, 738)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (69, 34, 34, 903, 903)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (70, 158, 158, 859, 859)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (71, 593, 593, 685, 685)
+INSERT [dbo].[STATISTIC_TRACK] ([ID], [CLICK_ALL], [CLICK_MONTH], [BUY_ALL], [BUY_MONTH]) VALUES (72, 772, 772, 850, 850)
+SET IDENTITY_INSERT [dbo].[STEM] ON 
+
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (1, N'La Reunion', 123, N'D min               ', 3.99, N'1.mp3                                             ', N'lareunion.jpg                                     ', NULL, N'6:38                ', NULL, NULL, 1, N'Tech House')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (2, N'Great Love Train', 122, N'G maj               ', 3.99, N'2.mp3                                             ', N'lareunion.jpg                                     ', NULL, N'7:23                ', NULL, NULL, 1, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (3, N'The Way', 123, N'D maj               ', 3.99, N'3.mp3                                             ', N'theway.jpg                                        ', NULL, N'6:26                ', NULL, NULL, 2, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (4, N'Behind Me', 123, N'C min               ', 3.99, N'4.mp4                                             ', N'theway.jpg                                        ', NULL, N'7:17                ', NULL, NULL, 2, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (5, N'Your Light Shines On', 126, N'G min               ', 2.99, N'5.mp3                                             ', N'intec.jpg                                         ', NULL, N'6:39                ', NULL, NULL, 3, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (6, N'Utopia', 128, N'A min               ', 2.99, N'6.mp3                                             ', N'intec.jpg                                         ', NULL, N'6:04                ', NULL, NULL, 3, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (7, N'Lenticular', 125, N'A# maj              ', 2.99, N'7.mp3                                             ', N'gregortresherpres.jpg                             ', NULL, N'7:12                ', NULL, NULL, 4, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (8, N'Embrace', 126, N'G maj               ', 2.99, N'8.mp3                                             ', N'gregortresherpres.jpg                             ', NULL, N'8:43                ', NULL, NULL, 4, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (9, N'Struck', 130, N'G# min              ', 2.99, N'9.mp3                                             ', N'struck.jpg                                        ', NULL, N'4:44                ', NULL, NULL, 15, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (10, N'Turpentine', 122, N'D min               ', 2.99, N'10.mp3                                            ', N'struck.jpg                                        ', NULL, N'4:17                ', NULL, NULL, 15, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (11, N'Highway No.4', 125, N'A maj               ', 3.99, N'11.mp3                                            ', N'highwayno4.jpg                                    ', NULL, N'6:39                ', NULL, NULL, 5, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (12, N'Bad Girl', 124, N'A min               ', 2.99, N'12.mp3                                            ', N'badgirlep.jpg                                     ', NULL, N'6:44                ', NULL, NULL, 6, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (13, N'Ald School', 124, N'A maj               ', 2.99, N'13.mp3                                            ', N'badgirlep.jpg                                     ', NULL, N'6:44                ', NULL, NULL, 6, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (14, N'Waiting For Sunrise', 124, N'B maj               ', 2.99, N'14.mp3                                            ', N'badgirlep.jpg                                     ', NULL, N'6:43                ', NULL, NULL, 6, N'Tech House')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (15, N'Stereotypes', 145, N'F min               ', 2.99, N'15.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'4:11                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (16, N'Champion Sound', 145, N'C# min              ', 2.99, N'16.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'3:10                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (17, N'Yeeruh!', 72, N'A# maj              ', 2.99, N'17.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'3:07                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (18, N'Empathy feat. Noah Slee', 100, N'F maj               ', 2.99, N'18.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'4:22                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (19, N'Survive feat. Conroy Smith', 72, N'G min               ', 2.99, N'19.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'3:50                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (20, N'Likkle One', 120, N'G min               ', 2.99, N'20.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'4:26                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (21, N'Take It Slow feat. Naaman', 145, N'D min               ', 2.99, N'21.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'3:20                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (22, N'Deadly 3', 144, N'C# maj              ', 2.99, N'22.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'1:32                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (23, N'Fragile feat. Noah Slee', 73, N'E min               ', 2.99, N'23.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'3:45                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (24, N'The Downfall', 110, N'E min               ', 2.99, N'24.mp3                                            ', N'airportaccent.jpg                                 ', NULL, N'3:35                ', NULL, NULL, 7, N'Electronica')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (25, N'I Got U', 125, N'G maj               ', 2.99, N'25.mp3                                            ', N'igotu.jpg                                         ', NULL, N'7:40                ', NULL, NULL, 8, N'House')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (26, N'insane', 127, N'A min               ', 2.99, N'26.mp3                                            ', N'here.jpg                                          ', NULL, N'7:04                ', NULL, NULL, 10, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (27, N'No Tomorrow', 125, N'A min               ', 2.99, N'27.mp3                                            ', N'here.jpg                                          ', NULL, N'7:12                ', NULL, NULL, 9, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (28, N'This Space', 127, N'A min               ', 2.99, N'28.mp3                                            ', N'here.jpg                                          ', NULL, N'7:05                ', NULL, NULL, 9, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (29, N'Laid Back', 90, N'G min               ', 2.99, N'29.mp3                                            ', N'chisssessionvol3.jpg                              ', NULL, N'6:08                ', NULL, NULL, 10, N'Chill Out')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (30, N'Suite Dreams', 123, N'E min               ', 2.99, N'30.mp3                                            ', N'chisssessionvol3.jpg                              ', NULL, N'5:35                ', NULL, NULL, 10, N'Chill Out')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (31, N'The Dawn', 88, N'E min               ', 2.99, N'31.mp3                                            ', N'chisssessionvol3.jpg                              ', NULL, N'6:00                ', NULL, NULL, 10, N'Chill Out')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (32, N'Voices', 120, N'A# maj              ', 2.99, N'32.mp3                                            ', N'chisssessionvol3.jpg                              ', NULL, N'5:52                ', NULL, NULL, 10, N'Chill Out')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (33, N'When You Leave', 160, N'B min               ', 2.99, N'1.mp3                                             ', N'chisssessionvol3.jpg                              ', NULL, N'5:45                ', NULL, NULL, 11, N'Chill Out')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (34, N'El Regreso del Sol', 125, N'A min               ', 2.99, N'2.mp3                                             ', N'elregresodelsol.jpg                               ', NULL, N'6:46                ', NULL, NULL, 11, N'House')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (35, N'El Regreso del Sol  DJ', 125, N'A min               ', 2.99, N'3.mp3                                             ', N'elregresodelsol.jpg                               ', NULL, N'5:40                ', NULL, NULL, 11, N'Tech House')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (36, N'Dreaming Of lbiza', 125, N'F maj               ', 2.99, N'4.mp3                                             ', N'dreamingoflbiza.jpg                               ', NULL, N'5:46                ', NULL, NULL, 12, N'Tech House')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (37, N'Physical Mode', 122, N'E min               ', 2.99, N'5.mp3                                             ', N'physicalmode.jpg                                  ', NULL, N'8:08                ', NULL, NULL, 13, N'Techno')
+INSERT [dbo].[STEM] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [LINK_IMG], [DESCRIP], [LENGTH], [POINT_MONTH], [POIN_ALL], [STEMS_ID], [GENRE]) VALUES (38, N'Anarchy', 123, N'D min               ', 2.99, N'6.mp3                                             ', N'southern.jpg                                      ', NULL, N'6:26                ', NULL, NULL, 14, N'Techno')
+SET IDENTITY_INSERT [dbo].[STEM] OFF
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (1, 40, N'Markus Prez', N'Bit To Bit Records', N'La Reunion Stem')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (2, 40, N'Markus Prez', N'Bit To Bit Records', N'Great Love Train')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (3, 41, N'ENAI', N'Fresco Records', N'The Way')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (4, 41, N'ENAI', N'Fresco Records', N'Behind Me')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (5, 42, N'Carl Cox', N'Intec', N'Your Light Shines  On')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (6, 43, N'Jon Rundell', N'Intec', N'Utopia')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (7, 44, N'The YellowHeads', N'Break New Soil Recordings', N'Lenticular')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (8, 45, N'Rob Hes', N'Break New Soil Recordings', N'Embrace')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (9, 46, N'Velour Modular', N'Cr2 Underground', N'Struck')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (10, 46, N'Velour Modular', N'Cr2 Underground', N'Turpentine')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (11, 47, N'Monika Kruse', N'Terminal M', N'Highway No.4')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (11, 62, N'Voodooamt', N'Terminal M', N'Highway No.4')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (12, 48, N'Sinisa Tamamovic', N'SCI+TEC', N'Bad Girl')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (13, 48, N'Sinisa Tamamovic', N'SCI+TEC', N'Old School')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (14, 48, N'Sinisa Tamamovic', N'SCI+TEC', N'Waiting For Sunrise')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (15, 49, N'Symbiz', N'SoulForce', N'Stereotypes')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (16, 49, N'Symbiz', N'SoulForce', N'Champion Sound')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (17, 49, N'Symbiz', N'SoulForce', N'Yeeruh!')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (18, 49, N'Symbiz', N'SoulForce', N'Empathy feat. Noah Slee')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (19, 49, N'Symbiz', N'SoulForce', N'Survive feat. Conroy Smith')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (20, 49, N'Symbiz', N'SoulForce', N'Likkle One')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (21, 49, N'Symbiz', N'SoulForce', N'Take It Slow feat. Naaman')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (22, 49, N'Symbiz', N'SoulForce', N'Deadly 3')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (23, 49, N'Symbiz', N'SoulForce', N'Fragile feat. Noah Slee')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (24, 49, N'Symbiz', N'SoulForce', N'The Downfall')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (25, 51, N'John Stoongard', N'Ocean Trax', N'I Got U')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (26, 52, N'Neil Pantos', N'Mind Ability Records', N'Insane')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (27, 52, N'Neil Pantos', N'Mind Ability Records', N'No Tomorrow')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (28, 52, N'Neil Pantos', N'Mind Ability Records', N'This Space')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (29, 53, N'Schwarz & Funk', N'Boxberglounge', N'Laid Back')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (30, 53, N'Schwarz & Funk', N'Boxberglounge', N'Suite Dreams')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (31, 53, N'Schwarz & Funk', N'Boxberglounge', N'The Dawn')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (32, 53, N'Schwarz & Funk', N'Boxberglounge', N'Voices')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (33, 53, N'Schwarz & Funk', N'Boxberglounge', N'When You Leave')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (33, 54, N'Ann Francis', N'Boxberglounge', N'When You Leave')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (34, 55, N'Franco Capuano', N'4te Etage Records', N'El Regreso del Sol')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (35, 55, N'Franco Capuano', N'4te Etage Records', N'El Regreso del Sol DJ')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (36, 57, N'Brian Boncher', N'Moody Recordings', N'Dreaming Of lbiza')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (36, 58, N'Martin EZ', N'Moody Recordings', N'Dreaming Of lbiza')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (37, 59, N'Atonal', N'Ephemeral', N'Physical Mode')
+INSERT [dbo].[STEM_ARTIST] ([STEM_ID], [ARTIST_ID], [ARTIST_NAME], [NAME_LABEL], [NAME_STEM]) VALUES (38, 46, N'Black Talon', N'Symphonic', N'Anarchy')
+SET IDENTITY_INSERT [dbo].[STEMS] ON 
+
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (1, N'La Reunion Stem', CAST(0x473B0B00 AS Date), 4.99, NULL, N'lareunionstem.jpg                                 ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (2, N'The Way / Behind Me', CAST(0x473B0B00 AS Date), 4.99, NULL, N'theway.jpg                                        ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (3, N'Intec 100', CAST(0x483B0B00 AS Date), 4.99, NULL, N'intec.jpg                                         ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (4, N'Gregor Tresher pres.', CAST(0x463B0B00 AS Date), 5.98, NULL, N'gregortresherpres.jpg                             ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (5, N'Highway No.4', CAST(0x453B0B00 AS Date), 3.99, NULL, N'highwayno4.jpg                                    ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (6, N'Bad Girl EP', CAST(0x493B0B00 AS Date), 5.99, NULL, N'badgirlep.jpg                                     ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (7, N'Airport Accent', CAST(0x473B0B00 AS Date), 12.99, NULL, N'airportaccent.jpg                                 ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (8, N'I Got U', CAST(0x473B0B00 AS Date), 2.99, NULL, N'igotu.jpg                                         ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (9, N'Here & Now Ep', CAST(0x483B0B00 AS Date), 8.97, NULL, N'here.jpg                                          ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (10, N'Chill Session Vol. 3', CAST(0x483B0B00 AS Date), 7.99, NULL, N'chillsessionvol3.jpg                              ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (11, N'El Regreso del Sol', CAST(0x493B0B00 AS Date), 5.98, NULL, N'elregresodelsol.jpg                               ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (12, N'Dreaming Of lbiza', CAST(0x493B0B00 AS Date), 2.99, NULL, N'dreamingoflbiza.jpg                               ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (13, N'Physcial Mode', CAST(0x493B0B00 AS Date), 2.99, NULL, N'physicalmode.jpg                                  ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (14, N'SOUTHERN', CAST(0x493B0B00 AS Date), 4.99, NULL, N'southern.jpg                                      ')
+INSERT [dbo].[STEMS] ([STEMS_ID], [NAME], [DATE_RELEASE], [COST], [CATALOG], [IMG]) VALUES (15, N'Struck / Turpentine', CAST(0x473B0B00 AS Date), 4.99, NULL, N'struck.jpg                                        ')
+SET IDENTITY_INSERT [dbo].[STEMS] OFF
+INSERT [dbo].[TOP_6_DJ] ([RANK], [ID_ARTIST], [NAME_ARTIST], [IMG]) VALUES (1, 9, N'DAVID GUETTA', N'./IMG/Artist/davidgueta.jpg')
+INSERT [dbo].[TOP_6_DJ] ([RANK], [ID_ARTIST], [NAME_ARTIST], [IMG]) VALUES (2, 8, N'DASH BERLIN', N'./IMG/Artist/dashberlin.jpg')
+INSERT [dbo].[TOP_6_DJ] ([RANK], [ID_ARTIST], [NAME_ARTIST], [IMG]) VALUES (3, 12, N'DJ SNAKE', N'./IMG/Artist/djsnake.jpg')
+INSERT [dbo].[TOP_6_DJ] ([RANK], [ID_ARTIST], [NAME_ARTIST], [IMG]) VALUES (4, 34, N'ARMIN VAN BUUREN', N'./IMG/Artist/arminvanbuuren.jpg')
+INSERT [dbo].[TOP_6_DJ] ([RANK], [ID_ARTIST], [NAME_ARTIST], [IMG]) VALUES (5, 20, N'NICKY ROMERO', N'./IMG/Artist/nickyromero.jpg')
+INSERT [dbo].[TOP_6_DJ] ([RANK], [ID_ARTIST], [NAME_ARTIST], [IMG]) VALUES (6, 18, N'KYGO', N'./IMG/Artist/kygo.jpg')
+SET IDENTITY_INSERT [dbo].[TRACK] ON 
+
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (1, N'AHORA', 124, N'D MIN', 1.25, N'/music/1.mp3', CAST(0xFB3A0B00 AS Date), N'/IMG/Track/Alesso/ahora016.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'DEEP HOUSE', 12, 12, N'AHORA - DASH BERLIN ft PORTER ROBINSON')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (2, N'BAD THING 3', 130, N'E MIN', 1.3, N'/music/10.mp3', CAST(0x2D3B0B00 AS Date), N'/IMG/Track/Alesso/badthing3.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'DRUM BASS', 802, 802, N'BAD THING 3 - DAVID GUETTA')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (3, N'CLUBBER GUIDE', 110, N'K MIN', 1.41, N'/music/13.mp3', CAST(0xE63A0B00 AS Date), N'/IMG/Track/Alesso/clubberguide.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'HARDSTYLE', 371, 371, N'CLUBBER GUIDE - DIMITRI VEGAS AND LIKE MIKE ft OLIVER HELDENS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (4, N'FOREVER', 170, N'E MIN', 1.25, N'/music/11.mp3', CAST(0x173B0B00 AS Date), N'/IMG/Track/Alesso/forever.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'HARDSTYLE', 240, 240, N'FOREVER - DIPLO ft ARMIN VAN BUUREN')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (5, N'HEROES', 165, N'E MIN', 1.41, N'/music/13.mp3', CAST(0xC73A0B00 AS Date), N'/IMG/Track/Alesso/heroes.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'CHILLSTEP', 303, 303, N'HEROES - DJ SNAKE')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (6, N'HOUSE DECADES', 155, N'K MIN', 1.25, N'/music/10.mp3', CAST(0x6E390B00 AS Date), N'/IMG/Track/Alesso/housedecades.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'TRANCE', 641, 641, N'HOUSE DECADES - DON DIABLO ft KSHMR')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (7, N'I WANT SEE YOU WITH ME', 144, N'E MIN', 1.3, N'/music/13.mp3', CAST(0x90390B00 AS Date), N'/IMG/Track/Alesso/iwantseeyourwith.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'TRAP', 663, 663, N'I WANT SEE YOU WITH ME - DASH BERLIN ft DVBBS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (8, N'PROGESSIVE CLUB', 140, N'K MIN', 1.3, N'/music/11.mp3', CAST(0x0A3A0B00 AS Date), N'/IMG/Track/Alesso/progessiveclub.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'HARDCORE', 444, 444, N'PROGESSIVE CLUB - GALANTIS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (9, N'SWENDEN 12 POINTS', 135, N'E MIN', 1.25, N'/music/1.mp3', CAST(0x693A0B00 AS Date), N'/IMG/Track/Alesso/swenden12point.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'HARDSTYLE', 935, 935, N'SWENDEN 12 POINTS - DAVID GUETTA ft DJ SNAKE ft HARDWELL')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (10, N'AN HOLD US DOWN', 140, N'E MIN', 1.25, N'/music/23.mp3', CAST(0x0C3A0B00 AS Date), N'/IMG/Track/Axwell/anholdusdown.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'HARDSTYLE', 325, 325, N'AN HOLD US DOWN - KSHMR')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (11, N'FOREVER', 155, N'K MIN', 1.3, N'/music/5.mp3', CAST(0xD5390B00 AS Date), N'/IMG/Track/Axwell/dreambigger.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'FUTURE HOUSE', 464, 464, N'FOREVER - KYGO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (12, N'HOW DEEP IS YOUR LOVE', 140, N'K MIN', 1.3, N'/music/23.mp3', CAST(0x103A0B00 AS Date), N'/IMG/Track/Axwell/onmyway.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'TRAP', 191, 191, N'HOW DEEP IS YOUR LOVE - DIMITRI VEGAS AND LIKE MIKE ft MARTIN GARRIX ft AFROJACK')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (13, N'PRAY TO GOD', 130, N'E MIN', 1.3, N'/music/23.mp3', CAST(0x073A0B00 AS Date), N'/IMG/Track/Axwell/somethingnew.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'TRAP', 748, 748, N'PRAY TO GOD - NICKY ROMERO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (14, N'SEE THE LIGHT', 140, N'E MIN', 1.25, N'/music/5.mp3', CAST(0xF83A0B00 AS Date), N'/IMG/Track/Axwell/sunisshining.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'NIGHTCORE', 434, 434, N'SEE THE LIGHT - OLIVER HELDENS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (15, N'UPTOWN', 140, N'K MIN', 1.3, N'/music/17.mp3', CAST(0x163B0B00 AS Date), N'/IMG/Track/Axwell/thistime.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'NIGHTCORE', 107, 107, N'UPTOWN - GALANTIS ft PORTER ROBINSON ft ZEDD')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (16, N'WORKOUT', 155, N'E MIN', 1.3, N'/music/23.mp3', CAST(0x1A3A0B00 AS Date), N'/IMG/Track/Brennan Heart/10yearnoisecontroller.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'TRAP', 283, 283, N'WORKOUT - R3HAB')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (17, N'CLAP', 130, N'E MIN', 1.4, N'/music/5.mp3', CAST(0x133A0B00 AS Date), N'/IMG/Track/Brennan Heart/bassleader.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'MELODIC', 198, 198, N'CLAP - SKRILLEX')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (18, N'DARK WARRIOS', 140, N'K MIN', 1.3, N'/music/23.mp3', CAST(0x053B0B00 AS Date), N'/IMG/Track/Brennan Heart/captainharder.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'CHILLSTEP', 407, 407, N'DARK WARRIOS - NICKY ROMERO ft STEVE AOKI ft AFROJACK')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (19, N'FEEL YOUR LOVE', 155, N'E MIN', 1.25, N'/music/17.mp3', CAST(0x123A0B00 AS Date), N'/IMG/Track/Brennan Heart/cominghome.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'FUTURE HOUSE', 256, 256, N'FEEL YOUR LOVE - TIESTO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (20, N'FONK', 140, N'K MIN', 1.4, N'/music/17.mp3', CAST(0xCA3A0B00 AS Date), N'/IMG/Track/Brennan Heart/gohartstyleorgohome.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'FUTURE HOUSE', 645, 645, N'FONK - UMMET OZCAN')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (21, N'FUNKY TIME', 130, N'K MIN', 1.3, N'/music/2.mp3', CAST(0xCB3A0B00 AS Date), N'/IMG/Track/Brennan Heart/hardbass.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'MELODIC', 597, 597, N'FUNKY TIME - WnW ft ARMIN VAN BUUREN')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (22, N'LIGHT THE SKY', 140, N'E MIN', 1.25, N'/music/19.mp3', CAST(0xCC3A0B00 AS Date), N'/IMG/Track/Brennan Heart/hardstyletheannual.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'HARDCORE', 61, 61, N'LIGHT THE SKY - STEVE AOKI ft ZEDD')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (23, N'MAYDAY', 155, N'K MIN', 1.25, N'/music/19.mp3', CAST(0x053B0B00 AS Date), N'/IMG/Track/Brennan Heart/keepingtheravelive.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'2:48', N'TRANCE', 286, 286, N'MAYDAY - ALESSO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (24, N'SURVIVORS', 140, N'E MIN', 1.4, N'/music/5.mp3', CAST(0xCD3A0B00 AS Date), N'/IMG/Track/Brennan Heart/qlimax.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'TROPICAL HOUSE', 403, 403, N'SURVIVORS - UMMET OZCAN ft AFROJACK ft CALVIN HARRIS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (25, N'ARE YOU WITH ME', 140, N'K MIN', 1.25, N'/music/23.mp3', CAST(0xCE3A0B00 AS Date), N'/IMG/Track/Brennan Heart/reverze2016.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'FUTURE BASS', 383, 383, N'ARE YOU WITH ME - ARMIN VAN BUUREN')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (26, N'I TAKE CARE', 130, N'K MIN', 1.4, N'/music/2.mp3', CAST(0x093B0B00 AS Date), N'/IMG/Track/Calvin Harris/20yearofbeingskin.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'PROGRESSIVE HOUSE', 610, 610, N'I TAKE CARE - AVICII')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (27, N'MAN ON THE RUN', 155, N'E MIN', 1.4, N'/music/19.mp3', CAST(0xCF3A0B00 AS Date), N'/IMG/Track/Calvin Harris/30todo.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'TECHNO HOUSE', 504, 504, N'MAN ON THE RUN - WnW ft ARMIN VAN BUUREN ft AXWELL')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (28, N'NEW YORK CITY', 130, N'K MIN', 1.25, N'/music/2.mp3', CAST(0xD03A0B00 AS Date), N'/IMG/Track/Calvin Harris/5yearofbigbeat.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'CHILLSTEP', 725, 725, N'NEW YORK CITY - BRENNAN HEART')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (29, N'SHELTER', 155, N'E MIN', 1.25, N'/music/31.mp3', CAST(0x083B0B00 AS Date), N'/IMG/Track/Calvin Harris/blame.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'TRAP', 279, 279, N'SHELTER - CALVIN HARRIS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (30, N'THIS IS WHO WE ARE', 130, N'K MIN', 1.4, N'/music/19.mp3', CAST(0xD13A0B00 AS Date), N'/IMG/Track/Calvin Harris/forever.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'PROGRESSIVE HOUSE', 357, 357, N'THIS IS WHO WE ARE - DVBBS ft ALESSO ft DANNIC')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (31, N'TILL THE SKY FALL', 130, N'E MIN', 1.25, N'/music/31.mp3', CAST(0xD23A0B00 AS Date), N'/IMG/Track/Calvin Harris/howdeepisurlove.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'DEEP HOUSE', 56, 56, N'TILL THE SKY FALL - DASH BERLIN')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (32, N'WAITING', 155, N'E MIN', 1.4, N'/music/2.mp3', CAST(0xD33A0B00 AS Date), N'/IMG/Track/Calvin Harris/praytogod.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'FUTURE HOUSE', 924, 924, N'WAITING - DAVID GUETTA')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (33, N'WORLD FALL A PART', 170, N'D MIN', 1.25, N'/music/19.mp3', CAST(0xD43A0B00 AS Date), N'/IMG/Track/Calvin Harris/seethelight.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'DEEP HOUSE', 207, 207, N'WORLD FALL A PART - DIMITRI VEGAS AND LIKE MIKE ft AFROJACK ft CALVIN HARRIS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (34, N'YESTERDAY I GONE', 130, N'D MIN', 1.3, N'/music/23.mp3', CAST(0xD53A0B00 AS Date), N'/IMG/Track/Calvin Harris/uptown.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'FUTURE BASS', 187, 187, N'YESTERDAY I GONE - DIPLO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (35, N'BAD', 130, N'E MIN', 1.3, N'/music/5.mp3', CAST(0xFE3A0B00 AS Date), N'/IMG/Track/Calvin Harris/workout.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'CHILLSTEP', 728, 728, N'BAD - DJ SNAKE')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (36, N'BANG MY HEAD', 170, N'E MIN', 1.4, N'/music/5.mp3', CAST(0xD63A0B00 AS Date), N'/IMG/Track/Dannic/clap.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'TECHNO HOUSE', 337, 337, N'BANG MY HEAD - DON DIABLO ft DANNIC')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (37, N'CLAP YOU HAND', 155, N'E MIN', 1.25, N'/music/2.mp3', CAST(0xD73A0B00 AS Date), N'/IMG/Track/Dannic/darkwarrios.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'HARDCORE', 388, 388, N'CLAP YOU HAND - DVBBS ft BRENNAN HEART')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (38, N'HEY MAMA', 130, N'E MIN', 1.4, N'/music/23.mp3', CAST(0xFF3A0B00 AS Date), N'/IMG/Track/Dannic/feelurlove.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'FUTURE HOUSE', 200, 200, N'HEY MAMA - GALANTIS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (39, N'LISTEN', 130, N'D MIN', 1.25, N'/music/9.mp3', CAST(0xD83A0B00 AS Date), N'/IMG/Track/Dannic/feelurloveremix.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'TRAP', 220, 220, N'LISTEN - HARDWELL ft ALESSO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (40, N'SUN GOES DOWN', 140, N'E MIN', 1.25, N'/music/31.mp3', CAST(0x0F3B0B00 AS Date), N'/IMG/Track/Dannic/fonk.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'NIGHTCORE', 294, 294, N'SUN GOES DOWN - DIMITRI VEGAS AND LIKE MIKE ft KSHMR')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (41, N'WHAT I DID FOR LOVE', 155, N'E MIN', 1.4, N'/music/9.mp3', CAST(0xD93A0B00 AS Date), N'/IMG/Track/Dannic/forever.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'HARDCORE', 568, 568, N'WHAT I DID FOR LOVE - KYGO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (42, N'ARMADA', 140, N'D MIN', 1.4, N'/music/23.mp3', CAST(0xDA3A0B00 AS Date), N'/IMG/Track/Dannic/funkytime.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'TROPICAL HOUSE', 746, 746, N'ARMADA - DAVID GUETTA ft MARTIN GARRIX')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (43, N'BROKEN', 130, N'E MIN', 1.4, N'/music/15.mp3', CAST(0xBC3A0B00 AS Date), N'/IMG/Track/Dannic/lightthesky.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'5:24', N'TRAP', 707, 707, N'BROKEN - NICKY ROMERO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (44, N'COLOGRE RUNNER', 130, N'D MIN', 1.4, N'/music/31.mp3', CAST(0xBD3A0B00 AS Date), N'/IMG/Track/Dannic/mayday.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'TRAP', 647, 647, N'COLOGRE RUNNER - OLIVER HELDENS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (45, N'DON''T YOU WANT ME', 140, N'E MIN', 1.4, N'/music/20.mp3', CAST(0xBE3A0B00 AS Date), N'/IMG/Track/Dannic/survivors.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'FUTURE HOUSE', 300, 300, N'DON''T YOU WANT ME - DASH BERLIN ft PORTER ROBINSON ft CALVIN HARRIS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (46, N'ELECTRO', 130, N'D MIN', 1.25, N'/music/20.mp3', CAST(0x203B0B00 AS Date), N'/IMG/Track/Dash Berlin/areuwithme.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'PROGRESSIVE HOUSE', 587, 587, N'ELECTRO - R3HAB')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (47, N'GREAT HIT REMIX', 140, N'D MIN', 1.5, N'/music/31.mp3', CAST(0xBF3A0B00 AS Date), N'/IMG/Track/Dash Berlin/itakecare.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'TECHNO HOUSE', 415, 415, N'GREAT HIT REMIX - SKRILLEX')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (48, N'HALLOWEN NIGHT', 155, N'E MIN', 1.25, N'/music/15.mp3', CAST(0x213B0B00 AS Date), N'/IMG/Track/Dash Berlin/manontherun.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'FUTURE HOUSE', 493, 493, N'HALLOWEN NIGHT - STEVE AOKI ft TIESTO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (49, N'HEADING UP HIGH', 140, N'D MIN', 1.25, N'/music/9.mp3', CAST(0xC03A0B00 AS Date), N'/IMG/Track/Dash Berlin/newyorkcity.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'HARDSTYLE', 132, 132, N'HEADING UP HIGH - TIESTO ft DANNIC')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (50, N'I LOVE DEEJAY', 140, N'E MIN', 1.25, N'/music/23.mp3', CAST(0x223B0B00 AS Date), N'/IMG/Track/Dash Berlin/shelter.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'PROGRESSIVE HOUSE', 614, 614, N'I LOVE DEEJAY - UMMET OZCAN')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (51, N'REAL I BIZA', 155, N'E MIN', 1.5, N'/music/9.mp3', CAST(0x233B0B00 AS Date), N'/IMG/Track/Dash Berlin/thisiswhoweare.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'DRUM BASS', 660, 660, N'REAL I BIZA - WnW ft AVICII')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (52, N'FREAK', 140, N'D MIN', 1.25, N'/music/20.mp3', CAST(0xC13A0B00 AS Date), N'/IMG/Track/Dash Berlin/tilltheskyfall.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'DRUM BASS', 531, 531, N'FREAK - ZEDD')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (53, N'SUMMER', 155, N'E MIN', 1.25, N'/music/9.mp3', CAST(0x243B0B00 AS Date), N'/IMG/Track/Dash Berlin/waiting.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'PROGRESSIVE HOUSE', 781, 781, N'SUMMER - ALESSO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (54, N'WHERE ARE YOU NOW', 155, N'D MIN', 1.25, N'/music/15.mp3', CAST(0xC23A0B00 AS Date), N'/IMG/Track/Dash Berlin/worldfallapart.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'FUTURE BASS', 639, 639, N'WHERE ARE YOU NOW - SKRILLEX ft AFROJACK')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (55, N'AFTER LIKE REMIX', 130, N'D MIN', 1.5, N'/music/9.mp3', CAST(0xC33A0B00 AS Date), N'/IMG/Track/Dash Berlin/yesterdayisgone.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'4:44', N'HARDSTYLE', 675, 675, N'AFTER LIKE REMIX - DIMITRI VEGAS AND LIKE MIKE ft ARMIN VAN BUUREN')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (56, N'DIRTY VIBE', 130, N'E MIN', 1.5, N'/music/15.mp3', CAST(0x253B0B00 AS Date), N'/IMG/Track/DavidGuetta/bad.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'4:44', N'DRUM BASS', 895, 895, N'DIRTY VIBE - AVICII')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (57, N'GET LOW', 140, N'D MIN', 1.25, N'/music/9.mp3', CAST(0xC43A0B00 AS Date), N'/IMG/Track/DavidGuetta/bangmyhead.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'4:44', N'TROPICAL HOUSE', 723, 723, N'GET LOW - KYGO ft AXWELL')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (58, N'CLARITY', 130, N'E MIN', 1.5, N'/music/31.mp3', CAST(0xC53A0B00 AS Date), N'/IMG/Track/DavidGuetta/clapuhand.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'4:44', N'HARDCORE', 253, 253, N'CLARITY - DVBBS ft BRENNAN HEART')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (59, N'LUNATIC', 140, N'D MIN', 1.25, N'/music/27.mp3', CAST(0x263B0B00 AS Date), N'/IMG/Track/DavidGuetta/heymama.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'4:44', N'NIGHTCORE', 189, 189, N'LUNATIC - CALVIN HARRIS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (60, N'MIDDLE', 140, N'E MIN', 1.5, N'/music/20.mp3', CAST(0xC63A0B00 AS Date), N'/IMG/Track/DavidGuetta/listen.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'4:44', N'NIGHTCORE', 884, 884, N'MIDDLE - DASH BERLIN ft DANNIC')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (61, N'PEACE IS THE MISSION', 130, N'D MIN', 1.25, N'/music/27.mp3', CAST(0x273B0B00 AS Date), N'/IMG/Track/DavidGuetta/sungoesdown.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'4:44', N'TRAP', 337, 337, N'PEACE IS THE MISSION - KSHMR ft ARMIN VAN BUUREN')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (62, N'PROPAGANDA', 140, N'D MIN', 1.5, N'/music/20.mp3', CAST(0x313B0B00 AS Date), N'/IMG/Track/DavidGuetta/whatididforlove.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'4:44', N'DRUM BASS', 141, 141, N'PROPAGANDA - DAVID GUETTA')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (63, N'TURN DOWN FOR WHAT', 140, N'D MIN', 1.25, N'/music/27.mp3', CAST(0xC83A0B00 AS Date), N'/IMG/Track/Dimitri Vegas/armada.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'HARDSTYLE', 128, 128, N'TURN DOWN FOR WHAT - DIMITRI VEGAS AND LIKE MIKE ft PORTER ROBINSON')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (64, N'YOU KNOW YOU LIKE IT', 140, N'D MIN', 1.5, N'/music/20.mp3', CAST(0x283B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/broken.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'NIGHTCORE', 622, 622, N'YOU KNOW YOU LIKE IT - DIPLO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (65, N'CHEMICALS', 130, N'E MIN', 1.25, N'/music/27.mp3', CAST(0x303B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/cologrerunner.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'FUTURE HOUSE', 817, 817, N'CHEMICALS - DJ SNAKE ft NICKY ROMERO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (66, N'GIVE ME A TRY', 140, N'E MIN', 1.25, N'/music/27.mp3', CAST(0x293B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/dontuwantme.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'NIGHTCORE', 358, 358, N'GIVE ME A TRY - DASH BERLIN ft DON DIABLO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (67, N'GOT THE LOVE', 140, N'D MIN', 1.25, N'/music/32.mp3', CAST(0x2E3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/electro.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'HARDCORE', 740, 740, N'GOT THE LOVE - DVBBS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (68, N'ILL HOUSE', 140, N'D MIN', 1.5, N'/music/27.mp3', CAST(0x2F3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/greathitremix.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'MELODIC', 596, 596, N'ILL HOUSE - GALANTIS')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (69, N'KEEP YOUR HAND UP', 155, N'E MIN', 1.25, N'/music/32.mp3', CAST(0x2A3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/hallowennight.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'DEEP HOUSE', 685, 685, N'KEEP YOUR HAND UP - GALANTIS ft HARDWELL')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (70, N'MAKE ME FEEL BETTER', 140, N'D MIN', 1.25, N'/music/32.mp3', CAST(0x2D3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/headinguphigh.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'DEEP HOUSE', 683, 683, N'MAKE ME FEEL BETTER - KSHMR')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (71, N'MY WINDOWS', 155, N'E MIN', 1.5, N'/music/27.mp3', CAST(0x2B3B0B00 AS Date), N'/IMG/Track/Dimitri Vegas/ilovedeejay.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'FUTURE HOUSE', 662, 662, N'MY WINDOWS - KYGO ft ALESSO')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (72, N'ON MY MIND', 140, N'E MIN', 1.5, N'/music/27.mp3', CAST(0x2C3B0B00 AS Date), N'/IMG/Track/Nicky Romero/warriorss.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'CHILLSTEP', 830, 830, N'ON MY MIND - DASH BERLIN ft MARTIN GARRIX')
+INSERT [dbo].[TRACK] ([ID], [NAME], [TEMPO], [KEY_], [COST], [LINK], [DATE_RELEASE], [LINK_IMG], [DESCRIPT], [LENGTH], [GENRE], [POINT_MONTH], [POINT_ALL], [FULL_NAME]) VALUES (73, N'CLOW', 130, N'S MIN', 1.3, N'/music/9.mp3', CAST(0xFB3A0B00 AS Date), N'/IMG/Track/Nicky Romero/warriorss.jpg', N'Sophisticated minimalism was always a core feat of ALEX UNDER''s portfolio, with the Spanish producer also serving as the founder and label manager for much-acclaimed techno label CMYK Musik. After releases on iconic imprints such as Trapez, Soma or Plus 8, the Madrilenian - one of the most sought-after electronic artists in Spain - now presents OLAS DE QUILA QUINA, his very first outing for Kompakt. Three slick, enticing cuts show him comitted to rolling basslines, rising synths and snappy percussion, all embedded in the futuristic sound design Alex has been honing over the course of his career. Unfolding to the backdrop of brooding metallic drones, the title track only needs a handful of carefully processed sounds to tell a highly evocative story - a focussed, geometrical jam that nonetheless allows for freewheeling outbursts of creativity. The same can be said for the punching, asymmetrical acid of EL REFLEJO DEL LACAR and the full-bodied bass bounce of LOLOG, as both cuts juxtapose sharp-edged shards of electronic texture with chewy, melodic synths. Tension-filled and catchy, it''s a masterful update on ALEX UNDER''s unique approach to techno, bold and subtle at the same time.', N'3:17', N'CHILLSTEP', 830, 830, N'CLOW - KSHMR')
+SET IDENTITY_INSERT [dbo].[TRACK] OFF
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (1, 8, N'DASH BERLIN', N'Spinnin'' Records', 1.25, N'AHORA', 12, 12, N'DEEP HOUSE', 1)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (1, 22, N'PORTER ROBINSON', N'Big Beat', 1.25, N'AHORA', 12, 12, N'DEEP HOUSE', 1)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (2, 9, N'DAVID GUETTA', N'Spinnin'' Records', 1.3, N'BAD THING 3', 802, 802, N'DRUM BASS', 2)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (3, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 1.41, N'CLUBBER GUIDE', 371, 371, N'HARDSTYLE', 3)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (3, 21, N'OLIVER HELDENS', N'Big Beat', 1.41, N'CLUBBER GUIDE', 371, 371, N'HARDSTYLE', 3)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (4, 11, N'DIPLO', N'Spinnin'' Records', 1.25, N'FOREVER', 240, 240, N'HARDSTYLE', 4)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (4, 34, N'ARMIN VAN BUUREN', N'Owsla', 1.25, N'FOREVER', 240, 240, N'HARDSTYLE', 4)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (5, 12, N'DJ SNAKE', N'Spinnin'' Records', 1.41, N'HEROES', 303, 303, N'CHILLSTEP', 5)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (6, 13, N'DON DIABLO', N'Spinnin'' Records', 1.25, N'HOUSE DECADES', 641, 641, N'TRANCE', 6)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (6, 17, N'KSHMR', N'Armada Music', 1.25, N'HOUSE DECADES', 641, 641, N'TRANCE', 6)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (7, 8, N'DASH BERLIN', N'Spinnin'' Records', 1.3, N'I WANT SEE YOU WITH ME', 663, 663, N'TRAP', 7)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (7, 14, N'DVBBS', N'Armada Music', 1.3, N'I WANT SEE YOU WITH ME', 663, 663, N'TRAP', 7)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (8, 15, N'GALANTIS', N'Armada Music', 1.3, N'PROGESSIVE CLUB', 444, 444, N'HARDCORE', 8)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (9, 9, N'DAVID GUETTA', N'Spinnin'' Records', 1.25, N'SWENDEN 12 POINTS', 935, 935, N'HARDSTYLE', 9)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (9, 12, N'DJ SNAKE', N'Spinnin'' Records', 1.25, N'SWENDEN 12 POINTS', 935, 935, N'HARDSTYLE', 9)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (9, 16, N'HARDWELL', N'Armada Music', 1.25, N'SWENDEN 12 POINTS', 935, 935, N'HARDSTYLE', 9)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (10, 17, N'KSHMR', N'Armada Music', 1.25, N'AN HOLD US DOWN', 325, 325, N'HARDSTYLE', 10)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (11, 18, N'KYGO', N'Armada Music', 1.3, N'FOREVER', 464, 464, N'FUTURE HOUSE', 11)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (12, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 1.3, N'HOW DEEP IS YOUR LOVE', 191, 191, N'TRAP', 12)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (12, 19, N'MARTIN GARRIX', N'Armada Music', 1.3, N'HOW DEEP IS YOUR LOVE', 191, 191, N'TRAP', 12)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (12, 33, N'AFROJACK', N'Dim Mak', 1.3, N'HOW DEEP IS YOUR LOVE', 191, 191, N'TRAP', 12)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (13, 20, N'NICKY ROMERO', N'Big Beat', 1.3, N'PRAY TO GOD', 748, 748, N'TRAP', 13)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (14, 21, N'OLIVER HELDENS', N'Big Beat', 1.25, N'SEE THE LIGHT', 434, 434, N'NIGHTCORE', 14)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (15, 15, N'GALANTIS', N'Armada Music', 1.3, N'UPTOWN', 107, 107, N'NIGHTCORE', 15)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (15, 22, N'PORTER ROBINSON', N'Big Beat', 1.3, N'UPTOWN', 107, 107, N'NIGHTCORE', 15)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (15, 29, N'ZEDD', N'Dim Mak', 1.3, N'UPTOWN', 107, 107, N'NIGHTCORE', 15)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (16, 23, N'R3HAB', N'Big Beat', 1.3, N'WORKOUT', 283, 283, N'TRAP', 16)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (17, 24, N'SKRILLEX', N'Big Beat', 1.4, N'CLAP', 198, 198, N'MELODIC', 17)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (18, 20, N'NICKY ROMERO', N'Big Beat', 1.3, N'DARK WARRIOS', 407, 407, N'CHILLSTEP', 18)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (18, 25, N'STEVE AOKI', N'Big Beat', 1.3, N'DARK WARRIOS', 407, 407, N'CHILLSTEP', 18)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (18, 33, N'AFROJACK', N'Dim Mak', 1.3, N'DARK WARRIOS', 407, 407, N'CHILLSTEP', 18)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (19, 26, N'TIESTO', N'Dim Mak', 1.25, N'FEEL YOUR LOVE', 256, 256, N'FUTURE HOUSE', 19)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (20, 27, N'UMMET OZCAN', N'Dim Mak', 1.4, N'FONK', 645, 645, N'FUTURE HOUSE', 20)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (21, 28, N'WnW', N'Dim Mak', 1.3, N'FUNKY TIME', 597, 597, N'MELODIC', 21)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (21, 34, N'ARMIN VAN BUUREN', N'Owsla', 1.3, N'FUNKY TIME', 597, 597, N'MELODIC', 21)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (22, 25, N'STEVE AOKI', N'Big Beat', 1.25, N'LIGHT THE SKY', 61, 61, N'HARDCORE', 22)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (22, 29, N'ZEDD', N'Dim Mak', 1.25, N'LIGHT THE SKY', 61, 61, N'HARDCORE', 22)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (23, 30, N'ALESSO', N'Dim Mak', 1.25, N'MAYDAY', 286, 286, N'TRANCE', 23)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (24, 27, N'UMMET OZCAN', N'Dim Mak', 1.4, N'SURVIVORS', 403, 403, N'TROPICAL HOUSE', 24)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (24, 33, N'AFROJACK', N'Dim Mak', 1.4, N'SURVIVORS', 403, 403, N'TROPICAL HOUSE', 24)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (24, 38, N'CALVIN HARRIS', N'Owsla', 1.4, N'SURVIVORS', 403, 403, N'TROPICAL HOUSE', 24)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (25, 34, N'ARMIN VAN BUUREN', N'Owsla', 1.25, N'ARE YOU WITH ME', 383, 383, N'FUTURE BASS', 25)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (26, 35, N'AVICII', N'Owsla', 1.4, N'I TAKE CARE', 610, 610, N'PROGRESSIVE HOUSE', 26)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (27, 28, N'WnW', N'Dim Mak', 1.4, N'MAN ON THE RUN', 504, 504, N'TECHNO HOUSE', 27)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (27, 34, N'ARMIN VAN BUUREN', N'Owsla', 1.4, N'MAN ON THE RUN', 504, 504, N'TECHNO HOUSE', 27)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (27, 36, N'AXWELL', N'Owsla', 1.4, N'MAN ON THE RUN', 504, 504, N'TECHNO HOUSE', 27)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (28, 37, N'BRENNAN HEART', N'Owsla', 1.25, N'NEW YORK CITY', 725, 725, N'CHILLSTEP', 28)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (29, 38, N'CALVIN HARRIS', N'Owsla', 1.25, N'SHELTER', 279, 279, N'TRAP', 29)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (30, 14, N'DVBBS', N'Armada Music', 1.4, N'THIS IS WHO WE ARE', 357, 357, N'PROGRESSIVE HOUSE', 30)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (30, 30, N'ALESSO', N'Dim Mak', 1.4, N'THIS IS WHO WE ARE', 357, 357, N'PROGRESSIVE HOUSE', 30)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (30, 39, N'DANNIC', N'Owsla', 1.4, N'THIS IS WHO WE ARE', 357, 357, N'PROGRESSIVE HOUSE', 30)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (31, 8, N'DASH BERLIN', N'Spinnin'' Records', 1.25, N'TILL THE SKY FALL', 56, 56, N'DEEP HOUSE', 31)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (32, 9, N'DAVID GUETTA', N'Spinnin'' Records', 1.4, N'WAITING', 924, 924, N'FUTURE HOUSE', 32)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (33, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 1.25, N'WORLD FALL A PART', 207, 207, N'DEEP HOUSE', 33)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (33, 33, N'AFROJACK', N'Dim Mak', 1.25, N'WORLD FALL A PART', 207, 207, N'DEEP HOUSE', 33)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (33, 38, N'CALVIN HARRIS', N'Owsla', 1.25, N'WORLD FALL A PART', 207, 207, N'DEEP HOUSE', 33)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (34, 11, N'DIPLO', N'Spinnin'' Records', 1.3, N'YESTERDAY I GONE', 187, 187, N'FUTURE BASS', 34)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (35, 12, N'DJ SNAKE', N'Spinnin'' Records', 1.3, N'BAD', 728, 728, N'CHILLSTEP', 35)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (36, 13, N'DON DIABLO', N'Spinnin'' Records', 1.4, N'BANG MY HEAD', 337, 337, N'TECHNO HOUSE', 36)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (36, 39, N'DANNIC', N'Owsla', 1.4, N'BANG MY HEAD', 337, 337, N'TECHNO HOUSE', 36)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (37, 14, N'DVBBS', N'Armada Music', 1.25, N'CLAP YOU HAND', 388, 388, N'HARDCORE', 37)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (37, 37, N'BRENNAN HEART', N'Owsla', 1.25, N'CLAP YOU HAND', 388, 388, N'HARDCORE', 37)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (38, 15, N'GALANTIS', N'Armada Music', 1.4, N'HEY MAMA', 200, 200, N'FUTURE HOUSE', 38)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (39, 16, N'HARDWELL', N'Armada Music', 1.25, N'LISTEN', 220, 220, N'TRAP', 39)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (39, 30, N'ALESSO', N'Dim Mak', 1.25, N'LISTEN', 220, 220, N'TRAP', 39)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (40, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 1.25, N'SUN GOES DOWN', 294, 294, N'NIGHTCORE', 40)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (40, 17, N'KSHMR', N'Armada Music', 1.25, N'SUN GOES DOWN', 294, 294, N'NIGHTCORE', 40)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (41, 18, N'KYGO', N'Armada Music', 1.4, N'WHAT I DID FOR LOVE', 568, 568, N'HARDCORE', 41)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (42, 9, N'DAVID GUETTA', N'Spinnin'' Records', 1.4, N'ARMADA', 746, 746, N'TROPICAL HOUSE', 42)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (42, 19, N'MARTIN GARRIX', N'Armada Music', 1.4, N'ARMADA', 746, 746, N'TROPICAL HOUSE', 42)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (43, 20, N'NICKY ROMERO', N'Big Beat', 1.4, N'BROKEN', 707, 707, N'TRAP', 43)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (44, 21, N'OLIVER HELDENS', N'Big Beat', 1.4, N'COLOGRE RUNNER', 647, 647, N'TRAP', 44)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (45, 8, N'DASH BERLIN', N'Spinnin'' Records', 1.4, N'DON''T YOU WANT ME', 300, 300, N'FUTURE HOUSE', 45)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (45, 22, N'PORTER ROBINSON', N'Big Beat', 1.4, N'DON''T YOU WANT ME', 300, 300, N'FUTURE HOUSE', 45)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (45, 38, N'CALVIN HARRIS', N'Owsla', 1.4, N'DON''T YOU WANT ME', 300, 300, N'FUTURE HOUSE', 45)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (46, 23, N'R3HAB', N'Big Beat', 1.25, N'ELECTRO', 587, 587, N'PROGRESSIVE HOUSE', 46)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (47, 24, N'SKRILLEX', N'Big Beat', 1.5, N'GREAT HIT REMIX', 415, 415, N'TECHNO HOUSE', 47)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (48, 25, N'STEVE AOKI', N'Big Beat', 1.25, N'HALLOWEN NIGHT', 493, 493, N'FUTURE HOUSE', 48)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (48, 26, N'TIESTO', N'Dim Mak', 1.25, N'HALLOWEN NIGHT', 493, 493, N'FUTURE HOUSE', 48)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (49, 26, N'TIESTO', N'Dim Mak', 1.25, N'HEADING UP HIGH', 132, 132, N'HARDSTYLE', 49)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (49, 39, N'DANNIC', N'Owsla', 1.25, N'HEADING UP HIGH', 132, 132, N'HARDSTYLE', 49)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (50, 27, N'UMMET OZCAN', N'Dim Mak', 1.25, N'I LOVE DEEJAY', 614, 614, N'PROGRESSIVE HOUSE', 50)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (51, 28, N'WnW', N'Dim Mak', 1.5, N'REAL I BIZA', 660, 660, N'DRUM BASS', 51)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (51, 35, N'AVICII', N'Owsla', 1.5, N'REAL I BIZA', 660, 660, N'DRUM BASS', 51)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (52, 29, N'ZEDD', N'Dim Mak', 1.25, N'FREAK', 531, 531, N'DRUM BASS', 52)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (53, 30, N'ALESSO', N'Dim Mak', 1.25, N'SUMMER', 781, 781, N'PROGRESSIVE HOUSE', 53)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (54, 24, N'SKRILLEX', N'Big Beat', 1.25, N'WHERE ARE YOU NOW', 639, 639, N'FUTURE BASS', 54)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (54, 33, N'AFROJACK', N'Dim Mak', 1.25, N'WHERE ARE YOU NOW', 639, 639, N'FUTURE BASS', 54)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (55, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 1.5, N'AFTER LIKE REMIX', 675, 675, N'HARDSTYLE', 55)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (55, 34, N'ARMIN VAN BUUREN', N'Owsla', 1.5, N'AFTER LIKE REMIX', 675, 675, N'HARDSTYLE', 55)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (56, 35, N'AVICII', N'Owsla', 1.5, N'DIRTY VIBE', 895, 895, N'DRUM BASS', 56)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (57, 18, N'KYGO', N'Armada Music', 1.25, N'GET LOW', 723, 723, N'TROPICAL HOUSE', 57)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (57, 36, N'AXWELL', N'Owsla', 1.25, N'GET LOW', 723, 723, N'TROPICAL HOUSE', 57)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (58, 14, N'DVBBS', N'Armada Music', 1.5, N'CLARITY', 253, 253, N'HARDCORE', 58)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (58, 37, N'BRENNAN HEART', N'Owsla', 1.5, N'CLARITY', 253, 253, N'HARDCORE', 58)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (59, 38, N'CALVIN HARRIS', N'Owsla', 1.25, N'LUNATIC', 189, 189, N'NIGHTCORE', 59)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (60, 8, N'DASH BERLIN', N'Spinnin'' Records', 1.5, N'MIDDLE', 884, 884, N'NIGHTCORE', 60)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (60, 39, N'DANNIC', N'Owsla', 1.5, N'MIDDLE', 884, 884, N'NIGHTCORE', 60)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (61, 17, N'KSHMR', N'Armada Music', 1.25, N'PEACE IS THE MISSION', 337, 337, N'TRAP', 61)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (61, 34, N'ARMIN VAN BUUREN', N'Owsla', 1.25, N'PEACE IS THE MISSION', 337, 337, N'TRAP', 61)
+GO
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (62, 9, N'DAVID GUETTA', N'Spinnin'' Records', 1.5, N'PROPAGANDA', 141, 141, N'DRUM BASS', 62)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (63, 10, N'DIMITRI VEGAS AND LIKE MIKE', N'Spinnin'' Records', 1.25, N'TURN DOWN FOR WHAT', 128, 128, N'HARDSTYLE', 63)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (63, 22, N'PORTER ROBINSON', N'Big Beat', 1.25, N'TURN DOWN FOR WHAT', 128, 128, N'HARDSTYLE', 63)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (64, 11, N'DIPLO', N'Spinnin'' Records', 1.5, N'YOU KNOW YOU LIKE IT', 622, 622, N'NIGHTCORE', 64)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (65, 12, N'DJ SNAKE', N'Spinnin'' Records', 1.25, N'CHEMICALS', 817, 817, N'FUTURE HOUSE', 65)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (65, 20, N'NICKY ROMERO', N'Big Beat', 1.25, N'CHEMICALS', 817, 817, N'FUTURE HOUSE', 65)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (66, 8, N'DASH BERLIN', N'Spinnin'' Records', 1.25, N'GIVE ME A TRY', 358, 358, N'NIGHTCORE', 66)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (66, 13, N'DON DIABLO', N'Spinnin'' Records', 1.25, N'GIVE ME A TRY', 358, 358, N'NIGHTCORE', 66)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (67, 14, N'DVBBS', N'Armada Music', 1.25, N'GOT THE LOVE', 740, 740, N'HARDCORE', 67)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (68, 15, N'GALANTIS', N'Armada Music', 1.5, N'ILL HOUSE', 596, 596, N'MELODIC', 68)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (69, 15, N'GALANTIS', N'Armada Music', 1.25, N'KEEP YOUR HAND UP', 685, 685, N'DEEP HOUSE', 69)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (69, 16, N'HARDWELL', N'Armada Music', 1.25, N'KEEP YOUR HAND UP', 685, 685, N'DEEP HOUSE', 69)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (70, 17, N'KSHMR', N'Armada Music', 1.25, N'MAKE ME FEEL BETTER', 683, 683, N'DEEP HOUSE', 70)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (71, 18, N'KYGO', N'Armada Music', 1.5, N'MY WINDOWS', 662, 662, N'FUTURE HOUSE', 71)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (71, 30, N'ALESSO', N'Dim Mak', 1.5, N'MY WINDOWS', 662, 662, N'FUTURE HOUSE', 71)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (72, 8, N'DASH BERLIN', N'Spinnin'' Records', 1.5, N'ON MY MIND', 830, 830, N'CHILLSTEP', 72)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (72, 19, N'MARTIN GARRIX', N'Armada Music', 1.5, N'ON MY MIND', 830, 830, N'CHILLSTEP', 72)
+INSERT [dbo].[TRACK_ARTIST] ([ID_TRACK], [ID_ARTIST], [NAME_ARTIST], [NAME_LABEL], [COST], [NAME_TRACK], [POINT_ALL], [POINT_MONTH], [GENRE], [POINT_DAY]) VALUES (73, 17, N'KSHMR', N'Armada Music', 1.3, N'CLOW', 830, 830, N'CHILLSTEP', 73)
+SET IDENTITY_INSERT [dbo].[USER] ON 
+
+INSERT [dbo].[USER] ([ID], [FIRSTNAME], [PASSWORD], [EMAIL], [LEVEL_], [LASTNAME]) VALUES (1, N'vu hoang', N'1', N'1', 1, N'ha')
+INSERT [dbo].[USER] ([ID], [FIRSTNAME], [PASSWORD], [EMAIL], [LEVEL_], [LASTNAME]) VALUES (1042, N'ff', N'1', N'1', 1, N'ff')
+SET IDENTITY_INSERT [dbo].[USER] OFF
+INSERT [dbo].[USER_TRACKLIST] ([ID_USER], [ID_PROD], [TYPE], [NAME]) VALUES (1, 62, 1, N'PROPAGANDA - DAVID GUETTA')
+INSERT [dbo].[USER_TRACKLIST] ([ID_USER], [ID_PROD], [TYPE], [NAME]) VALUES (1, 65, 1, N'CHEMICALS - DJ SNAKE ft NICKY ROMERO')
+INSERT [dbo].[USER_TRACKLIST] ([ID_USER], [ID_PROD], [TYPE], [NAME]) VALUES (1, 67, 1, N'GOT THE LOVE - DVBBS')
+INSERT [dbo].[USER_TRACKLIST] ([ID_USER], [ID_PROD], [TYPE], [NAME]) VALUES (1, 68, 1, N'ILL HOUSE - GALANTIS')
+INSERT [dbo].[USER_TRACKLIST] ([ID_USER], [ID_PROD], [TYPE], [NAME]) VALUES (1, 70, 1, N'MAKE ME FEEL BETTER - KSHMR')
+ALTER TABLE [dbo].[FORMULA_HOT] ADD  CONSTRAINT [DF_FORMULA_HOT_CLICK]  DEFAULT ((0)) FOR [CLICK]
+GO
+ALTER TABLE [dbo].[FORMULA_HOT] ADD  CONSTRAINT [DF_FORMULA_HOT_BUY]  DEFAULT ((0)) FOR [BUY]
+GO
+ALTER TABLE [dbo].[GENRE_ARTIST] ADD  CONSTRAINT [DF_GENRE_ARTIST_POINT]  DEFAULT ((0)) FOR [POINT]
+GO
+ALTER TABLE [dbo].[STATISTIC_ARTIST] ADD  CONSTRAINT [DF_STATISTIC_ARTIST_CLI_PER_MON]  DEFAULT ((0)) FOR [CLICK_MONTH]
+GO
+ALTER TABLE [dbo].[STATISTIC_ARTIST] ADD  CONSTRAINT [DF_STATISTIC_ARTIST_CLI_ALL]  DEFAULT ((0)) FOR [CLICK_ALL]
+GO
+ALTER TABLE [dbo].[STATISTIC_ARTIST] ADD  CONSTRAINT [DF_STATISTIC_ARTIST_BUY_PER_MON]  DEFAULT ((0)) FOR [BUY_MONTH]
+GO
+ALTER TABLE [dbo].[STATISTIC_ARTIST] ADD  CONSTRAINT [DF_STATISTIC_ARTIST_BUY_ALL]  DEFAULT ((0)) FOR [BUY_ALL]
+GO
+ALTER TABLE [dbo].[STATISTIC_REMIX] ADD  CONSTRAINT [DF_STATISTIC_REMIX_CLICK_ALL]  DEFAULT ((0)) FOR [CLICK_ALL]
+GO
+ALTER TABLE [dbo].[STATISTIC_REMIX] ADD  CONSTRAINT [DF_STATISTIC_REMIX_CLICK_MONTH]  DEFAULT ((0)) FOR [CLICK_MONTH]
+GO
+ALTER TABLE [dbo].[STATISTIC_REMIX] ADD  CONSTRAINT [DF_STATISTIC_REMIX_BUY_ALL]  DEFAULT ((0)) FOR [BUY_ALL]
+GO
+ALTER TABLE [dbo].[STATISTIC_REMIX] ADD  CONSTRAINT [DF_STATISTIC_REMIX_BUY_MONTH]  DEFAULT ((0)) FOR [BUY_MONTH]
+GO
+ALTER TABLE [dbo].[STATISTIC_REMIX] ADD  CONSTRAINT [DF_STATISTIC_REMIX_POINT_MONTH]  DEFAULT ((0)) FOR [POINT_MONTH]
+GO
+ALTER TABLE [dbo].[STATISTIC_TRACK] ADD  CONSTRAINT [DF_STATISTIC_TRACK_ALL_CLICK]  DEFAULT ((0)) FOR [CLICK_ALL]
+GO
+ALTER TABLE [dbo].[STATISTIC_TRACK] ADD  CONSTRAINT [DF_STATISTIC_TRACK_CLICK_MONTH]  DEFAULT ((0)) FOR [CLICK_MONTH]
+GO
+ALTER TABLE [dbo].[STATISTIC_TRACK] ADD  CONSTRAINT [DF_STATISTIC_TRACK_ALL_BUY]  DEFAULT ((0)) FOR [BUY_ALL]
+GO
+ALTER TABLE [dbo].[STATISTIC_TRACK] ADD  CONSTRAINT [DF_STATISTIC_TRACK_BUY_MONTH]  DEFAULT ((0)) FOR [BUY_MONTH]
+GO
+ALTER TABLE [dbo].[USER] ADD  CONSTRAINT [DF_USER_LEVEL_]  DEFAULT ((1)) FOR [LEVEL_]
+GO
+ALTER TABLE [dbo].[ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_ARTIST_LABEL] FOREIGN KEY([ID_LABEL])
+REFERENCES [dbo].[LABEL] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ARTIST] CHECK CONSTRAINT [FK_ARTIST_LABEL]
+GO
+ALTER TABLE [dbo].[CHART]  WITH CHECK ADD  CONSTRAINT [FK_CHART_GENRE] FOREIGN KEY([ID_GENRE])
+REFERENCES [dbo].[GENRE] ([ID])
+GO
+ALTER TABLE [dbo].[CHART] CHECK CONSTRAINT [FK_CHART_GENRE]
+GO
+ALTER TABLE [dbo].[GENRE_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_GENRE_ARTIST_ARTIST] FOREIGN KEY([ID_ARTIST])
+REFERENCES [dbo].[ARTIST] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[GENRE_ARTIST] CHECK CONSTRAINT [FK_GENRE_ARTIST_ARTIST]
+GO
+ALTER TABLE [dbo].[GENRE_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_GENRE_ARTIST_GENRE] FOREIGN KEY([ID_GENRE])
+REFERENCES [dbo].[GENRE] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[GENRE_ARTIST] CHECK CONSTRAINT [FK_GENRE_ARTIST_GENRE]
+GO
+ALTER TABLE [dbo].[GENRE_LABEL]  WITH CHECK ADD  CONSTRAINT [FK_GENRE_LABEL_GENRE] FOREIGN KEY([ID_GENRE])
+REFERENCES [dbo].[GENRE] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[GENRE_LABEL] CHECK CONSTRAINT [FK_GENRE_LABEL_GENRE]
+GO
+ALTER TABLE [dbo].[GENRE_LABEL]  WITH CHECK ADD  CONSTRAINT [FK_GENRE_LABEL_LABEL] FOREIGN KEY([ID_LABEL])
+REFERENCES [dbo].[LABEL] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[GENRE_LABEL] CHECK CONSTRAINT [FK_GENRE_LABEL_LABEL]
+GO
+ALTER TABLE [dbo].[HISTORY_USER]  WITH CHECK ADD  CONSTRAINT [FK_HISTORY_USER_TRACK] FOREIGN KEY([ID_TRACK])
+REFERENCES [dbo].[TRACK] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[HISTORY_USER] CHECK CONSTRAINT [FK_HISTORY_USER_TRACK]
+GO
+ALTER TABLE [dbo].[HISTORY_USER]  WITH CHECK ADD  CONSTRAINT [FK_HISTORY_USER_USER] FOREIGN KEY([ID_USER])
+REFERENCES [dbo].[USER] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[HISTORY_USER] CHECK CONSTRAINT [FK_HISTORY_USER_USER]
+GO
+ALTER TABLE [dbo].[NEW_TRACK]  WITH CHECK ADD  CONSTRAINT [FK_NEW_TRACK_TRACK] FOREIGN KEY([ID])
+REFERENCES [dbo].[TRACK] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[NEW_TRACK] CHECK CONSTRAINT [FK_NEW_TRACK_TRACK]
+GO
+ALTER TABLE [dbo].[REMIX]  WITH CHECK ADD  CONSTRAINT [FK_REMIX_TRACK] FOREIGN KEY([ID_TRACK])
+REFERENCES [dbo].[TRACK] ([ID])
+ON UPDATE CASCADE
+ON DELETE SET NULL
+GO
+ALTER TABLE [dbo].[REMIX] CHECK CONSTRAINT [FK_REMIX_TRACK]
+GO
+ALTER TABLE [dbo].[REMIX_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_REMIX_ARTIST_ARTIST] FOREIGN KEY([ID_ARTIST])
+REFERENCES [dbo].[ARTIST] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[REMIX_ARTIST] CHECK CONSTRAINT [FK_REMIX_ARTIST_ARTIST]
+GO
+ALTER TABLE [dbo].[REMIX_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_REMIX_ARTIST_REMIX1] FOREIGN KEY([ID_REMIX])
+REFERENCES [dbo].[REMIX] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[REMIX_ARTIST] CHECK CONSTRAINT [FK_REMIX_ARTIST_REMIX1]
+GO
+ALTER TABLE [dbo].[SHOW]  WITH CHECK ADD  CONSTRAINT [FK_SHOW_ARTIST] FOREIGN KEY([ID_ARTIST])
+REFERENCES [dbo].[ARTIST] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[SHOW] CHECK CONSTRAINT [FK_SHOW_ARTIST]
+GO
+ALTER TABLE [dbo].[SOUNDS]  WITH CHECK ADD  CONSTRAINT [FK_SOUNDS_LABEL] FOREIGN KEY([LABEL_ID])
+REFERENCES [dbo].[LABEL] ([ID])
+GO
+ALTER TABLE [dbo].[SOUNDS] CHECK CONSTRAINT [FK_SOUNDS_LABEL]
+GO
+ALTER TABLE [dbo].[STATISTIC_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_STATISTIC_ARTIST_ARTIST] FOREIGN KEY([ID_ARTIST])
+REFERENCES [dbo].[ARTIST] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[STATISTIC_ARTIST] CHECK CONSTRAINT [FK_STATISTIC_ARTIST_ARTIST]
+GO
+ALTER TABLE [dbo].[STATISTIC_REMIX]  WITH CHECK ADD  CONSTRAINT [FK_STATISTIC_REMIX_REMIX] FOREIGN KEY([ID])
+REFERENCES [dbo].[REMIX] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[STATISTIC_REMIX] CHECK CONSTRAINT [FK_STATISTIC_REMIX_REMIX]
+GO
+ALTER TABLE [dbo].[STATISTIC_TRACK]  WITH CHECK ADD  CONSTRAINT [FK_STATISTIC_TRACK_TRACK] FOREIGN KEY([ID])
+REFERENCES [dbo].[TRACK] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[STATISTIC_TRACK] CHECK CONSTRAINT [FK_STATISTIC_TRACK_TRACK]
+GO
+ALTER TABLE [dbo].[STEM_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_STEM_ARTIST_ARTIST] FOREIGN KEY([ARTIST_ID])
+REFERENCES [dbo].[ARTIST] ([ID])
+GO
+ALTER TABLE [dbo].[STEM_ARTIST] CHECK CONSTRAINT [FK_STEM_ARTIST_ARTIST]
+GO
+ALTER TABLE [dbo].[STEM_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_STEM_ARTIST_STEM] FOREIGN KEY([STEM_ID])
+REFERENCES [dbo].[STEM] ([ID])
+GO
+ALTER TABLE [dbo].[STEM_ARTIST] CHECK CONSTRAINT [FK_STEM_ARTIST_STEM]
+GO
+ALTER TABLE [dbo].[STEM_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_STEM_ARTIST_STEM1] FOREIGN KEY([STEM_ID])
+REFERENCES [dbo].[STEM] ([ID])
+GO
+ALTER TABLE [dbo].[STEM_ARTIST] CHECK CONSTRAINT [FK_STEM_ARTIST_STEM1]
+GO
+ALTER TABLE [dbo].[TRACK_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_TRACK_ARTIST_ARTIST] FOREIGN KEY([ID_ARTIST])
+REFERENCES [dbo].[ARTIST] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[TRACK_ARTIST] CHECK CONSTRAINT [FK_TRACK_ARTIST_ARTIST]
+GO
+ALTER TABLE [dbo].[TRACK_ARTIST]  WITH CHECK ADD  CONSTRAINT [FK_TRACK_ARTIST_TRACK] FOREIGN KEY([ID_TRACK])
+REFERENCES [dbo].[TRACK] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[TRACK_ARTIST] CHECK CONSTRAINT [FK_TRACK_ARTIST_TRACK]
+GO
+ALTER TABLE [dbo].[USER_TRACKLIST]  WITH CHECK ADD  CONSTRAINT [FK_USER_TRACKLIST_TRACK] FOREIGN KEY([ID_PROD])
+REFERENCES [dbo].[TRACK] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[USER_TRACKLIST] CHECK CONSTRAINT [FK_USER_TRACKLIST_TRACK]
+GO
+ALTER TABLE [dbo].[USER_TRACKLIST]  WITH CHECK ADD  CONSTRAINT [FK_USER_TRACKLIST_USER] FOREIGN KEY([ID_USER])
+REFERENCES [dbo].[USER] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[USER_TRACKLIST] CHECK CONSTRAINT [FK_USER_TRACKLIST_USER]
+GO
+ALTER TABLE [dbo].[USER_VIDEOLIST]  WITH CHECK ADD  CONSTRAINT [FK_USER_VIDEOLIST_USER] FOREIGN KEY([ID_USER])
+REFERENCES [dbo].[USER] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[USER_VIDEOLIST] CHECK CONSTRAINT [FK_USER_VIDEOLIST_USER]
+GO
+ALTER TABLE [dbo].[USER_VIDEOLIST]  WITH CHECK ADD  CONSTRAINT [FK_USER_VIDEOLIST_VIDEO] FOREIGN KEY([ID_VIDEO])
+REFERENCES [dbo].[VIDEO] ([ID])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[USER_VIDEOLIST] CHECK CONSTRAINT [FK_USER_VIDEOLIST_VIDEO]
+GO
+USE [master]
+GO
+ALTER DATABASE [Music] SET  READ_WRITE 
+GO
