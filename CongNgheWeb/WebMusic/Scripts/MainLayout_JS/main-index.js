@@ -95,7 +95,7 @@ function newTrack_Index_Fun() {
 // #endregion
 
 //hot remix
-$(document).ready(function () {
+function Home_Hot_Remix() {
     $(".hot-remix-pages-li").on("click", function () {
         var stt = $(this).attr("stt");
         $(".hot-remix-div").hide();
@@ -103,7 +103,7 @@ $(document).ready(function () {
         $(".hot-remix-pages-li").removeClass('hot-remix-pages-li-active');
         $(".hot-remix-pages-li").eq(stt).addClass('hot-remix-pages-li-active');
     });
-});
+}
 
 //top-liveset
 $(document).ready(function () {
