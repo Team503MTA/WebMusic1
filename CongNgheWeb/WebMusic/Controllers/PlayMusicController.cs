@@ -70,6 +70,12 @@ namespace WebMusic.Controllers
             StringBuilder sb = new StringBuilder();
             if (type == 1)
             {
+                //add statistic for track
+                var statisTrack = db.STATISTIC_TRACK.FirstOrDefault(p => p.ID == id);
+                statisTrack.CLICK_MONTH++;
+                statisTrack.CLICK_ALL++;
+                db.SaveChanges();
+
                 TRACK track = db.TRACKs.FirstOrDefault(p => p.ID == id);
                 var artist = db.TRACK_ARTIST.Where(p => p.ID_TRACK == id).Select(p => p.NAME_ARTIST).ToList();
 
@@ -126,6 +132,12 @@ namespace WebMusic.Controllers
             }
             else
             {
+                //add statistic for Remix
+                var statisRemix = db.STATISTIC_REMIX.FirstOrDefault(p => p.ID == id);
+                statisRemix.CLICK_MONTH++;
+                statisRemix.CLICK_ALL++;
+                db.SaveChanges();
+
                 REMIX track = db.REMIXes.FirstOrDefault(p => p.ID == id);
                 var artist = db.REMIX_ARTIST.Where(p => p.ID_REMIX == id).Select(p => p.NAME_ARTIST).ToList();
 

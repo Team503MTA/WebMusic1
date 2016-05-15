@@ -28,7 +28,7 @@
         <div id="adminSubmit" onclick="login()">Login</div>
     </div>
     <div id="contentUpdateAdmin">
-        <div id="updateAll" class="update">Update All</div>
+        <div id="updateAll" class="update" onclick="update_All(this)">Update All</div>
         <div class="update">
             <span class="updateTitle">New Track</span>
             <span class="updateButton" onclick="update_NewTrack(this)">Update</span>
@@ -38,8 +38,8 @@
             <span class="updateButton" onclick="update_TrackRemix(this)">Update</span>
         </div>
         <div class="update">
-            <span class="updateTitle">New Track</span>
-            <span class="updateButton" onclick="updateClick(this, 'new-track')">Update</span>
+            <span class="updateTitle">Artist</span>
+            <span class="updateButton" onclick="update_Artist(this)">Update</span>
         </div>
     </div>
 
@@ -94,9 +94,9 @@
     }
 
     //Update POINT TRACK REMIX____***********************************************************************************************************
-    var isUpdateNewTrack = false;
+    var isUpdateTrackRemix = false;
     function update_TrackRemix(obj) {
-        if (!isUpdateNewTrack) {
+        if (!isUpdateTrackRemix) {
             startLoad();
             $.ajax({
                 url: '@Url.Action("update_Track_Remix","Update")',
@@ -108,7 +108,49 @@
                     obj.style.background = '#fbb';
                     noti_Fun("Update TRACK REMIX Successfull", 'success');
                     endLoad();
-                    isUpdateNewTrack = true;
+                    isUpdateTrackRemix = true;
+                }
+            });
+        }
+    }
+
+    //Update All____***********************************************************************************************************
+    var isUpdateAll = false;
+    function update_All(obj) {
+        if (!isUpdateAll) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("update_All","Update")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    obj.style.color = '#777';
+                    obj.style.background = '#fbb';
+                    noti_Fun("Update All Successfull", 'success');
+                    endLoad();
+                    isUpdateAll = true;
+                }
+            });
+        }
+    }
+
+    //Update Artist____***********************************************************************************************************
+    var isUpdate_Artist = false;
+    function update_Artist(obj) {
+        if (!isUpdate_Artist) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("update_Point_Artist","Update")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    obj.style.color = '#777';
+                    obj.style.background = '#fbb';
+                    noti_Fun("Update Artist Successfull", 'success');
+                    endLoad();
+                    isUpdate_Artist = true;
                 }
             });
         }

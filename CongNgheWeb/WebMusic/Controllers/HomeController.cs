@@ -225,6 +225,21 @@ namespace WebMusic.Controllers
 
         public ActionResult Index()
         {
+
+            var temp = db.REMIXes.ToList();
+            var count = 1;
+            foreach (var item in temp)
+            {
+                item.LINK = "/music/" + count + ".mp3";
+                count++;
+                if (count == 63)
+                {
+                    count = 1;
+                }
+            }
+            db.SaveChanges();
+
+
             Session["idRandom"] = 0;
             Session["typeSong"] = 1;
             Session["User"] = 0;
