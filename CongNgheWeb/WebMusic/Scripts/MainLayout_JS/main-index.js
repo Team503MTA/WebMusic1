@@ -106,7 +106,7 @@ function Home_Hot_Remix() {
 }
 
 //top-liveset
-$(document).ready(function () {
+function Liveset() {
     $(".live-set-slider-div").on("click", function () {
         var stt = $(this).attr("stt");
         $(".live-set-content-div").hide();
@@ -114,7 +114,7 @@ $(document).ready(function () {
         $(".live-set-slider-div").removeClass('live-set-slider-div-active');
         $(".live-set-slider-div").eq(stt).addClass('live-set-slider-div-active');
     });
-});
+}
 
 //bucket
 $(document).ready(function () {

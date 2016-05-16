@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
@@ -307,6 +308,159 @@ namespace WebMusic.Controllers
             return sb.ToString();
         }
 
+        public string Live_Set()
+        {
+            var liveset = db.LIVESETs.OrderByDescending(p => p.POINT_MONTH).Take(30).ToList();
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("<div class='live-set'>");
+            sb.Append("<p class='live-set-title'>Top Liveset</p>");
+            sb.Append("<div class='live-set-content'>");
+            var count = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                if (i == 0)
+                {
+                    sb.Append("<div stt='" + i + "' class='live-set-content-div live-set-content-active'>");
+                }
+                else
+                {
+                    sb.Append("<div stt='" + i + "' class='live-set-content-div'>");
+                }
+                for (int j = 0; j < 2; j++)
+                {
+                    sb.Append("<ul>");
+                    for (int k = 0; k < 3; k++)
+                    {
+                        sb.Append("<li>");
+                        sb.Append("<div class='song-vertical'>");
+                        sb.Append("<div class='song-vertical-top'>");
+                        sb.Append("<img src='." + liveset[count].LINK_IMG + "'>");
+                        sb.Append("<div class='song-vertical-top-control'>");
+                        sb.Append("<button class='song-vertical-play'><i class='fa fa-play'></i></button>");
+                        sb.Append("<button class='song-vertical-buy'>$" + liveset[count].COST + "</button>");
+                        sb.Append("<button class='song-vertical-share'><i class='fa fa-facebook'></i>Share</button>");
+                        sb.Append("</div>");
+                        sb.Append("<p></p>");
+                        sb.Append("</div>");
+                        sb.Append("<div class='song-vertical-bottom'>");
+                        sb.Append("<p class='wrap-name-level'><a class='name-level-1' href='#'>" + liveset[count].NAME + "</a></p>");
+                        sb.Append("<p class='wrap-name-level'>");
+                        var ss = liveset[count].ID;
+                        var artist = db.LIVESET_ARTIST.Where(p => p.ID_LIVESET == ss).Select(p=>p.NAME_ARTIST).ToList();
+                        for (int l = artist.Count - 1; l >= 0; l--)
+                        {
+                            sb.Append("<a class='name-level-2' href='#'>" + artist[l] + "</a>");
+                            if (l != 0)
+                            {
+                                sb.Append("<span> ft </span>");
+                            }
+                        }
+                        sb.Append("</p>");
+                        sb.Append("<p class='wrap-name-level'>");
+                        var label = db.LIVESET_ARTIST.Where(p => p.ID_LIVESET == ss).Select(p => p.NAME_LABEL).ToList();
+                        for (int l = label.Count - 1; l >= 0; l--)
+                        {
+                            sb.Append("<a class='name-level-3' href='#'>" + label[l] + "</a>");
+                            if (l != 0)
+                            {
+                                sb.Append("<span> ft </span>");
+                            }
+                        }
+                        sb.Append("</p>");
+                        sb.Append("</div>");
+                        sb.Append("</div>");
+                        sb.Append("</li>");
+
+                        count++;
+                    }
+                    sb.Append("</ul>");
+                }
+                sb.Append("</div>");
+            }
+            sb.Append("<div class='live-set-slider'>");
+            sb.Append("<div stt='0' class='live-set-slider-div live-set-slider-div-active'></div>");
+            sb.Append("<div stt='1' class='live-set-slider-div'></div>");
+            sb.Append("<div stt='2' class='live-set-slider-div'></div>");
+            sb.Append("<div stt='3' class='live-set-slider-div'></div>");
+            sb.Append("<div stt='4' class='live-set-slider-div'></div>");
+            sb.Append("</div>");
+
+            sb.Append("</div>");
+            sb.Append("</div>");
+
+            return sb.ToString();
+        }
+
+        public string Demo()
+        {
+            var demo = db.DEMOes.ToList();
+            var count = 0;
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("<div class='new-demo'>");
+            sb.Append("<p class='new-demo-title'>New Demo</p>");
+            sb.Append("<div class='new-demo-div'>");
+
+            for (int i = 0; i < 2; i++)
+            {
+                sb.Append("<ul class='new-demo-div-ul'>");
+
+                for (int j = 0; j < 4; j++)
+                {
+                     sb.Append("<li>");
+                    sb.Append("<div class='song-vertical'>");
+                    sb.Append("<div class='song-vertical-top'>");
+                    sb.Append("<img src='." + demo[count].LINK_IMG + "' alt=''>");
+                    sb.Append("<div class='song-vertical-top-control'>");
+                    sb.Append("<button class='song-vertical-play'><i class='fa fa-play'></i></button>");
+                    sb.Append("<button class='song-vertical-buy'>$" + demo[count].COST.Value + "</button>");
+                    sb.Append("<button class='song-vertical-share'><i class='fa fa-facebook'></i>Share</button>");
+                    sb.Append("</div>");
+                    sb.Append("<p></p>");
+                    sb.Append("</div>");
+                    sb.Append("<div class='song-vertical-bottom'>");
+                    sb.Append("<p class='wrap-name-level'><a class='name-level-1' href='#'>" + demo[count].NAME + "</a></p>");
+                    var ss = demo[count].ID;
+                    var artist = db.DEMO_ARTIST.Where(p => p.ID_DEMO == ss).Select(p => p.NAME_ARTIST).ToList();
+                    sb.Append("<p class='wrap-name-level'>");
+                    for (int k = artist.Count - 1; k >= 0; k--)
+                    {
+                        sb.Append("<a class='name-level-2' href='#'>" + artist[k] + "</a>");
+                        if (k != 0)
+                        {
+                            sb.Append("<span> ft </span>");
+                        }
+                    }
+                    sb.Append("</p>");
+
+                    var label = db.DEMO_ARTIST.Where(p => p.ID_DEMO == ss).Select(p => p.NAME_LABEL).ToList();
+                    sb.Append("<p class='wrap-name-level'>");
+                    for (int k = label.Count - 1; k >= 0; k--)
+                    {
+                        sb.Append("<a class='name-level-3' href='#'>" + label[k] + "</a>");
+                        if (k != 0)
+                        {
+                            sb.Append("<span> ft </span>");
+                        }
+                    }
+                    sb.Append("</p>");
+                    sb.Append("</div>");
+                    sb.Append("</div>");
+                    sb.Append("</li>");
+
+                    count++;
+                }
+
+                sb.Append("</ul>");
+            }
+
+            sb.Append("</div></div>");
+
+            return sb.ToString();
+        }
+
         public JsonResult FullIndex()
         {
             StringBuilder sb = new StringBuilder();
@@ -314,6 +468,8 @@ namespace WebMusic.Controllers
             sb.Append(Top_6_DJ());
             sb.Append(New_Track());
             sb.Append(Hot_Remix());
+            sb.Append(Live_Set());
+            sb.Append(Demo());
             return Json(sb.ToString());
         }
 

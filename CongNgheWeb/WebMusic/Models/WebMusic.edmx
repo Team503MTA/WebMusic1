@@ -50,6 +50,31 @@
           <Property Name="ID_GENRE" Type="smallint" />
           <Property Name="TYPE" Type="tinyint" />
         </EntityType>
+        <EntityType Name="DEMO">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="LINK" Type="nvarchar" MaxLength="100" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="100" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POINT_ALL" Type="int" />
+          <Property Name="COST" Type="float" />
+        </EntityType>
+        <EntityType Name="DEMO_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_DEMO" />
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_DEMO" Type="int" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="int" Nullable="false" />
+          <Property Name="NAME_ARTIST" Type="nvarchar" MaxLength="100" />
+          <Property Name="NAME_LABEL" Type="nvarchar" MaxLength="100" />
+          <Property Name="COST" Type="float" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POINT_ALL" Type="int" />
+        </EntityType>
         <EntityType Name="FORMULA_HOT">
           <Key>
             <PropertyRef Name="CLICK" />
@@ -149,6 +174,31 @@
           <Property Name="LENGHT" Type="nvarchar" MaxLength="200" />
           <Property Name="ARTISTS" Type="nvarchar" MaxLength="200" />
         </EntityType>
+        <EntityType Name="LIVESET">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="COST" Type="float" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="50" />
+          <Property Name="LINK" Type="nvarchar" MaxLength="50" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="POINT_ALL" Type="int" />
+        </EntityType>
+        <EntityType Name="LIVESET_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_LIVESET" />
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_LIVESET" Type="int" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="int" Nullable="false" />
+          <Property Name="NAME_ARTIST" Type="nvarchar" MaxLength="100" />
+          <Property Name="NAME_LABEL" Type="nvarchar" MaxLength="100" />
+          <Property Name="POINT_ALL" Type="int" />
+          <Property Name="POINT_MONTH" Type="int" />
+          <Property Name="COST" Type="float" />
+        </EntityType>
         <EntityType Name="NEW_TRACK">
           <Key>
             <PropertyRef Name="ID" />
@@ -247,6 +297,26 @@
           <Property Name="CLICK_MONTH" Type="int" />
           <Property Name="CLICK_ALL" Type="int" />
           <Property Name="BUY_MONTH" Type="int" />
+          <Property Name="BUY_ALL" Type="int" />
+        </EntityType>
+        <EntityType Name="STATISTIC_DEMO">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="CLICK_MONTH" Type="int" />
+          <Property Name="CLICK_ALL" Type="int" />
+          <Property Name="BUY_MONTH" Type="int" />
+          <Property Name="BUY_ALL" Type="int" />
+        </EntityType>
+        <EntityType Name="STATISTIC_LIVESET">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="CLICK_MONTH" Type="int" />
+          <Property Name="BUY_MONTH" Type="int" />
+          <Property Name="CLICK_ALL" Type="int" />
           <Property Name="BUY_ALL" Type="int" />
         </EntityType>
         <EntityType Name="STATISTIC_REMIX">
@@ -762,6 +832,8 @@
           <EntitySet Name="ARTIST" EntityType="Self.ARTIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CARD" EntityType="Self.CARD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CHART" EntityType="Self.CHART" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DEMO" EntityType="Self.DEMO" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DEMO_ARTIST" EntityType="Self.DEMO_ARTIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FORMULA_HOT" EntityType="Self.FORMULA_HOT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GENRE" EntityType="Self.GENRE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GENRE_ARTIST" EntityType="Self.GENRE_ARTIST" Schema="dbo" store:Type="Tables" />
@@ -772,6 +844,8 @@
           <EntitySet Name="Home_NewTrack" EntityType="Self.Home_NewTrack" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LABEL" EntityType="Self.LABEL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LISTEN_SLIDER" EntityType="Self.LISTEN_SLIDER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LIVESET" EntityType="Self.LIVESET" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LIVESET_ARTIST" EntityType="Self.LIVESET_ARTIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="NEW_TRACK" EntityType="Self.NEW_TRACK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REMIX" EntityType="Self.REMIX" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REMIX_ARTIST" EntityType="Self.REMIX_ARTIST" Schema="dbo" store:Type="Tables" />
@@ -780,6 +854,8 @@
           <EntitySet Name="SHOW_LIST" EntityType="Self.SHOW_LIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SOUNDS" EntityType="Self.SOUNDS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STATISTIC_ARTIST" EntityType="Self.STATISTIC_ARTIST" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STATISTIC_DEMO" EntityType="Self.STATISTIC_DEMO" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STATISTIC_LIVESET" EntityType="Self.STATISTIC_LIVESET" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STATISTIC_REMIX" EntityType="Self.STATISTIC_REMIX" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STATISTIC_TRACK" EntityType="Self.STATISTIC_TRACK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STEM" EntityType="Self.STEM" Schema="dbo" store:Type="Tables" />
@@ -956,6 +1032,31 @@
           <Property Name="TYPE" Type="Byte" />
           <NavigationProperty Name="GENRE" Relationship="Self.FK_CHART_GENRE" FromRole="CHART" ToRole="GENRE" />
         </EntityType>
+        <EntityType Name="DEMO">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LINK" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POINT_ALL" Type="Int32" />
+          <Property Name="COST" Type="Double" />
+        </EntityType>
+        <EntityType Name="DEMO_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_DEMO" />
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_DEMO" Type="Int32" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="Int32" Nullable="false" />
+          <Property Name="NAME_ARTIST" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NAME_LABEL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POINT_ALL" Type="Int32" />
+        </EntityType>
         <EntityType Name="FORMULA_HOT">
           <Key>
             <PropertyRef Name="CLICK" />
@@ -1067,6 +1168,31 @@
           <Property Name="LENGHT" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="ARTISTS" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="LIVESET">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="COST" Type="Double" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LINK" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="POINT_ALL" Type="Int32" />
+        </EntityType>
+        <EntityType Name="LIVESET_ARTIST">
+          <Key>
+            <PropertyRef Name="ID_LIVESET" />
+            <PropertyRef Name="ID_ARTIST" />
+          </Key>
+          <Property Name="ID_LIVESET" Type="Int32" Nullable="false" />
+          <Property Name="ID_ARTIST" Type="Int32" Nullable="false" />
+          <Property Name="NAME_ARTIST" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NAME_LABEL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="POINT_ALL" Type="Int32" />
+          <Property Name="POINT_MONTH" Type="Int32" />
+          <Property Name="COST" Type="Double" />
+        </EntityType>
         <EntityType Name="NEW_TRACK">
           <Key>
             <PropertyRef Name="ID" />
@@ -1175,6 +1301,26 @@
           <Property Name="BUY_MONTH" Type="Int32" />
           <Property Name="BUY_ALL" Type="Int32" />
           <NavigationProperty Name="ARTIST" Relationship="Self.FK_STATISTIC_ARTIST_ARTIST" FromRole="STATISTIC_ARTIST" ToRole="ARTIST" />
+        </EntityType>
+        <EntityType Name="STATISTIC_DEMO">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="CLICK_MONTH" Type="Int32" />
+          <Property Name="CLICK_ALL" Type="Int32" />
+          <Property Name="BUY_MONTH" Type="Int32" />
+          <Property Name="BUY_ALL" Type="Int32" />
+        </EntityType>
+        <EntityType Name="STATISTIC_LIVESET">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="CLICK_MONTH" Type="Int32" />
+          <Property Name="BUY_MONTH" Type="Int32" />
+          <Property Name="CLICK_ALL" Type="Int32" />
+          <Property Name="BUY_ALL" Type="Int32" />
         </EntityType>
         <EntityType Name="STATISTIC_REMIX">
           <Key>
@@ -1678,6 +1824,8 @@
           <EntitySet Name="ARTISTs" EntityType="Self.ARTIST" />
           <EntitySet Name="CARDs" EntityType="Self.CARD" />
           <EntitySet Name="CHARTs" EntityType="Self.CHART" />
+          <EntitySet Name="DEMOes" EntityType="Self.DEMO" />
+          <EntitySet Name="DEMO_ARTIST" EntityType="Self.DEMO_ARTIST" />
           <EntitySet Name="FORMULA_HOT" EntityType="Self.FORMULA_HOT" />
           <EntitySet Name="GENREs" EntityType="Self.GENRE" />
           <EntitySet Name="GENRE_ARTIST" EntityType="Self.GENRE_ARTIST" />
@@ -1688,6 +1836,8 @@
           <EntitySet Name="Home_NewTrack" EntityType="Self.Home_NewTrack" />
           <EntitySet Name="LABELs" EntityType="Self.LABEL" />
           <EntitySet Name="LISTEN_SLIDER" EntityType="Self.LISTEN_SLIDER" />
+          <EntitySet Name="LIVESETs" EntityType="Self.LIVESET" />
+          <EntitySet Name="LIVESET_ARTIST" EntityType="Self.LIVESET_ARTIST" />
           <EntitySet Name="NEW_TRACK" EntityType="Self.NEW_TRACK" />
           <EntitySet Name="REMIXes" EntityType="Self.REMIX" />
           <EntitySet Name="REMIX_ARTIST" EntityType="Self.REMIX_ARTIST" />
@@ -1696,6 +1846,8 @@
           <EntitySet Name="SHOW_LIST" EntityType="Self.SHOW_LIST" />
           <EntitySet Name="SOUNDS" EntityType="Self.SOUND" />
           <EntitySet Name="STATISTIC_ARTIST" EntityType="Self.STATISTIC_ARTIST" />
+          <EntitySet Name="STATISTIC_DEMO" EntityType="Self.STATISTIC_DEMO" />
+          <EntitySet Name="STATISTIC_LIVESET" EntityType="Self.STATISTIC_LIVESET" />
           <EntitySet Name="STATISTIC_REMIX" EntityType="Self.STATISTIC_REMIX" />
           <EntitySet Name="STATISTIC_TRACK" EntityType="Self.STATISTIC_TRACK" />
           <EntitySet Name="STEMs" EntityType="Self.STEM" />
@@ -1864,6 +2016,32 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="DEMOes">
+            <EntityTypeMapping TypeName="MusicModel.DEMO">
+              <MappingFragment StoreEntitySet="DEMO">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="LINK" ColumnName="LINK" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DEMO_ARTIST">
+            <EntityTypeMapping TypeName="MusicModel.DEMO_ARTIST">
+              <MappingFragment StoreEntitySet="DEMO_ARTIST">
+                <ScalarProperty Name="ID_DEMO" ColumnName="ID_DEMO" />
+                <ScalarProperty Name="ID_ARTIST" ColumnName="ID_ARTIST" />
+                <ScalarProperty Name="NAME_ARTIST" ColumnName="NAME_ARTIST" />
+                <ScalarProperty Name="NAME_LABEL" ColumnName="NAME_LABEL" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="FORMULA_HOT">
             <EntityTypeMapping TypeName="MusicModel.FORMULA_HOT">
               <MappingFragment StoreEntitySet="FORMULA_HOT">
@@ -1965,6 +2143,32 @@
                 <ScalarProperty Name="GENRE" ColumnName="GENRE" />
                 <ScalarProperty Name="LENGHT" ColumnName="LENGHT" />
                 <ScalarProperty Name="ARTISTS" ColumnName="ARTISTS" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LIVESETs">
+            <EntityTypeMapping TypeName="MusicModel.LIVESET">
+              <MappingFragment StoreEntitySet="LIVESET">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
+                <ScalarProperty Name="LINK" ColumnName="LINK" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LIVESET_ARTIST">
+            <EntityTypeMapping TypeName="MusicModel.LIVESET_ARTIST">
+              <MappingFragment StoreEntitySet="LIVESET_ARTIST">
+                <ScalarProperty Name="ID_LIVESET" ColumnName="ID_LIVESET" />
+                <ScalarProperty Name="ID_ARTIST" ColumnName="ID_ARTIST" />
+                <ScalarProperty Name="NAME_ARTIST" ColumnName="NAME_ARTIST" />
+                <ScalarProperty Name="NAME_LABEL" ColumnName="NAME_LABEL" />
+                <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
+                <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
+                <ScalarProperty Name="COST" ColumnName="COST" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2071,6 +2275,28 @@
                 <ScalarProperty Name="CLICK_MONTH" ColumnName="CLICK_MONTH" />
                 <ScalarProperty Name="CLICK_ALL" ColumnName="CLICK_ALL" />
                 <ScalarProperty Name="BUY_MONTH" ColumnName="BUY_MONTH" />
+                <ScalarProperty Name="BUY_ALL" ColumnName="BUY_ALL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STATISTIC_DEMO">
+            <EntityTypeMapping TypeName="MusicModel.STATISTIC_DEMO">
+              <MappingFragment StoreEntitySet="STATISTIC_DEMO">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CLICK_MONTH" ColumnName="CLICK_MONTH" />
+                <ScalarProperty Name="CLICK_ALL" ColumnName="CLICK_ALL" />
+                <ScalarProperty Name="BUY_MONTH" ColumnName="BUY_MONTH" />
+                <ScalarProperty Name="BUY_ALL" ColumnName="BUY_ALL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STATISTIC_LIVESET">
+            <EntityTypeMapping TypeName="MusicModel.STATISTIC_LIVESET">
+              <MappingFragment StoreEntitySet="STATISTIC_LIVESET">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CLICK_MONTH" ColumnName="CLICK_MONTH" />
+                <ScalarProperty Name="BUY_MONTH" ColumnName="BUY_MONTH" />
+                <ScalarProperty Name="CLICK_ALL" ColumnName="CLICK_ALL" />
                 <ScalarProperty Name="BUY_ALL" ColumnName="BUY_ALL" />
               </MappingFragment>
             </EntityTypeMapping>

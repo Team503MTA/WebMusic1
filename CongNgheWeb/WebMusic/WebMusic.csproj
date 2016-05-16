@@ -215,6 +215,12 @@
     <Compile Include="Models\CHART.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DEMO.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DEMO_ARTIST.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\FORMULA_HOT.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
@@ -246,6 +252,12 @@
     <Compile Include="Models\LISTEN_SLIDER.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\LIVESET.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LIVESET_ARTIST.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Mathh.cs" />
     <Compile Include="Models\NEW_TRACK.cs">
@@ -275,6 +287,12 @@
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\STATISTIC_ARTIST.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STATISTIC_DEMO.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STATISTIC_LIVESET.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\STATISTIC_REMIX.cs">
@@ -514,6 +532,8 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Script\Libraly\" />
     <Folder Include="Areas\Admin\Views\Shared\" />
+    <Folder Include="Demo\" />
+    <Folder Include="Liveset\" />
     <Folder Include="Views\PlayMusic\" />
     <Folder Include="Views\Search\" />
   </ItemGroup>
