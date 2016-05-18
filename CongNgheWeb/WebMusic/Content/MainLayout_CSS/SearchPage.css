@@ -622,7 +622,7 @@
 
 .name-level-1{
     color: #eee;
-    font-size: 90% !important;
+    font-size: 100% !important;
 }
 .name-level-1:hover {
     color: #eee;
@@ -632,7 +632,7 @@
 
 .name-level-2{
     color: #22bbcc;
-    font-size: 65% !important;
+    font-size: 90% !important;
     white-space: nowrap !important;
 }
 .name-level-2:hover {
@@ -643,7 +643,7 @@
 
 .name-level-3{
     color: #777;
-    font-size: 60% !important;
+    font-size: 85% !important;
     white-space: nowrap !important;
 }
 .name-level-3:hover {

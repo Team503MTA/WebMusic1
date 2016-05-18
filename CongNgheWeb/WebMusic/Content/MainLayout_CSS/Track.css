@@ -548,11 +548,14 @@ a.labels {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .detail-song-artist-song-name a{
     color: #eee;
-    font-size: 105%;
+    font-size: 100%;
 }
 .detail-song-artist-song-name a:hover{
     color: #eee;
@@ -560,7 +563,7 @@ a.labels {
 }
 .detail-song-artist-song-artist a{
     color: #22bbcc;
-    font-size: 100%;
+    font-size: 90%;
 }
 .detail-song-artist-song-artist a:hover{
     color: #22bbcc;
@@ -568,7 +571,7 @@ a.labels {
 }
 .detail-song-artist-song-label a{
     color: #777;
-    font-size: 95%;
+    font-size: 85%;
 }
 .detail-song-artist-song-label a:hover{
     color: #777;
@@ -757,11 +760,14 @@ a.labels {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .detail-song-label-song-name a{
     color: #eee;
-    font-size: 105%;
+    font-size: 100%;
 }
 .detail-song-label-song-name a:hover{
     color: #eee;
@@ -769,7 +775,7 @@ a.labels {
 }
 .detail-song-label-song-artist a{
     color: #22bbcc;
-    font-size: 100%;
+    font-size: 90%;
 }
 .detail-song-label-song-artist a:hover{
     color: #22bbcc;
@@ -777,7 +783,7 @@ a.labels {
 }
 .detail-song-label-song-label a{
     color: #777;
-    font-size: 95%;
+    font-size: 85%;
 }
 .detail-song-label-song-label a:hover{
     color: #777;
