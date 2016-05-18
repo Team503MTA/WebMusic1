@@ -416,6 +416,7 @@
     <Content Include="Scripts\MainLayout_JS\main-detail-artist.js" />
     <Content Include="Scripts\MainLayout_JS\main-detail-track.js" />
     <Content Include="Scripts\MainLayout_JS\main-index.js" />
+    <Content Include="Scripts\MainLayout_JS\main-label.js" />
     <Content Include="Scripts\MainLayout_JS\main-layout.js" />
     <Content Include="Scripts\MainLayout_JS\ViewSearch.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
@@ -462,10 +463,6 @@
     <Content Include="Views\Track\Track_Total.cshtml" />
     <Content Include="Views\Track\More_Track_Artist.cshtml" />
     <Content Include="Views\Track\More_Track_Label.cshtml" />
-    <Content Include="Views\Label\Index.cshtml" />
-    <Content Include="Views\Label\Detail.cshtml" />
-    <Content Include="Views\Label\Artist_Label.cshtml" />
-    <Content Include="Views\Label\Track_Label.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\Cart\userCart.cshtml" />
@@ -530,6 +527,7 @@
     <Folder Include="Demo\" />
     <Folder Include="Liveset\" />
     <Folder Include="Views\Artist\" />
+    <Folder Include="Views\Label\" />
     <Folder Include="Views\PlayMusic\" />
     <Folder Include="Views\Search\" />
   </ItemGroup>

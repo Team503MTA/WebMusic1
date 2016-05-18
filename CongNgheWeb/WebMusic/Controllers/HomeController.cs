@@ -178,7 +178,7 @@ namespace WebMusic.Controllers
                     sb.Append("<p class='new-track-detail'>");
                     for (int k = 0; k < info[count][1].Count; k++)
                     {
-                        sb.Append("<a class='new-track-detail-3' href='#' title='" + info[count][1][k] + "'>" + info[count][1][k] + "</a>");
+                        sb.Append("<a class='new-track-detail-3' href='#' onclick='detail_Label(\"" + info[count][1][k] + "\")' title='" + info[count][1][k] + "'>" + info[count][1][k] + "</a>");
                         if (k != info[count][1].Count - 1)
                         {
                             sb.Append("<span style='color:#666; font-size:65%;'> ,</span>");
@@ -628,6 +628,7 @@ namespace WebMusic.Controllers
 
         public ActionResult Index()
         {
+
             Session["idRandom"] = 0;
             Session["typeSong"] = 1;
             Session["User"] = 0;
