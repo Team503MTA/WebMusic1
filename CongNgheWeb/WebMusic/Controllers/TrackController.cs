@@ -65,7 +65,7 @@ namespace WebMusic.Controllers
             sb.Append("<br>");
             sb.Append("<br>");
             sb.Append("<div class='detail-song-descrip'>");
-            sb.Append("<span class='descrip-title'>DESCRIPTION</span>");
+            sb.Append("<span class='descrip-title'>Lyrics:  </span>");
             sb.Append("<span id='short-text-content'>" + track.DESCRIPT + "</span>");
             sb.Append("<span class='short-text-content-more'>More</span>");
             sb.Append("<span class='short-text-content-less'>Less</span>");

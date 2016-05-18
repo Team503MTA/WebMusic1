@@ -462,11 +462,6 @@
     <Content Include="Views\Track\Track_Total.cshtml" />
     <Content Include="Views\Track\More_Track_Artist.cshtml" />
     <Content Include="Views\Track\More_Track_Label.cshtml" />
-    <Content Include="Views\Artist\Index.cshtml" />
-    <Content Include="Views\Artist\Detail_Artist.cshtml" />
-    <Content Include="Views\Artist\Total_Track_Artist.cshtml" />
-    <Content Include="Views\Artist\Hot_Remix.cshtml" />
-    <Content Include="Views\Artist\Hot_Track_Label.cshtml" />
     <Content Include="Views\Label\Index.cshtml" />
     <Content Include="Views\Label\Detail.cshtml" />
     <Content Include="Views\Label\Artist_Label.cshtml" />
@@ -534,6 +529,7 @@
     <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Demo\" />
     <Folder Include="Liveset\" />
+    <Folder Include="Views\Artist\" />
     <Folder Include="Views\PlayMusic\" />
     <Folder Include="Views\Search\" />
   </ItemGroup>

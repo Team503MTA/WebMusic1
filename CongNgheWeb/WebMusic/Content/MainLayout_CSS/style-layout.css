@@ -730,6 +730,17 @@ header {
 
 /*#region REGISTER FORM */
 
+.short-text-content-less {
+    display: none;
+    color: #0af;
+    cursor: pointer;
+}
+
+.short-text-content-more {
+    color: #0af;
+    cursor: pointer;
+}
+
 .register-form {
     color: #eee;
     background: transparent;

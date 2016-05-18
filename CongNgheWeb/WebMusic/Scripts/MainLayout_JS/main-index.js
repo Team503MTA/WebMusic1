@@ -117,7 +117,7 @@ function Liveset() {
 }
 
 //bucket
-$(document).ready(function () {
+function Bucket() {
     $(".bucket-pages-li").on("click", function () {
         var stt = $(this).attr("stt");
         $(".bucket-img").hide();
@@ -125,4 +125,4 @@ $(document).ready(function () {
         $(".bucket-pages-li").removeClass('bucket-pages-li-active');
         $(".bucket-pages-li").eq(stt).addClass('bucket-pages-li-active');
     });
-});
+}

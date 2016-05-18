@@ -61,7 +61,7 @@ $(document).ready(function () {
 
 // #region SHORT STRING
 
-$(document).ready(function () {
+function ShortString() {
     var stringFull = $("#short-text-content").text();
 
     function displayShortString() {
@@ -90,7 +90,7 @@ $(document).ready(function () {
         $(".short-text-content-more").show();
     });
 
-});
+}
 
 // #endregion
 
