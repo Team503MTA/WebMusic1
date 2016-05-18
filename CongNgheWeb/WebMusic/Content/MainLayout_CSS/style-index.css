@@ -936,7 +936,7 @@
 .top-ten-demo-li-left {
     display: inline-block;
     height: 100%;
-    font-size: 200%;
+    font-size: 160%;
     width: 10%;
     vertical-align: top;
     text-align: center;
@@ -972,7 +972,7 @@
 }
 
 .top-ten-demo-name {
-    font-size: 130%;
+    font-size: 100%;
     color: #eee;
 }
 
@@ -981,7 +981,7 @@
     }
 
 .top-ten-demo-artist {
-    font-size: 100%;
+    font-size: 90%;
     color: #22bbcc;
     margin: 5px 0;
 }
@@ -991,7 +991,7 @@
     }
 
 .top-ten-demo-label {
-    font-size: 95%;
+    font-size: 85%;
     color: #888;
 }
 

@@ -21,5 +21,6 @@ namespace WebMusic.Models
         public Nullable<int> POINT_MONTH { get; set; }
         public Nullable<int> POINT_ALL { get; set; }
         public Nullable<double> COST { get; set; }
+        public Nullable<System.DateTime> DATE_RELEASE { get; set; }
     }
 }
