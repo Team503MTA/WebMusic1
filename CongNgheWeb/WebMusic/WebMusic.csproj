@@ -310,6 +310,9 @@
     <Compile Include="Models\STEM_ARTIST.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sysdiagram.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\TOP_6_DJ.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>

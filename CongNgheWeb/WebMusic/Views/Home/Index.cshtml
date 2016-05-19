@@ -4,7 +4,6 @@
     ViewBag.Title = "Index";
 }
 
-<link href="~/Content/MainLayout_CSS/style-index.css" rel="stylesheet" />
 
 <div class="col-sm-8" id="startIndex">
 </div>
@@ -20,12 +19,10 @@
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 document.getElementById("rightContent").innerHTML = data;
-
                 Bucket();
             }
         });
     }
-
     startLoad();
     $.ajax({
         url: '@Url.Action("LeftContent", "Home")',
@@ -39,15 +36,13 @@
             newTrack_Index_Fun();
             Home_Hot_Remix();
             Liveset();
-
             loadRightContent();
-
             endLoad();
+            $("#footerPage").show();
         }
     });
 
 </script>
 
-<script src="~/Scripts/MainLayout_JS/main-index.js"></script>
 
 

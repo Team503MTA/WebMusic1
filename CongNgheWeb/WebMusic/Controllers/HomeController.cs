@@ -67,7 +67,7 @@ namespace WebMusic.Controllers
                 sb.Append("<button class='string-in-img-tw'><i class='fa fa-twitter'></i></button>");
                 sb.Append("</div>");
                 sb.Append("<div class='string-in-img-name'>");
-                sb.Append("<a href='#' id='string-name-right' onclick='detail_Artist(\"" + temp[i].NAME_ARTIST + "\")'>" + temp[i].NAME_ARTIST + "</a>");
+                sb.Append("<span id='string-name-right' onclick='detail_Artist(\"" + temp[i].NAME_ARTIST + "\")'>" + temp[i].NAME_ARTIST + "</span>");
                 sb.Append("</div>");
                 sb.Append("</div>");
                 sb.Append("</li>");
@@ -562,7 +562,7 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='top-ten-demo-img'>");
                 sb.Append("<img src='." + demo[i].LINK_IMG + "' alt=''>");
                 sb.Append("</div>");
-                sb.Append("<div class='top-ten-demo-li-left'>" + (i+1) + "</div>");
+                sb.Append("<div class='top-ten-demo-li-left'>" + (i + 1) + "</div>");
                 sb.Append("<div class='top-ten-demo-li-right'>");
                 sb.Append("<a href='#' class='top-ten-demo-name link-decorate'>" + demo[i].NAME + "</a>");
 
@@ -626,9 +626,36 @@ namespace WebMusic.Controllers
             return Json(sb.ToString());
         }
 
+        public JsonResult HomePage()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("<div class='container'>");
+            sb.Append("<div class='row'>");
+            sb.Append("<div class='col-sm-12' id='content-child-wrap'>");
+
+            sb.Append("<div class='col-sm-8' id='startIndex'>");
+            sb.Append(HotSlider());
+            sb.Append(Top_6_DJ());
+            sb.Append(New_Track());
+            sb.Append(Hot_Remix());
+            sb.Append(Live_Set());
+            sb.Append(Demo());
+            sb.Append("</div>");
+
+            sb.Append("<div class='col-sm-4' id ='rightContent'>");
+            sb.Append(Top_10_Track());
+            sb.Append(Bucket());
+            sb.Append(Top_10_Demo());
+            sb.Append("</div>");
+
+            sb.Append("</div></div></div>");
+
+            return Json(sb.ToString());
+        }
+
         public ActionResult Index()
         {
-
             Session["idRandom"] = 0;
             Session["typeSong"] = 1;
             Session["User"] = 0;

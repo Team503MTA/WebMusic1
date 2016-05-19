@@ -14,6 +14,7 @@
     <link href="~/Content/MainLayout_CSS/SearchPage.css" rel="stylesheet" />
     <link href="~/Content/MainLayout_CSS/Track.css" rel="stylesheet" />
     <link href="~/Content/MainLayout_CSS/music.css" rel="stylesheet" />
+    <link href="~/Content/MainLayout_CSS/style-index.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     @* Load Ajax *@
     <script type="text/javascript">
@@ -48,7 +49,7 @@
                         </div>
                         <div id="navbar" class="collapse navbar-collapse">
                             <ul class="nav navbar-nav pull-left">
-                                <li class="active" id="HomePageButton"><a href="#">Home</a></li>
+                                <li class="active" id="HomePageButton"><a href="#" onclick="HomePage()">Home</a></li>
                                 <li><a href="#about">Store</a></li>
                                 <li><a href="#contact">Listen</a></li>
                                 <li><a href="#contact">Shows</a></li>
@@ -865,36 +866,59 @@
 
     @* Script xu ly phan Label *@
     <script type="text/javascript">
-    function detail_Label(name) {
+        function detail_Label(name) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("Index", "Label")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    name: name
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        document.getElementById("MainContent").innerHTML = data;
+                        Artist_Label();
+                        endLoad();
+
+                        return false;
+                    } else {
+                        alert("unsuccess");
+                        endLoad();
+
+                        return false;
+                    }
+                }
+            });
+        }
+    </script>
+
+@*Script phan Header*@
+<script type="text/javascript">
+    function HomePage() {
         startLoad();
         $.ajax({
-            url: '@Url.Action("Index", "Label")',
+            url: '@Url.Action("HomePage", "Home")',
             dataType: 'json',
             type: 'POST',
-            data: JSON.stringify({
-                name: name
-            }),
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 if (data !== '') {
                     document.getElementById("MainContent").innerHTML = data;
-                    Artist_Label();
                     endLoad();
-
-                    return false;
                 } else {
                     alert("unsuccess");
                     endLoad();
-
-                    return false;
                 }
             }
         });
     }
-    </script>
+</script>
 
 <script src="~/Scripts/MainLayout_JS/main-layout.js"></script>
     <script src="~/Scripts/MainLayout_JS/main-detail-artist.js"></script>
     <script src="~/Scripts/MainLayout_JS/main-label.js"></script>
+    <script src="~/Scripts/MainLayout_JS/main-index.js"></script>
 </body>
 </html>
