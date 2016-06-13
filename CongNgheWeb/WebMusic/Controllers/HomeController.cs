@@ -244,7 +244,7 @@ namespace WebMusic.Controllers
                     sb.Append("<div class='song-vertical-top'>");
                     sb.Append("<img src='." + listHot[count].LINK_IMG + "'>");
                     sb.Append("<div class='song-vertical-top-control'>");
-                    sb.Append("<button class='song-vertical-play'><i class='fa fa-play'></i></button>");
+                    sb.Append("<button class='song-vertical-play' onclick='clickAllPlayMusic(" + listHot[count].ID + ",2,1)'><i class='fa fa-play'></i></button>");
                     sb.Append("<button class='song-vertical-buy'>$" + listHot[count].COST + "</button>");
                     sb.Append("<button class='song-vertical-share'><i class='fa fa-facebook'></i>Share</button>");
                     sb.Append("</div>");
@@ -338,7 +338,7 @@ namespace WebMusic.Controllers
                         sb.Append("<div class='song-vertical-top'>");
                         sb.Append("<img src='." + liveset[count].LINK_IMG + "'>");
                         sb.Append("<div class='song-vertical-top-control'>");
-                        sb.Append("<button class='song-vertical-play'><i class='fa fa-play'></i></button>");
+                        sb.Append("<button class='song-vertical-play' onclick='clickAllPlayMusic(" + liveset[count].ID + ",3,1)'><i class='fa fa-play'></i></button>");
                         sb.Append("<button class='song-vertical-buy'>$" + liveset[count].COST + "</button>");
                         sb.Append("<button class='song-vertical-share'><i class='fa fa-facebook'></i>Share</button>");
                         sb.Append("</div>");
@@ -395,7 +395,7 @@ namespace WebMusic.Controllers
 
         public string Demo()
         {
-            var demo = db.DEMOes.ToList();
+            var demo = db.DEMOes.OrderByDescending(p=>p.DATE_RELEASE).Take(8).ToList();
             var count = 0;
             StringBuilder sb = new StringBuilder();
 
@@ -414,7 +414,7 @@ namespace WebMusic.Controllers
                     sb.Append("<div class='song-vertical-top'>");
                     sb.Append("<img src='." + demo[count].LINK_IMG + "' alt=''>");
                     sb.Append("<div class='song-vertical-top-control'>");
-                    sb.Append("<button class='song-vertical-play'><i class='fa fa-play'></i></button>");
+                    sb.Append("<button class='song-vertical-play' onclick='clickAllPlayMusic(" + demo[count].ID + ",4,1)'><i class='fa fa-play'></i></button>");
                     sb.Append("<button class='song-vertical-buy'>$" + demo[count].COST.Value + "</button>");
                     sb.Append("<button class='song-vertical-share'><i class='fa fa-facebook'></i>Share</button>");
                     sb.Append("</div>");

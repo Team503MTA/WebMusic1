@@ -18,7 +18,9 @@ namespace WebMusic.Controllers
         {
             //NOTE
             // TYPE : 1 is Track
-            //             2 is Remix
+            //        2 is Remix
+            //        3 LiveSet
+            //        4 Demo
 
             //TYPEPLAY :  1 is playSelect
             //                 2 is playRandom From Page Or PlayList
@@ -29,7 +31,7 @@ namespace WebMusic.Controllers
                 id = Convert.ToInt32(Session["idRandom"].ToString());
                 if (playList == null)
                 {
-                    type = new Random().Next(1, 3);
+                    type = new Random().Next(1, 5);
                     if (type == 1)
                     {
                         id =
@@ -42,6 +44,21 @@ namespace WebMusic.Controllers
                     {
                         id =
                             db.REMIXes.Where(p => p.ID != id)
+                                .OrderBy(p => Guid.NewGuid())
+                                .Select(p => p.ID)
+                                .FirstOrDefault();
+                    }else if (type == 3)
+                    {
+                        id =
+                            db.LIVESETs.Where(p => p.ID != id)
+                                .OrderBy(p => Guid.NewGuid())
+                                .Select(p => p.ID)
+                                .FirstOrDefault();
+                    }
+                    else if (type == 4)
+                    {
+                        id =
+                            db.DEMOes.Where(p => p.ID != id)
                                 .OrderBy(p => Guid.NewGuid())
                                 .Select(p => p.ID)
                                 .FirstOrDefault();
@@ -130,7 +147,7 @@ namespace WebMusic.Controllers
                 sb.Append("</audio>");
                 sb.Append("</div>");
             }
-            else
+            else if(type==2)
             {
                 //add statistic for Remix
                 var statisRemix = db.STATISTIC_REMIX.FirstOrDefault(p => p.ID == id);
@@ -138,16 +155,16 @@ namespace WebMusic.Controllers
                 statisRemix.CLICK_ALL++;
                 db.SaveChanges();
 
-                REMIX track = db.REMIXes.FirstOrDefault(p => p.ID == id);
+                REMIX remix = db.REMIXes.FirstOrDefault(p => p.ID == id);
                 var artist = db.REMIX_ARTIST.Where(p => p.ID_REMIX == id).Select(p => p.NAME_ARTIST).ToList();
 
                 sb.Append("<div class='tag-playmusic' id='all-tagMusicBottom'>");
                 sb.Append("<div class='playmusic-info' id='all-playmusic-change'>");
                 sb.Append("<div class='imgPlayMusic'>");
-                sb.Append("<img src = '." + track.LINK_IMG + "' />");
+                sb.Append("<img src = '." + remix.LINK_IMG + "' />");
                 sb.Append("</div >");
                 sb.Append("<div class='textPlayMusic'>");
-                sb.Append("<a href='#' class='playmusic-name'>" + track.NAME + "</a>");
+                sb.Append("<a href='#' class='playmusic-name'>" + remix.NAME + "</a>");
                 for (int i = 0; i < artist.Count; i++)
                 {
                     sb.Append("<a href='#' class='playmusic-artist'>" + artist[i] + "</a>");
@@ -164,14 +181,14 @@ namespace WebMusic.Controllers
                 sb.Append("<label id='playmusic-end'></ label >");
                 sb.Append("</div>");
                 sb.Append("<div class='playmusic-button'>");
-                sb.Append("<button id='playmusic-prev' onclick='clickAllPlayMusic(1,1,2)'>");
+                sb.Append("<button id='playmusic-prev' onclick='clickAllPlayMusic(1,2,2)'>");
                 sb.Append("<i class='glyphicon glyphicon-backward'></i>");
                 sb.Append("</button>");
                 sb.Append("<button id='playButton'>");
                 sb.Append("<i class='glyphicon glyphicon-play'></i>");
                 sb.Append("<i class='glyphicon glyphicon-pause'></i>");
                 sb.Append("</button>");
-                sb.Append("<button id='playmusic-next' onclick='clickAllPlayMusic(1,1,2)'>");
+                sb.Append("<button id='playmusic-next' onclick='clickAllPlayMusic(1,2,2)'>");
                 sb.Append("<i class='glyphicon glyphicon-forward'></i>");
                 sb.Append("</button>");
                 sb.Append("<button id='loopButton'>");
@@ -187,7 +204,129 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
                 sb.Append("</div>");
                 sb.Append("<audio id='myTune' controls onloadedmetadata='audioLoad()' >");
-                sb.Append("<source src='." + track.LINK + "'>");
+                sb.Append("<source src='." + remix.LINK + "'>");
+                sb.Append("</audio>");
+                sb.Append("</div>");
+            }else if (type == 3)
+            {
+                //add statistic for track
+                var statisLiveset = db.STATISTIC_LIVESET.FirstOrDefault(p => p.ID == id);
+                statisLiveset.CLICK_MONTH++;
+                statisLiveset.CLICK_ALL++;
+                db.SaveChanges();
+
+                LIVESET liveset = db.LIVESETs.FirstOrDefault(p => p.ID == id);
+                var artist = db.LIVESET_ARTIST.Where(p => p.ID_LIVESET == id).Select(p => p.NAME_ARTIST).ToList();
+
+                sb.Append("<div class='tag-playmusic' id='all-tagMusicBottom'>");
+                sb.Append("<div class='playmusic-info' id='all-playmusic-change'>");
+                sb.Append("<div class='imgPlayMusic'>");
+                sb.Append("<img src = '." + liveset.LINK_IMG + "' />");
+                sb.Append("</div >");
+                sb.Append("<div class='textPlayMusic'>");
+                sb.Append("<a href='#' class='playmusic-name'>" + liveset.NAME + "</a>");
+                for (int i = 0; i < artist.Count; i++)
+                {
+                    sb.Append("<a href='#' class='playmusic-artist'>" + artist[i] + "</a>");
+                    if (i != artist.Count - 1)
+                    {
+                        sb.Append("<span> ft </span>");
+                    }
+                }
+
+                sb.Append("</div>");
+                sb.Append("</div>");
+                sb.Append("<div class='playmusic-time'>");
+                sb.Append("<label id ='playmusic-start'></label>");
+                sb.Append("<progress id='playmusic-process' value='0' max='100'></progress>");
+                sb.Append("<label id='playmusic-end'></ label >");
+                sb.Append("</div>");
+                sb.Append("<div class='playmusic-button'>");
+                sb.Append("<button id='playmusic-prev' onclick='clickAllPlayMusic(1,3,2)'>");
+                sb.Append("<i class='glyphicon glyphicon-backward'></i>");
+                sb.Append("</button>");
+                sb.Append("<button id='playButton'>");
+                sb.Append("<i class='glyphicon glyphicon-play'></i>");
+                sb.Append("<i class='glyphicon glyphicon-pause'></i>");
+                sb.Append("</button>");
+                sb.Append("<button id='playmusic-next' onclick='clickAllPlayMusic(1,3,2)'>");
+                sb.Append("<i class='glyphicon glyphicon-forward'></i>");
+                sb.Append("</button>");
+                sb.Append("<button id='loopButton'>");
+                sb.Append("<i class='glyphicon glyphicon-repeat'></i>");
+                sb.Append("</button>");
+                sb.Append("<div id='volume'>");
+                sb.Append("<button id='volumeButton'>");
+                sb.Append("<i class='glyphicon glyphicon-volume-down'></i>");
+                sb.Append("<i class='glyphicon glyphicon-volume-up'></i>");
+                sb.Append("<i class='glyphicon glyphicon-volume-off'></i>");
+                sb.Append("</button>");
+                sb.Append("<progress id='volumeProBar' value='100' max='100'></progress>");
+                sb.Append("</div>");
+                sb.Append("</div>");
+                sb.Append("<audio id='myTune' controls onloadedmetadata='audioLoad()' >");
+                sb.Append("<source src='." + liveset.LINK + "'>");
+                sb.Append("</audio>");
+                sb.Append("</div>");
+            }else if (type == 4)
+            {
+                //add statistic for track
+                var statisDemo = db.STATISTIC_DEMO.FirstOrDefault(p => p.ID == id);
+                statisDemo.CLICK_MONTH++;
+                statisDemo.CLICK_ALL++;
+                db.SaveChanges();
+
+                DEMO demo = db.DEMOes.FirstOrDefault(p => p.ID == id);
+                var artist = db.DEMO_ARTIST.Where(p => p.ID_DEMO == id).Select(p => p.NAME_ARTIST).ToList();
+
+                sb.Append("<div class='tag-playmusic' id='all-tagMusicBottom'>");
+                sb.Append("<div class='playmusic-info' id='all-playmusic-change'>");
+                sb.Append("<div class='imgPlayMusic'>");
+                sb.Append("<img src = '." + demo.LINK_IMG + "' />");
+                sb.Append("</div >");
+                sb.Append("<div class='textPlayMusic'>");
+                sb.Append("<a href='#' class='playmusic-name'>" + demo.NAME + "</a>");
+                for (int i = 0; i < artist.Count; i++)
+                {
+                    sb.Append("<a href='#' class='playmusic-artist'>" + artist[i] + "</a>");
+                    if (i != artist.Count - 1)
+                    {
+                        sb.Append("<span> ft </span>");
+                    }
+                }
+
+                sb.Append("</div>");
+                sb.Append("</div>");
+                sb.Append("<div class='playmusic-time'>");
+                sb.Append("<label id ='playmusic-start'></label>");
+                sb.Append("<progress id='playmusic-process' value='0' max='100'></progress>");
+                sb.Append("<label id='playmusic-end'></ label >");
+                sb.Append("</div>");
+                sb.Append("<div class='playmusic-button'>");
+                sb.Append("<button id='playmusic-prev' onclick='clickAllPlayMusic(1,3,2)'>");
+                sb.Append("<i class='glyphicon glyphicon-backward'></i>");
+                sb.Append("</button>");
+                sb.Append("<button id='playButton'>");
+                sb.Append("<i class='glyphicon glyphicon-play'></i>");
+                sb.Append("<i class='glyphicon glyphicon-pause'></i>");
+                sb.Append("</button>");
+                sb.Append("<button id='playmusic-next' onclick='clickAllPlayMusic(1,3,2)'>");
+                sb.Append("<i class='glyphicon glyphicon-forward'></i>");
+                sb.Append("</button>");
+                sb.Append("<button id='loopButton'>");
+                sb.Append("<i class='glyphicon glyphicon-repeat'></i>");
+                sb.Append("</button>");
+                sb.Append("<div id='volume'>");
+                sb.Append("<button id='volumeButton'>");
+                sb.Append("<i class='glyphicon glyphicon-volume-down'></i>");
+                sb.Append("<i class='glyphicon glyphicon-volume-up'></i>");
+                sb.Append("<i class='glyphicon glyphicon-volume-off'></i>");
+                sb.Append("</button>");
+                sb.Append("<progress id='volumeProBar' value='100' max='100'></progress>");
+                sb.Append("</div>");
+                sb.Append("</div>");
+                sb.Append("<audio id='myTune' controls onloadedmetadata='audioLoad()' >");
+                sb.Append("<source src='." + demo.LINK + "'>");
                 sb.Append("</audio>");
                 sb.Append("</div>");
             }
