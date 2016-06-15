@@ -362,7 +362,7 @@
     overflow: hidden;
 }
 
-.new-track-detail:first-child {
+    .new-track-detail:first-child {
         padding-top: 5px;
     }
 
@@ -372,36 +372,33 @@
 
 .new-track-detail-1 {
     color: #eee;
-    font-size: 100%;
+    font-size: 80%;
     display: inline-block;
 }
 
     .new-track-detail-1:hover {
-        color: #eee;
         -ms-text-shadow: 0 0 15px #f00;
         text-shadow: 0 0 15px #f00;
     }
 
 .new-track-detail-2 {
     color: #22bbcc;
-    font-size: 90%;
+    font-size: 70%;
     display: inline-block;
 }
 
     .new-track-detail-2:hover {
-        color: #22bbcc;
         -ms-text-shadow: 0 0 15px #f00;
         text-shadow: 0 0 15px #f00;
     }
 
 .new-track-detail-3 {
     color: #777;
-    font-size: 85%;
+    font-size: 75%;
     display: inline-block;
 }
 
     .new-track-detail-3:hover {
-        color: #777;
         -ms-text-shadow: 0 0 15px #f00;
         text-shadow: 0 0 15px #f00;
     }
@@ -641,9 +638,9 @@
     height: 100px;
 }
 
-.song-horizontal button{
-    cursor: pointer;
-}
+    .song-horizontal button {
+        cursor: pointer;
+    }
 
 .song-horizontal-left {
     margin: 0;
@@ -657,27 +654,27 @@
     height: 100%;
 }
 
-.song-horizontal-left p {
-    display: inline-block;
-    width: 100%;
-    font-size: 250%;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    height: 100%;
-}
+    .song-horizontal-left p {
+        display: inline-block;
+        width: 100%;
+        font-size: 250%;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        height: 100%;
+    }
 
-.song-horizontal-left span {
-    background: #444;
-    z-index: 1;
-    -webkit-transition: 0.5s all;
-    -moz-transition: 0.5s all;
-    -ms-transition: 0.5s all;
-    -o-transition: 0.5s all;
-    transition: 0.5s all;
-}
+    .song-horizontal-left span {
+        background: #444;
+        z-index: 1;
+        -webkit-transition: 0.5s all;
+        -moz-transition: 0.5s all;
+        -ms-transition: 0.5s all;
+        -o-transition: 0.5s all;
+        transition: 0.5s all;
+    }
 
-.song-horizontal-left-top{
+.song-horizontal-left-top {
     display: inline-block;
     position: absolute;
     top: 0;
@@ -686,7 +683,7 @@
     width: 0;
 }
 
-.song-horizontal-left-right{
+.song-horizontal-left-right {
     display: inline-block;
     position: absolute;
     top: 0;
@@ -695,7 +692,7 @@
     width: 0;
 }
 
-.song-horizontal-left-bottom{
+.song-horizontal-left-bottom {
     display: inline-block;
     position: absolute;
     bottom: 0;
@@ -704,7 +701,7 @@
     width: 0;
 }
 
-.song-horizontal-left-left{
+.song-horizontal-left-left {
     display: inline-block;
     position: absolute;
     bottom: 0;
@@ -751,48 +748,48 @@
     border-bottom: 1px solid #555;
 }
 
-.song-horizontal-right a{
-    text-decoration: none;
-}
+    .song-horizontal-right a {
+        text-decoration: none;
+    }
 
-.song-horizontal-right p{
-    padding-left: 5px;
-    width: auto;
-}
+    .song-horizontal-right p {
+        padding-left: 5px;
+        width: auto;
+    }
 
-.song-horizontal-name{
+.song-horizontal-name {
     margin: 0;
     padding: 0;
     color: #fff;
     margin-bottom: 5px;
 }
 
-.song-horizontal-name a{
-    color: #fff;
-    font-size: 120%;
-}
+    .song-horizontal-name a {
+        color: #fff;
+        font-size: 80%;
+    }
 
-.song-horizontal-artist{
+.song-horizontal-artist {
     margin: 0;
     padding: 0;
     margin-bottom: 5px;
 }
 
-.song-horizontal-artist a{
-    color: #22aacc;
-    font-size: 105%;
-}
+    .song-horizontal-artist a {
+        color: #22aacc;
+        font-size: 75%;
+    }
 
-.song-horizontal-label{
+.song-horizontal-label {
     margin: 0;
     padding: 0;
     margin-bottom: 5px;
 }
 
-.song-horizontal-label a{
-    color: #888;
-    font-size: 95%;
-}
+    .song-horizontal-label a {
+        color: #777;
+        font-size: 75%;
+    }
 
 .song-horizontal-right button {
     position: absolute;
@@ -818,7 +815,7 @@
     transition: .5s all;
 }
 
-.song-horizontal:hover .song-horizontal-left span{
+.song-horizontal:hover .song-horizontal-left span {
     display: inline-block;
     width: 50%;
     height: 50%;
@@ -830,7 +827,7 @@
     opacity: 1;
 }
 
-.song-horizontal:hover .song-horizontal-right button{
+.song-horizontal:hover .song-horizontal-right button {
     width: 60px;
 }
 
@@ -966,13 +963,13 @@
     text-decoration: none;
 }
 
-.top-ten-demo a:hover {
-    -ms-text-shadow: 0 0 15px #f00;
-    text-shadow: 0 0 15px #f00;
-}
+    .top-ten-demo a:hover {
+        -ms-text-shadow: 0 0 15px #f00;
+        text-shadow: 0 0 15px #f00;
+    }
 
 .top-ten-demo-name {
-    font-size: 100%;
+    font-size: 80%;
     color: #eee;
 }
 
@@ -981,7 +978,7 @@
     }
 
 .top-ten-demo-artist {
-    font-size: 90%;
+    font-size: 75%;
     color: #22bbcc;
     margin: 5px 0;
 }
@@ -991,7 +988,7 @@
     }
 
 .top-ten-demo-label {
-    font-size: 85%;
+    font-size: 75%;
     color: #888;
 }
 
@@ -1001,38 +998,6 @@
 
 /* end top-10-demo */
 
-/* common */
-
-.name-level-1 {
-    color: #eee;
-}
-
-    .name-level-1:hover {
-        color: #eee;
-        -ms-text-shadow: 0 0 15px #f00;
-        text-shadow: 0 0 15px #f00;
-    }
-
-.name-level-2 {
-    color: #22bbcc;
-}
-
-    .name-level-2:hover {
-        color: #22bbcc;
-        -ms-text-shadow: 0 0 15px #f00;
-        text-shadow: 0 0 15px #f00;
-    }
-
-.name-level-3 {
-    color: #777;
-}
-
-    .name-level-3:hover {
-        color: #777;
-        -ms-text-shadow: 0 0 15px #f00;
-        text-shadow: 0 0 15px #f00;
-    }
-/* end common */
 
 
 

@@ -13,7 +13,7 @@ namespace WebMusic.Controllers
     {
         MusicEntities db = new MusicEntities();
 
-        // GET: Search
+        // GET: Searchsearch-tracks-page
         public JsonResult Search(string keyWord)
         {
             if (keyWord == null)
@@ -390,7 +390,7 @@ namespace WebMusic.Controllers
             sb.Append("<span style='font-size:90%; float:right; color:#888; cursor:pointer' id='trackSearchViewAll' onclick='searchTrackAllView()' keyword='" + keyWord + "'> VIEW ALL</span>");
             sb.Append("</div>");
             sb.Append("<br>");
-            sb.Append("<div id='search-tracks-page' class='col-sm-12' style='inline-block; padding-bottom:5px; overflow:hidden; white-space:nowrap; width:100%;'>");
+            sb.Append("<div id='search-tracks-page' class='col-sm-12'>");
             sb.Append(TrackSearch(keyWord,false));
             sb.Append("</div>");
 

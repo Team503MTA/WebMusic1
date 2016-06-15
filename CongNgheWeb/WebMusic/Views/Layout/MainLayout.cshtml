@@ -49,7 +49,7 @@
                         </div>
                         <div id="navbar" class="collapse navbar-collapse">
                             <ul class="nav navbar-nav pull-left">
-                                <li class="active" id="HomePageButton"><a href="#" onclick="HomePage()">Home</a></li>
+                                <li class="active" id="HomePageButton"><a href="#" onclick="HomePage(); return false;">Home</a></li>
                                 <li><a href="#about">Store</a></li>
                                 <li><a href="#contact">Listen</a></li>
                                 <li><a href="#contact">Shows</a></li>
@@ -482,8 +482,6 @@
                     contentType: 'application/json; charset=utf-8',
                     success: function (data) {
                         if (data !== '') {
-                            document.getElementById("MainContent").innerHTML = '';
-                            document.getElementById("content1").innerHTML = '';
                             document.getElementById("MainContent").innerHTML = data;
 
                             $(".detail-song-track-total li").hover(function () {
@@ -528,6 +526,7 @@
                     document.getElementById("MainContent").innerHTML = data;
                     ShortString();
                     endLoad();
+                    document.body.scrollTop = 0;
                 }
             });
         }
@@ -677,13 +676,11 @@
         }
 
         function login_Fun(email, password) {
-            var _email, _password;
+            startLoad();
             if (!email || !password) {
-                _email = $("#email-form").val();
-                _password = $("#password-form").val();
-            } else {
-                _email = email;
-                _password = password;
+                endLoad();
+                noti_Fun('You Must Fill Emain And Password','error');
+                return false;
             }
 
             $.ajax({
@@ -691,8 +688,8 @@
                 dataType: 'json',
                 type: 'POST',
                 data: JSON.stringify({
-                    email: _email,
-                    password: _password
+                    email: email,
+                    password: password
                 }),
                 contentType: 'application/json; charset=utf-8',
                 success: function(data) {
@@ -704,8 +701,11 @@
                         $("#userName_Menu").text(data);
                         $("#total_Debt_Menu").text("$0");
                         $("#cartMenu").show();
+
+                        endLoad();
                     } else {
-                        alert("unsuccess");
+                        endLoad();
+                        noti_Fun('Email Or Password fail', 'error');
                     }
                 }
             });
@@ -851,6 +851,7 @@
                     document.getElementById("MainContent").innerHTML = data;
                     detail_Hot_Track_Label();
                     endLoad();
+                    document.body.scrollTop = 0;
 
                     return false;
                 } else {
@@ -881,13 +882,10 @@
                         document.getElementById("MainContent").innerHTML = data;
                         Artist_Label();
                         endLoad();
-
-                        return false;
+                        document.body.scrollTop = 0;
                     } else {
                         alert("unsuccess");
                         endLoad();
-
-                        return false;
                     }
                 }
             });

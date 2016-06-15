@@ -125,19 +125,19 @@ namespace WebMusic.Controllers
             {
                 sb.Append("<li>");
                 sb.Append("<div class='detail-song-all-track-play'><span>" + (i + 1) + "</span><button><i class='fa fa-play'></i></button></div>");
-                sb.Append("<div class='detail-song-all-track-name'><a href='#'>" + lstTrack[i].NAME + "</a></div>");
+                sb.Append("<div class='detail-song-all-track-name'><a href='#' class='col-table-text'>" + lstTrack[i].NAME + "</a></div>");
                 sb.Append("<div class='detail-song-all-track-artist'>");
                 foreach (var item in lstTrackArtist[i])
                 {
-                    sb.Append("<a href='#'>" + item + "</a>");
+                    sb.Append("<a href='#' class='col-table-text'>" + item + "</a>");
                 }
                 sb.Append("</div>");
                 sb.Append("<div class='detail-song-all-track-remixer'><a href='#'></a></div>");
-                sb.Append("<div class='detail-song-all-track-genre'><a href='#'>" + lstTrack[i].GENRE + "</a></div>");
-                sb.Append("<div class='detail-song-all-track-bpm'><span>" + lstTrack[i].TEMPO + "</span></div>");
-                sb.Append("<div class='detail-song-all-track-key'><span>" + lstTrack[i].KEY_ + "</span></div>");
-                sb.Append("<div class='detail-song-all-track-length'><span>" + lstTrack[i].LENGTH + "</span></div>");
-                sb.Append("<div class='detail-song-all-track-buy'><button>$" + lstTrack[i].COST + "</button></div>");
+                sb.Append("<div class='detail-song-all-track-genre'><a href='#' class='col-table-text'>" + lstTrack[i].GENRE + "</a></div>");
+                sb.Append("<div class='detail-song-all-track-bpm'><span class='col-table-text'>" + lstTrack[i].TEMPO + "</span></div>");
+                sb.Append("<div class='detail-song-all-track-key'><span class='col-table-text'>" + lstTrack[i].KEY_ + "</span></div>");
+                sb.Append("<div class='detail-song-all-track-length'><span class='col-table-text'>" + lstTrack[i].LENGTH + "</span></div>");
+                sb.Append("<div class='detail-song-all-track-buy'><button class='col-table-text'>$" + lstTrack[i].COST + "</button></div>");
                 sb.Append("</li>");
             }
 
@@ -145,24 +145,24 @@ namespace WebMusic.Controllers
             {
                 sb.Append("<li>");
                 sb.Append("<div class='detail-song-all-track-play'><span>" + (i + 1) + "</span><button><i class='fa fa-play'></i></button></div>");
-                sb.Append("<div class='detail-song-all-track-name'><a href='#'>" + lstRemix[i].NAME + "</a></div>");
+                sb.Append("<div class='detail-song-all-track-name'><a href='#' class='col-table-text'>" + lstRemix[i].NAME + "</a></div>");
                 sb.Append("<div class='detail-song-all-track-artist'>");
                 foreach (var item in lstRemixArtist[i])
                 {
-                    sb.Append("<a href='#'>" + item + "</a>");
+                    sb.Append("<a href='#' class='col-table-text'>" + item + "</a>");
                 }
                 sb.Append("</div>");
                 sb.Append("<div class='detail-song-all-track-remixer'>");
                 foreach (var item in lstRemixRemixer[i])
                 {
-                    sb.Append("<a href='#'>" + item + "</a>");
+                    sb.Append("<a href='#' class='col-table-text'>" + item + "</a>");
                 }
                 sb.Append("</div>");
-                sb.Append("<div class='detail-song-all-track-genre'><a href='#'>" + lstRemix[i].GENRE + "</a></div>");
-                sb.Append("<div class='detail-song-all-track-bpm'><span>" + lstRemix[i].TEMPO + "</span></div>");
-                sb.Append("<div class='detail-song-all-track-key'><span>" + lstRemix[i].KEY_ + "</span></div>");
-                sb.Append("<div class='detail-song-all-track-length'><span>" + lstRemix[i].LENGTH + "</span></div>");
-                sb.Append("<div class='detail-song-all-track-buy'><button>$" + lstRemix[i].COST + "</button></div>");
+                sb.Append("<div class='detail-song-all-track-genre'><a href='#' class='col-table-text'>" + lstRemix[i].GENRE + "</a></div>");
+                sb.Append("<div class='detail-song-all-track-bpm'><span class='col-table-text'>" + lstRemix[i].TEMPO + "</span></div>");
+                sb.Append("<div class='detail-song-all-track-key'><span class='col-table-text'>" + lstRemix[i].KEY_ + "</span></div>");
+                sb.Append("<div class='detail-song-all-track-length'><span class='col-table-text'>" + lstRemix[i].LENGTH + "</span></div>");
+                sb.Append("<div class='detail-song-all-track-buy'><button class='col-table-text'>$" + lstRemix[i].COST + "</button></div>");
                 sb.Append("</li>");
             }
 
@@ -217,7 +217,7 @@ namespace WebMusic.Controllers
                     sb.Append("<a href='#'>" + lstArtist[i][k] + "</a>");
                     if (k != lstArtist[i].Count - 1)
                     {
-                        sb.Append("<span style='color:#666;'> ft </span>");
+                        sb.Append("<span class='ft'> ft </span>");
                     }
                 }
                 sb.Append("</p>");
@@ -227,7 +227,7 @@ namespace WebMusic.Controllers
                     sb.Append("<a href='#'>" + lstLabel[i][k] + "</a>");
                     if (k != lstLabel[i].Count - 1)
                     {
-                        sb.Append("<span style='color:#666;'> ft </span>");
+                        sb.Append("<span class='ft'> ft </span>");
                     }
                 }
                 sb.Append("</p>");
@@ -293,7 +293,7 @@ namespace WebMusic.Controllers
                     sb.Append("<a href='#'>" + lstArtist[i][k] + "</a>");
                     if (k != lstArtist[i].Count - 1)
                     {
-                        sb.Append("<span style='color: #666;'> ft </span>");
+                        sb.Append("<span class='ft'> ft </span>");
                     }
                 }
                                             sb.Append("</p>");
@@ -303,7 +303,7 @@ namespace WebMusic.Controllers
                     sb.Append("<a href='#'>" + lstLabel[i][k] + "</a>");
                     if (k != lstLabel[i].Count - 1)
                     {
-                        sb.Append("<span style='color:#666;'> ft </span>");
+                        sb.Append("<span class='ft'> ft </span>");
                     }
                 }
                 sb.Append("</p></div></div>");

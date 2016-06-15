@@ -67,7 +67,7 @@ namespace WebMusic.Controllers
                 sb.Append("<button class='string-in-img-tw'><i class='fa fa-twitter'></i></button>");
                 sb.Append("</div>");
                 sb.Append("<div class='string-in-img-name'>");
-                sb.Append("<span id='string-name-right' onclick='detail_Artist(\"" + temp[i].NAME_ARTIST + "\")'>" + temp[i].NAME_ARTIST + "</span>");
+                sb.Append("<span id='string-name-right' onclick='detail_Artist(\"" + temp[i].NAME_ARTIST + "\"); return false;'>" + temp[i].NAME_ARTIST + "</span>");
                 sb.Append("</div>");
                 sb.Append("</div>");
                 sb.Append("</li>");
@@ -168,17 +168,17 @@ namespace WebMusic.Controllers
                     sb.Append("<p class='new-track-detail'>");
                     for (int k = 0; k < info[count][0].Count; k++)
                     {
-                        sb.Append("<a class='new-track-detail-2' href='#' title='" + info[count][0][k] + "'>" + info[count][0][k] + "</a>");
+                        sb.Append("<a class='new-track-detail-2' href='#' onclick='detail_Artist(\"" + info[count][0][k] + "\"); return false;' title='" + info[count][0][k] + "'>" + info[count][0][k] + "</a>");
                         if (k != info[count][0].Count - 1)
                         {
-                            sb.Append("<span style='color:#22bbcc; font-size:65%;'> ft </span>");
+                            sb.Append("<span class='ft'> ft </span>");
                         }
                     }
                     sb.Append("</p>");
                     sb.Append("<p class='new-track-detail'>");
                     for (int k = 0; k < info[count][1].Count; k++)
                     {
-                        sb.Append("<a class='new-track-detail-3' href='#' onclick='detail_Label(\"" + info[count][1][k] + "\")' title='" + info[count][1][k] + "'>" + info[count][1][k] + "</a>");
+                        sb.Append("<a class='new-track-detail-3' href='#' onclick='detail_Label(\"" + info[count][1][k] + "\"); return false;' title='" + info[count][1][k] + "'>" + info[count][1][k] + "</a>");
                         if (k != info[count][1].Count - 1)
                         {
                             sb.Append("<span style='color:#666; font-size:65%;'> ,</span>");
@@ -260,10 +260,10 @@ namespace WebMusic.Controllers
                     {
                         for (int k = tempArtist.Count - 1; k >= 0; k--)
                         {
-                            sb.Append("<a class='name-level-2' href='#'>" + tempArtist[k] + "</a>");
+                            sb.Append("<a class='name-level-2' onclick='detail_Artist(\"" + tempArtist[k] + "\"); return false;' href='#'>" + tempArtist[k] + "</a>");
                             if (k != 0)
                             {
-                                sb.Append("<span> ft </span>");
+                                sb.Append("<span class='ft'> ft </span>");
                             }
                         }
                     }
@@ -275,10 +275,10 @@ namespace WebMusic.Controllers
                     {
                         for (int k = tempLabel.Count - 1; k >= 0; k--)
                         {
-                            sb.Append("<a class='name-level-3' href='#'>" + tempLabel[k] + "</a>");
+                            sb.Append("<a class='name-level-3' href='#' onclick='detail_Label(\"" + tempLabel[k] + "\"); return false;'>" + tempLabel[k] + "</a>");
                             if (k != 0)
                             {
-                                sb.Append("<span> ft </span>");
+                                sb.Append("<span class='ft'> ft </span>");
                             }
                         }
                     }
@@ -345,16 +345,16 @@ namespace WebMusic.Controllers
                         sb.Append("<p></p>");
                         sb.Append("</div>");
                         sb.Append("<div class='song-vertical-bottom'>");
-                        sb.Append("<p class='wrap-name-level'><a class='name-level-1' href='#'>" + liveset[count].NAME + "</a></p>");
+                        sb.Append("<p class='wrap-name-level'><a class='name-level-1 no-click' onclick='no_click(event);' href='#'>" + liveset[count].NAME + "</a></p>");
                         sb.Append("<p class='wrap-name-level'>");
                         var ss = liveset[count].ID;
                         var artist = db.LIVESET_ARTIST.Where(p => p.ID_LIVESET == ss).Select(p => p.NAME_ARTIST).ToList();
                         for (int l = artist.Count - 1; l >= 0; l--)
                         {
-                            sb.Append("<a class='name-level-2' href='#'>" + artist[l] + "</a>");
+                            sb.Append("<a class='name-level-2' href='#' onclick = 'detail_Artist(\"" + artist[l] + "\"); return false;'>" + artist[l] + "</a>");
                             if (l != 0)
                             {
-                                sb.Append("<span> ft </span>");
+                                sb.Append("<span class='ft'> ft </span>");
                             }
                         }
                         sb.Append("</p>");
@@ -362,10 +362,10 @@ namespace WebMusic.Controllers
                         var label = db.LIVESET_ARTIST.Where(p => p.ID_LIVESET == ss).Select(p => p.NAME_LABEL).ToList();
                         for (int l = label.Count - 1; l >= 0; l--)
                         {
-                            sb.Append("<a class='name-level-3' href='#'>" + label[l] + "</a>");
+                            sb.Append("<a class='name-level-3' href='#' onclick='detail_Label(\"" + label[l] + "\"); return false;'>" + label[l] + "</a>");
                             if (l != 0)
                             {
-                                sb.Append("<span> ft </span>");
+                                sb.Append("<span class='ft'> ft </span>");
                             }
                         }
                         sb.Append("</p>");
@@ -421,13 +421,13 @@ namespace WebMusic.Controllers
                     sb.Append("<p></p>");
                     sb.Append("</div>");
                     sb.Append("<div class='song-vertical-bottom'>");
-                    sb.Append("<p class='wrap-name-level'><a class='name-level-1' href='#'>" + demo[count].NAME + "</a></p>");
+                    sb.Append("<p class='wrap-name-level'><a class='name-level-1 no-click' onclick='no_click(event);' href='#'>" + demo[count].NAME + "</a></p>");
                     var ss = demo[count].ID;
                     var artist = db.DEMO_ARTIST.Where(p => p.ID_DEMO == ss).Select(p => p.NAME_ARTIST).ToList();
                     sb.Append("<p class='wrap-name-level'>");
                     for (int k = artist.Count - 1; k >= 0; k--)
                     {
-                        sb.Append("<a class='name-level-2' href='#'>" + artist[k] + "</a>");
+                        sb.Append("<a class='name-level-2' onclick = 'detail_Artist(\"" + artist[k] + "\"); return false;' href='#'>" + artist[k] + "</a>");
                         if (k != 0)
                         {
                             sb.Append("<span> ft </span>");
@@ -439,10 +439,10 @@ namespace WebMusic.Controllers
                     sb.Append("<p class='wrap-name-level'>");
                     for (int k = label.Count - 1; k >= 0; k--)
                     {
-                        sb.Append("<a class='name-level-3' href='#'>" + label[k] + "</a>");
+                        sb.Append("<a class='name-level-3' href='#' onclick='detail_Label(\"" + label[k] + "\"); return false;'>" + label[k] + "</a>");
                         if (k != 0)
                         {
-                            sb.Append("<span> ft </span>");
+                            sb.Append("<span class='ft'> ft </span>");
                         }
                     }
                     sb.Append("</p>");
@@ -477,24 +477,24 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='song-horizontal'>");
                 sb.Append("<div class='song-horizontal-left'>");
                 sb.Append("<p>" + (i + 1) + "</p>");
-                sb.Append("<button><i class='fa fa-play'></i></button>");
+                sb.Append("<button style='outline:none;' onclick='clickAllPlayMusic(" + track[i].ID + ",1,1)'><i class='fa fa-play'></i></button>");
                 sb.Append("<span class='song-horizontal-left-top'></span>");
                 sb.Append("<span class='song-horizontal-left-bottom'></span>");
                 sb.Append("<span class='song-horizontal-left-left'></span>");
                 sb.Append("<span class='song-horizontal-left-right'></span>");
                 sb.Append("</div>");
                 sb.Append("<div class='song-horizontal-right'>");
-                sb.Append("<p class='song-horizontal-name'><a class='name-level-1' href='#'>" + track[i].NAME + "</a></p>");
+                sb.Append("<p class='song-horizontal-name'><a href='#' onclick='ViewDetailTrackAll_fun(" + track[i].ID + "); return false;'>" + track[i].NAME + "</a></p>");
 
-                sb.Append("<p class='song-horizontal-artist'>");
+                sb.Append("<p class='song-horizontal-label'>");
                 var ss = track[i].ID;
                 var artist = db.TRACK_ARTIST.Where(p => p.ID_TRACK == ss).Select(p => p.NAME_ARTIST).ToList();
                 for (int j = artist.Count - 1; j >= 0; j--)
                 {
-                    sb.Append("<a class='name-level-2' href ='#'>" + artist[j] + "</a>");
+                    sb.Append("<a href ='#' onclick = 'detail_Artist(\"" + artist[j] + "\"); return false;'>" + artist[j] + "</a>");
                     if (j != 0)
                     {
-                        sb.Append("<span> ft </span>");
+                        sb.Append("<span class='ft'> ft </span>");
                     }
                 }
                 sb.Append("</p>");
@@ -503,10 +503,10 @@ namespace WebMusic.Controllers
                 var label = db.TRACK_ARTIST.Where(p => p.ID_TRACK == ss).Select(p => p.NAME_LABEL).ToList();
                 for (int j = label.Count - 1; j >= 0; j--)
                 {
-                    sb.Append("<a class='name-level-3' href ='#'>" + label[j] + "</a>");
+                    sb.Append("<a href ='#' onclick='detail_Label(\"" + label[j] + "\"); return false;'>" + label[j] + "</a>");
                     if (j != 0)
                     {
-                        sb.Append("<span> ft </span>");
+                        sb.Append("<span class='ft'> ft </span>");
                     }
                 }
                 sb.Append("</p>");
@@ -564,17 +564,17 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
                 sb.Append("<div class='top-ten-demo-li-left'>" + (i + 1) + "</div>");
                 sb.Append("<div class='top-ten-demo-li-right'>");
-                sb.Append("<a href='#' class='top-ten-demo-name link-decorate'>" + demo[i].NAME + "</a>");
+                sb.Append("<a href='#' class='top-ten-demo-name link-decorate no-click' onclick='no_click(event);'>" + demo[i].NAME + "</a>");
 
                 sb.Append("<a href='#' class='top-ten-demo-artist link-decorate'>");
                 var ss = demo[i].ID;
                 var artist = db.DEMO_ARTIST.Where(p => p.ID_DEMO == ss).Select(p => p.NAME_ARTIST).ToList();
                 for (int j = artist.Count - 1; j >= 0; j--)
                 {
-                    sb.Append("<span>" + artist[j] + "</span>");
+                    sb.Append("<span onclick = 'detail_Artist(\"" + artist[j] + "\"); return false;'>" + artist[j] + "</span>");
                     if (j != 0)
                     {
-                        sb.Append("<span> ft </span>");
+                        sb.Append("<span class='ft'> ft </span>");
                     }
                 }
                 sb.Append("</a>");
@@ -583,10 +583,10 @@ namespace WebMusic.Controllers
                 var label = db.DEMO_ARTIST.Where(p => p.ID_DEMO == ss).Select(p => p.NAME_LABEL).ToList();
                 for (int j = label.Count - 1; j >= 0; j--)
                 {
-                    sb.Append("<span>" + label[j] + "</span>");
+                    sb.Append("<span onclick='detail_Label(\"" + label[j] + "\"); return false;'>" + label[j] + "</span>");
                     if (j != 0)
                     {
-                        sb.Append("<span> ft </span>");
+                        sb.Append("<span class='ft'> ft </span>");
                     }
                 }
                 sb.Append("</a>");
