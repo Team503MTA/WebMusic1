@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model '\\192.168.1.105\GiangHa\Web\WebMusic1\CongNgheWeb\WebMusic\Models\WebMusic.edmx'. 
+﻿// T4 code generation is enabled for model 'E:\NAM 3 _ KI II\CONG NGHE WEB\MusicWeb\WebMusic1\CongNgheWeb\WebMusic\Models\WebMusic.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

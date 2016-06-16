@@ -261,7 +261,7 @@
           <Property Name="LOCATION" Type="nvarchar" MaxLength="150" />
           <Property Name="TIME" Type="date" />
           <Property Name="DESCRIBLE" Type="nvarchar(max)" />
-          <Property Name="LINK_IMG" Type="nchar" MaxLength="150" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="SHOW_LIST">
           <Key>
@@ -424,6 +424,7 @@
           <Property Name="POINT_ALL" Type="int" />
           <Property Name="POINT_MONTH" Type="int" />
           <Property Name="GENRE" Type="nvarchar" MaxLength="50" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="200" />
           <Property Name="POINT_DAY" Type="int" />
         </EntityType>
         <EntityType Name="USER">
@@ -627,20 +628,6 @@
             </Principal>
             <Dependent Role="REMIX">
               <PropertyRef Name="ID_TRACK" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SHOW_ARTIST">
-          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="SHOW" Type="Self.SHOW" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ARTIST">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SHOW">
-              <PropertyRef Name="ID_ARTIST" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -907,10 +894,6 @@
             <End Role="TRACK" EntitySet="TRACK" />
             <End Role="REMIX" EntitySet="REMIX" />
           </AssociationSet>
-          <AssociationSet Name="FK_SHOW_ARTIST" Association="Self.FK_SHOW_ARTIST">
-            <End Role="ARTIST" EntitySet="ARTIST" />
-            <End Role="SHOW" EntitySet="SHOW" />
-          </AssociationSet>
           <AssociationSet Name="FK_SOUNDS_LABEL" Association="Self.FK_SOUNDS_LABEL">
             <End Role="LABEL" EntitySet="LABEL" />
             <End Role="SOUNDS" EntitySet="SOUNDS" />
@@ -995,7 +978,6 @@
           <NavigationProperty Name="LABEL" Relationship="Self.FK_ARTIST_LABEL" FromRole="ARTIST" ToRole="LABEL" />
           <NavigationProperty Name="GENRE_ARTIST" Relationship="Self.FK_GENRE_ARTIST_ARTIST" FromRole="ARTIST" ToRole="GENRE_ARTIST" />
           <NavigationProperty Name="REMIX_ARTIST" Relationship="Self.FK_REMIX_ARTIST_ARTIST" FromRole="ARTIST" ToRole="REMIX_ARTIST" />
-          <NavigationProperty Name="SHOWs" Relationship="Self.FK_SHOW_ARTIST" FromRole="ARTIST" ToRole="SHOW" />
           <NavigationProperty Name="STATISTIC_ARTIST" Relationship="Self.FK_STATISTIC_ARTIST_ARTIST" FromRole="ARTIST" ToRole="STATISTIC_ARTIST" />
           <NavigationProperty Name="STEM_ARTIST" Relationship="Self.FK_STEM_ARTIST_ARTIST" FromRole="ARTIST" ToRole="STEM_ARTIST" />
           <NavigationProperty Name="TRACK_ARTIST" Relationship="Self.FK_TRACK_ARTIST_ARTIST" FromRole="ARTIST" ToRole="TRACK_ARTIST" />
@@ -1251,8 +1233,7 @@
           <Property Name="LOCATION" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="TIME" Type="DateTime" Precision="0" />
           <Property Name="DESCRIBLE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="LINK_IMG" Type="String" MaxLength="150" FixedLength="true" Unicode="true" />
-          <NavigationProperty Name="ARTIST" Relationship="Self.FK_SHOW_ARTIST" FromRole="SHOW" ToRole="ARTIST" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="SHOW_LIST">
           <Key>
@@ -1430,6 +1411,7 @@
           <Property Name="POINT_ALL" Type="Int32" />
           <Property Name="POINT_MONTH" Type="Int32" />
           <Property Name="GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="POINT_DAY" Type="Int32" />
           <NavigationProperty Name="ARTIST" Relationship="Self.FK_TRACK_ARTIST_ARTIST" FromRole="TRACK_ARTIST" ToRole="ARTIST" />
           <NavigationProperty Name="TRACK" Relationship="Self.FK_TRACK_ARTIST_TRACK" FromRole="TRACK_ARTIST" ToRole="TRACK" />
@@ -1510,20 +1492,6 @@
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="REMIX_ARTIST">
-              <PropertyRef Name="ID_ARTIST" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SHOW_ARTIST">
-          <End Role="ARTIST" Type="Self.ARTIST" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="SHOW" Type="Self.SHOW" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ARTIST">
-              <PropertyRef Name="ID" />
-            </Principal>
-            <Dependent Role="SHOW">
               <PropertyRef Name="ID_ARTIST" />
             </Dependent>
           </ReferentialConstraint>
@@ -1851,10 +1819,6 @@
           <AssociationSet Name="FK_REMIX_ARTIST_ARTIST" Association="Self.FK_REMIX_ARTIST_ARTIST">
             <End Role="ARTIST" EntitySet="ARTISTs" />
             <End Role="REMIX_ARTIST" EntitySet="REMIX_ARTIST" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SHOW_ARTIST" Association="Self.FK_SHOW_ARTIST">
-            <End Role="ARTIST" EntitySet="ARTISTs" />
-            <End Role="SHOW" EntitySet="SHOWs" />
           </AssociationSet>
           <AssociationSet Name="FK_STATISTIC_ARTIST_ARTIST" Association="Self.FK_STATISTIC_ARTIST_ARTIST">
             <End Role="ARTIST" EntitySet="ARTISTs" />
@@ -2390,6 +2354,7 @@
                 <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
                 <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
                 <ScalarProperty Name="GENRE" ColumnName="GENRE" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
                 <ScalarProperty Name="POINT_DAY" ColumnName="POINT_DAY" />
               </MappingFragment>
             </EntityTypeMapping>

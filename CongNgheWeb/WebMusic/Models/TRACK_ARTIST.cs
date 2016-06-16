@@ -23,8 +23,8 @@ namespace WebMusic.Models
         public Nullable<int> POINT_ALL { get; set; }
         public Nullable<int> POINT_MONTH { get; set; }
         public string GENRE { get; set; }
-        public Nullable<int> POINT_DAY { get; set; }
         public string LINK_IMG { get; set; }
+        public Nullable<int> POINT_DAY { get; set; }
     
         public virtual ARTIST ARTIST { get; set; }
         public virtual TRACK TRACK { get; set; }

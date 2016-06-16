@@ -366,16 +366,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\WebMusic.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WebMusic.edmx</DependentUpon>
-      <LastGenOutput>WebMusic.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\WebMusic.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WebMusic.edmx</DependentUpon>
-      <LastGenOutput>WebMusic.cs</LastGenOutput>
-    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\MainLayout_CSS\fonts\AUBREY1__.eot" />
@@ -396,8 +386,18 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WebMusic.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Content Include="Models\WebMusic.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WebMusic.edmx</DependentUpon>
+      <LastGenOutput>WebMusic.Context.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\WebMusic.edmx.diagram">
       <DependentUpon>WebMusic.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\WebMusic.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WebMusic.edmx</DependentUpon>
+      <LastGenOutput>WebMusic.cs</LastGenOutput>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
