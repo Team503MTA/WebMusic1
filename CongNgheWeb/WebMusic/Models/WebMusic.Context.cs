@@ -50,12 +50,12 @@ namespace WebMusic.Models
         public virtual DbSet<STEM> STEMs { get; set; }
         public virtual DbSet<STEM_ARTIST> STEM_ARTIST { get; set; }
         public virtual DbSet<STEM1> STEMS1 { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<TOP_6_DJ> TOP_6_DJ { get; set; }
         public virtual DbSet<TRACK> TRACKs { get; set; }
         public virtual DbSet<TRACK_ARTIST> TRACK_ARTIST { get; set; }
         public virtual DbSet<USER> USERs { get; set; }
         public virtual DbSet<USER_TRACKLIST> USER_TRACKLIST { get; set; }
         public virtual DbSet<VIDEO> VIDEOs { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
     }
 }

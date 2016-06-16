@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="6e5e2c1eefad45a8bdfe279f048c4aa8" Name="Diagram1">
+      <Diagram DiagramId="86fd90f332044cdda18a7708257a533f" Name="Diagram1">
         <EntityTypeShape EntityType="MusicModel.ARTIST" Width="1.5" PointX="3" PointY="11" IsExpanded="true" />
         <EntityTypeShape EntityType="MusicModel.CARD" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MusicModel.CHART" Width="1.5" PointX="5.25" PointY="29.875" IsExpanded="true" />
@@ -30,8 +30,7 @@
         <EntityTypeShape EntityType="MusicModel.STEM" Width="1.5" PointX="3" PointY="5.375" IsExpanded="true" />
         <EntityTypeShape EntityType="MusicModel.STEM_ARTIST" Width="1.5" PointX="5.25" PointY="8" IsExpanded="true" />
         <EntityTypeShape EntityType="MusicModel.STEM1" Width="1.5" PointX="12.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.sysdiagram" Width="1.5" PointX="14.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.TOP_6_DJ" Width="1.5" PointX="15.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.TOP_6_DJ" Width="1.5" PointX="14.75" PointY="14.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MusicModel.TRACK" Width="1.5" PointX="6" PointY="1.875" IsExpanded="true" />
         <EntityTypeShape EntityType="MusicModel.TRACK_ARTIST" Width="1.5" PointX="8.25" PointY="7.625" IsExpanded="true" />
         <EntityTypeShape EntityType="MusicModel.USER" Width="1.5" PointX="10.75" PointY="4.125" IsExpanded="true" />
@@ -62,6 +61,7 @@
         <AssociationConnector Association="MusicModel.FK_USER_TRACKLIST_TRACK" ManuallyRouted="false" />
         <AssociationConnector Association="MusicModel.FK_USER_TRACKLIST_USER" ManuallyRouted="false" />
         <AssociationConnector Association="MusicModel.USER_VIDEOLIST" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MusicModel.sysdiagram" Width="1.5" PointX="15.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

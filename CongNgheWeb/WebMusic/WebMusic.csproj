@@ -325,6 +325,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\MainLayout_CSS\Artist.css" />
     <Content Include="Content\MainLayout_CSS\fonts\AUBREY1__.svg" />
     <Content Include="Content\MainLayout_CSS\fonts\Player One.svg" />
@@ -335,22 +337,123 @@
     <Content Include="Content\MainLayout_CSS\style-cart.css" />
     <Content Include="Content\MainLayout_CSS\style-index.css" />
     <Content Include="Content\MainLayout_CSS\style-layout.css" />
+    <Content Include="Content\MainLayout_CSS\style-listen.css" />
+    <Content Include="Content\MainLayout_CSS\style-show.css" />
+    <Content Include="Content\MainLayout_CSS\StyleDetailsListen.css" />
     <Content Include="Content\MainLayout_CSS\Track.css" />
+    <Content Include="Content\MainLayout_CSS\Xemchitiet.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\WebMusic.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WebMusic.edmx</DependentUpon>
-      <LastGenOutput>WebMusic.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\WebMusic.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WebMusic.edmx</DependentUpon>
-      <LastGenOutput>WebMusic.cs</LastGenOutput>
-    </Content>
+    <Content Include="IMG\Track_artist\top1.jpg" />
+    <Content Include="IMG\Track_artist\top10.jpg" />
+    <Content Include="IMG\Track_artist\top100.jpg" />
+    <Content Include="IMG\Track_artist\top101.jpg" />
+    <Content Include="IMG\Track_artist\top102.jpg" />
+    <Content Include="IMG\Track_artist\top103.jpg" />
+    <Content Include="IMG\Track_artist\top104.jpg" />
+    <Content Include="IMG\Track_artist\top105.jpg" />
+    <Content Include="IMG\Track_artist\top106.jpg" />
+    <Content Include="IMG\Track_artist\top107.jpg" />
+    <Content Include="IMG\Track_artist\top108.jpg" />
+    <Content Include="IMG\Track_artist\top109.jpg" />
+    <Content Include="IMG\Track_artist\top11.jpg" />
+    <Content Include="IMG\Track_artist\top110.jpg" />
+    <Content Include="IMG\Track_artist\top12.jpg" />
+    <Content Include="IMG\Track_artist\top13.jpg" />
+    <Content Include="IMG\Track_artist\top14.jpg" />
+    <Content Include="IMG\Track_artist\top15.jpg" />
+    <Content Include="IMG\Track_artist\top16.jpg" />
+    <Content Include="IMG\Track_artist\top17.jpg" />
+    <Content Include="IMG\Track_artist\top18.jpg" />
+    <Content Include="IMG\Track_artist\top19.jpg" />
+    <Content Include="IMG\Track_artist\top2.jpg" />
+    <Content Include="IMG\Track_artist\top20.jpg" />
+    <Content Include="IMG\Track_artist\top21.jpg" />
+    <Content Include="IMG\Track_artist\top22.jpg" />
+    <Content Include="IMG\Track_artist\top23.jpg" />
+    <Content Include="IMG\Track_artist\top24.jpg" />
+    <Content Include="IMG\Track_artist\top25.jpg" />
+    <Content Include="IMG\Track_artist\top26.jpg" />
+    <Content Include="IMG\Track_artist\top27.jpg" />
+    <Content Include="IMG\Track_artist\top28.jpg" />
+    <Content Include="IMG\Track_artist\top29.jpg" />
+    <Content Include="IMG\Track_artist\top3.jpg" />
+    <Content Include="IMG\Track_artist\top30.jpg" />
+    <Content Include="IMG\Track_artist\top31.jpg" />
+    <Content Include="IMG\Track_artist\top32.jpg" />
+    <Content Include="IMG\Track_artist\top33.jpg" />
+    <Content Include="IMG\Track_artist\top34.jpg" />
+    <Content Include="IMG\Track_artist\top35.jpg" />
+    <Content Include="IMG\Track_artist\top36.jpg" />
+    <Content Include="IMG\Track_artist\top37.jpg" />
+    <Content Include="IMG\Track_artist\top38.jpg" />
+    <Content Include="IMG\Track_artist\top39.jpg" />
+    <Content Include="IMG\Track_artist\top4.jpg" />
+    <Content Include="IMG\Track_artist\top40.jpg" />
+    <Content Include="IMG\Track_artist\top41.jpg" />
+    <Content Include="IMG\Track_artist\top42.jpg" />
+    <Content Include="IMG\Track_artist\top43.jpg" />
+    <Content Include="IMG\Track_artist\top44.jpg" />
+    <Content Include="IMG\Track_artist\top45.jpg" />
+    <Content Include="IMG\Track_artist\top46.jpg" />
+    <Content Include="IMG\Track_artist\top47.jpg" />
+    <Content Include="IMG\Track_artist\top48.jpg" />
+    <Content Include="IMG\Track_artist\top49.jpg" />
+    <Content Include="IMG\Track_artist\top5.jpg" />
+    <Content Include="IMG\Track_artist\top50.jpg" />
+    <Content Include="IMG\Track_artist\top51.jpg" />
+    <Content Include="IMG\Track_artist\top52.jpg" />
+    <Content Include="IMG\Track_artist\top53.jpg" />
+    <Content Include="IMG\Track_artist\top54.jpg" />
+    <Content Include="IMG\Track_artist\top55.jpg" />
+    <Content Include="IMG\Track_artist\top56.jpg" />
+    <Content Include="IMG\Track_artist\top57.jpg" />
+    <Content Include="IMG\Track_artist\top58.jpg" />
+    <Content Include="IMG\Track_artist\top59.jpg" />
+    <Content Include="IMG\Track_artist\top6.jpg" />
+    <Content Include="IMG\Track_artist\top60.jpg" />
+    <Content Include="IMG\Track_artist\top61.jpg" />
+    <Content Include="IMG\Track_artist\top62.jpg" />
+    <Content Include="IMG\Track_artist\top63.jpg" />
+    <Content Include="IMG\Track_artist\top64.jpg" />
+    <Content Include="IMG\Track_artist\top65.jpg" />
+    <Content Include="IMG\Track_artist\top66.jpg" />
+    <Content Include="IMG\Track_artist\top67.jpg" />
+    <Content Include="IMG\Track_artist\top68.jpg" />
+    <Content Include="IMG\Track_artist\top69.jpg" />
+    <Content Include="IMG\Track_artist\top7.jpg" />
+    <Content Include="IMG\Track_artist\top70.jpg" />
+    <Content Include="IMG\Track_artist\top71.jpg" />
+    <Content Include="IMG\Track_artist\top72.jpg" />
+    <Content Include="IMG\Track_artist\top73.jpg" />
+    <Content Include="IMG\Track_artist\top74.jpg" />
+    <Content Include="IMG\Track_artist\top75.jpg" />
+    <Content Include="IMG\Track_artist\top76.jpg" />
+    <Content Include="IMG\Track_artist\top77.jpg" />
+    <Content Include="IMG\Track_artist\top78.jpg" />
+    <Content Include="IMG\Track_artist\top79.jpg" />
+    <Content Include="IMG\Track_artist\top8.jpg" />
+    <Content Include="IMG\Track_artist\top80.jpg" />
+    <Content Include="IMG\Track_artist\top81.jpg" />
+    <Content Include="IMG\Track_artist\top82.jpg" />
+    <Content Include="IMG\Track_artist\top84.jpg" />
+    <Content Include="IMG\Track_artist\top85.jpg" />
+    <Content Include="IMG\Track_artist\top86.jpg" />
+    <Content Include="IMG\Track_artist\top89.jpg" />
+    <Content Include="IMG\Track_artist\top9.jpg" />
+    <Content Include="IMG\Track_artist\top90.jpg" />
+    <Content Include="IMG\Track_artist\top91.jpg" />
+    <Content Include="IMG\Track_artist\top92.jpg" />
+    <Content Include="IMG\Track_artist\top93.jpg" />
+    <Content Include="IMG\Track_artist\top94.jpg" />
+    <Content Include="IMG\Track_artist\top95.jpg" />
+    <Content Include="IMG\Track_artist\top96.jpg" />
+    <Content Include="IMG\Track_artist\top97.jpg" />
+    <Content Include="IMG\Track_artist\top98.jpg" />
+    <Content Include="IMG\Track_artist\top99.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\MainLayout_CSS\fonts\AUBREY1__.eot" />
@@ -369,8 +472,18 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WebMusic.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Content Include="Models\WebMusic.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WebMusic.edmx</DependentUpon>
+      <LastGenOutput>WebMusic.Context.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\WebMusic.edmx.diagram">
       <DependentUpon>WebMusic.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\WebMusic.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WebMusic.edmx</DependentUpon>
+      <LastGenOutput>WebMusic.cs</LastGenOutput>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

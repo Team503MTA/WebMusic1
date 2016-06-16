@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MusicModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="MusicModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="ARTIST">
           <Key>
             <PropertyRef Name="ID" />
@@ -350,6 +350,7 @@
           <Property Name="POINT_MONTH" Type="int" />
           <Property Name="GENRE" Type="nvarchar" MaxLength="50" />
           <Property Name="POINT_DAY" Type="int" />
+          <Property Name="LINK_IMG" Type="nchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -882,8 +883,7 @@
             <End Role="USER_VIDEOLIST" EntitySet="USER_VIDEOLIST" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MusicModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1215,16 +1215,6 @@
           <Property Name="CATALOG" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IMG" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
         </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <EntityType Name="TOP_6_DJ">
           <Key>
             <PropertyRef Name="RANK" />
@@ -1276,6 +1266,7 @@
           <Property Name="POINT_DAY" Type="Int32" />
           <NavigationProperty Name="ARTIST" Relationship="Self.FK_TRACK_ARTIST_ARTIST" FromRole="TRACK_ARTIST" ToRole="ARTIST" />
           <NavigationProperty Name="TRACK" Relationship="Self.FK_TRACK_ARTIST_TRACK" FromRole="TRACK_ARTIST" ToRole="TRACK" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="200" FixedLength="true" Unicode="true" />
         </EntityType>
         <EntityType Name="USER">
           <Key>
@@ -1669,7 +1660,6 @@
           <EntitySet Name="STEMs" EntityType="Self.STEM" />
           <EntitySet Name="STEM_ARTIST" EntityType="Self.STEM_ARTIST" />
           <EntitySet Name="STEMS1" EntityType="Self.STEM1" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="TOP_6_DJ" EntityType="Self.TOP_6_DJ" />
           <EntitySet Name="TRACKs" EntityType="Self.TRACK" />
           <EntitySet Name="TRACK_ARTIST" EntityType="Self.TRACK_ARTIST" />
@@ -1776,7 +1766,18 @@
             <End Role="USER" EntitySet="USERs" />
             <End Role="VIDEO" EntitySet="VIDEOs" />
           </AssociationSet>
+          <EntitySet Name="sysdiagrams" EntityType="MusicModel.sysdiagram" />
         </EntityContainer>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2093,17 +2094,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="MusicModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="TOP_6_DJ">
             <EntityTypeMapping TypeName="MusicModel.TOP_6_DJ">
               <MappingFragment StoreEntitySet="TOP_6_DJ">
@@ -2137,6 +2127,7 @@
           <EntitySetMapping Name="TRACK_ARTIST">
             <EntityTypeMapping TypeName="MusicModel.TRACK_ARTIST">
               <MappingFragment StoreEntitySet="TRACK_ARTIST">
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
                 <ScalarProperty Name="ID_TRACK" ColumnName="ID_TRACK" />
                 <ScalarProperty Name="ID_ARTIST" ColumnName="ID_ARTIST" />
                 <ScalarProperty Name="NAME_ARTIST" ColumnName="NAME_ARTIST" />
@@ -2191,6 +2182,17 @@
               <ScalarProperty Name="ID" ColumnName="ID_VIDEO" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="MusicModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

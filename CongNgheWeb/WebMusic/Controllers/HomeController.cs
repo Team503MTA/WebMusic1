@@ -225,6 +225,7 @@ namespace WebMusic.Controllers
 
         public ActionResult Index()
         {
+
             Session["idRandom"] = 0;
             Session["User"] = 0;
             return View();

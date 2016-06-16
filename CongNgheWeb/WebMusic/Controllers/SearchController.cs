@@ -41,7 +41,7 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
             }
 
-            //lay du lieu cho Track
+            //lay du lieu cho Remix
             var temp2 = db.REMIXes.Where(p => p.FULL_ARTIST.StartsWith(keyWord)).Select(p => new { p.ID, p.FULL_ARTIST }).OrderBy(p => p.FULL_ARTIST).Take(5).ToList();
             if (temp2.Count > 0)
             {
@@ -59,7 +59,7 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
             }
 
-            //lay du lieu cho Track
+            //lay du lieu cho Artist
             var temp3 = db.ARTISTs.Where(p => p.NAME.StartsWith(keyWord)).Select(p => new { p.ID, p.NAME }).Take(5).OrderBy(p => p.NAME).ToList();
             if (temp3.Count > 0)
             {
@@ -77,7 +77,7 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
             }
 
-            //lay du lieu cho Track
+            //lay du lieu cho Label
             var temp4 = db.LABELs.Where(p => p.NAME.StartsWith(keyWord)).Select(p => new { p.ID, p.NAME }).Take(5).OrderBy(p => p.NAME).ToList();
             if (temp4.Count > 0)
             {
@@ -95,7 +95,7 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
             }
 
-            //lay du lieu cho Track
+            //lay du lieu cho Genre
             var temp5 = db.GENREs.Where(p => p.NAME.StartsWith(keyWord)).Select(p => new { p.ID, p.NAME }).Take(5).OrderBy(p => p.NAME).ToList();
             if (temp5.Count > 0)
             {
