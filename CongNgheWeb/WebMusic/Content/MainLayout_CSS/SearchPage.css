@@ -328,10 +328,7 @@
 
 
 /* Let's get this party started */
-#search-tracks-page::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
+
 
 #search-tracks-page {
     display:inline-block; 
@@ -339,6 +336,11 @@
     overflow:hidden; 
     white-space:nowrap; 
     width:100%;
+}
+
+#search-tracks-page::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }
  
 /* Track */

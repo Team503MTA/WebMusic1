@@ -57,43 +57,6 @@ $(document).ready(function () {
 
 // #endregion
 
-
-// #region SHORT STRING
-
-function ShortString() {
-    var stringFull = $("#short-text-content").text();
-
-    function displayShortString() {
-        var lenStringFull = 0;
-        lenStringFull = $("#short-text-content").text().length;
-        if (lenStringFull > 20) {
-            $("#short-text-content").text($("#short-text-content").text().substr(0, 250) + '...');
-        }
-    }
-
-    function displayMoreString() {
-        $("#short-text-content").text(stringFull);
-    }
-
-    displayShortString();
-
-    $(".short-text-content-more").click(function () {
-        displayMoreString();
-        $(this).hide();
-        $(".short-text-content-less").show();
-    });
-
-    $(".short-text-content-less").click(function () {
-        displayShortString();
-        $(this).hide();
-        $(".short-text-content-more").show();
-    });
-
-}
-
-// #endregion
-
-
 // #region REGISTER
 
 $(document).ready(function () {

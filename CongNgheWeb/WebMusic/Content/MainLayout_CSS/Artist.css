@@ -72,16 +72,16 @@ a.detail-artist-label {
     color: #666;
 }
 
-#detail-artist-descrip-content {
+#short-text-content-artist {
     color: #eee;
 }
 
-.detail-artist-more {
+#short-text-content-artist-more {
     color: #55e;
     cursor: pointer;
 }
 
-.detail-artist-less {
+#short-text-content-artist-less {
     color: #55e;
     display: none;
     cursor: pointer;

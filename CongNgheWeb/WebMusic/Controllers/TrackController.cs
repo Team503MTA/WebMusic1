@@ -66,9 +66,9 @@ namespace WebMusic.Controllers
             sb.Append("<br>");
             sb.Append("<div class='detail-song-descrip'>");
             sb.Append("<span class='descrip-title'>Lyrics:  </span>");
-            sb.Append("<span id='short-text-content'>" + track.DESCRIPT + "</span>");
-            sb.Append("<span class='short-text-content-more'>More</span>");
-            sb.Append("<span class='short-text-content-less'>Less</span>");
+            sb.Append("<span id='short-text-content-track'>" + track.DESCRIPT + "</span>");
+            sb.Append("<span class='short-text-content-track-more'>More</span>");
+            sb.Append("<span class='short-text-content-track-less'>Less</span>");
             sb.Append("</div>");
             sb.Append("</div>");
             sb.Append("</div>");
@@ -125,11 +125,11 @@ namespace WebMusic.Controllers
             {
                 sb.Append("<li>");
                 sb.Append("<div class='detail-song-all-track-play'><span>" + (i + 1) + "</span><button><i class='fa fa-play'></i></button></div>");
-                sb.Append("<div class='detail-song-all-track-name'><a href='#' class='col-table-text'>" + lstTrack[i].NAME + "</a></div>");
+                sb.Append("<div class='detail-song-all-track-name'><a href='#' class='col-table-text' onclick='ViewDetailTrackAll_fun(" + lstTrack[i].ID + "); return false;' >" + lstTrack[i].NAME + "</a></div>");
                 sb.Append("<div class='detail-song-all-track-artist'>");
                 foreach (var item in lstTrackArtist[i])
                 {
-                    sb.Append("<a href='#' class='col-table-text'>" + item + "</a>");
+                    sb.Append("<a href='#' class='col-table-text' onclick='detail_Artist(\"" + item + "\"); return false;' >" + item + "</a>");
                 }
                 sb.Append("</div>");
                 sb.Append("<div class='detail-song-all-track-remixer'><a href='#'></a></div>");
@@ -149,13 +149,13 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='detail-song-all-track-artist'>");
                 foreach (var item in lstRemixArtist[i])
                 {
-                    sb.Append("<a href='#' class='col-table-text'>" + item + "</a>");
+                    sb.Append("<a href='#' class='col-table-text' onclick='detail_Artist(\"" + item + "\"); return false;' >" + item + "</a>");
                 }
                 sb.Append("</div>");
                 sb.Append("<div class='detail-song-all-track-remixer'>");
                 foreach (var item in lstRemixRemixer[i])
                 {
-                    sb.Append("<a href='#' class='col-table-text'>" + item + "</a>");
+                    sb.Append("<a href='#' class='col-table-text' onclick='detail_Artist(\"" + item + "\"); return false;' >" + item + "</a>");
                 }
                 sb.Append("</div>");
                 sb.Append("<div class='detail-song-all-track-genre'><a href='#' class='col-table-text'>" + lstRemix[i].GENRE + "</a></div>");
@@ -171,7 +171,7 @@ namespace WebMusic.Controllers
             return (sb.ToString());
         }
 
-        public string More_Track_Artist(int id)       //id la id cua track -> lay id artist tu do 
+        public string More_Track_Artist(int id, int quantity)       //id la id cua track -> lay id artist tu do 
         {
 
             List<TRACK> lstTrack = new List<TRACK>();
@@ -181,7 +181,16 @@ namespace WebMusic.Controllers
             //lay id cua tat ca cac artist tham gia
             List<int> tempIdArtist = db.TRACK_ARTIST.Where(p => p.ID_TRACK == id).Select(p => p.ID_ARTIST).ToList();
             //lay id cua tat ca cac track cua cac artist do
-            List<int> allIdTrackArtist = db.TRACK_ARTIST.Where(x => tempIdArtist.Contains(x.ID_ARTIST)).OrderByDescending(p => p.COST).Select(x => x.ID_TRACK).ToList();
+            List<int> allIdTrackArtist = null;
+            if (quantity == 0)
+            {
+                allIdTrackArtist = db.TRACK_ARTIST.Where(x => tempIdArtist.Contains(x.ID_ARTIST)).OrderByDescending(p => p.COST).Select(x => x.ID_TRACK).ToList();
+            }
+            else
+            {
+                allIdTrackArtist = db.TRACK_ARTIST.Where(x => tempIdArtist.Contains(x.ID_ARTIST)).OrderByDescending(p => p.COST).Take(quantity).Select(x => x.ID_TRACK).ToList();
+            }
+
             allIdTrackArtist.RemoveAll(x => x == id);
             allIdTrackArtist = allIdTrackArtist.Distinct().ToList();
 
@@ -194,10 +203,11 @@ namespace WebMusic.Controllers
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("<div class='col-sm-12 detail-song-artist'>");
+            
+            sb.Append("<span id='detail-song-artist-viewall' onclick='detailTrack_fullTrackArtist(" + id + ")'>View All</span>");
             sb.Append("<div class='detail-song-artist-title'><span>More Track This Artist</span></div>");
             sb.Append("<div class='detail-song-artist-content'>");
-            sb.Append("<div class='slider-detail-song-artist'>");
+            sb.Append("<div class='slider-detail-song-artist' id='slider-detail-song-artist-id'>");
             for (int i = 0; i < lstTrack.Count; i++)
             {
                 sb.Append("<div class='detail-song-artist-song'>");
@@ -209,12 +219,12 @@ namespace WebMusic.Controllers
                 sb.Append("<button class='detail-song-artist-song-share'><i class='fa fa-facebook' ></i >Share</button>");
                 sb.Append("</div><p></p></div>");
                 sb.Append("<div class='detail-song-artist-song-bottom'>");
-                sb.Append("<p class='detail-song-artist-song-name'><a href='#'>" + lstTrack[i].NAME + "</a></p>");
+                sb.Append("<p class='detail-song-artist-song-name'><a href='#' onclick='ViewDetailTrackAll_fun(" + lstTrack[i].ID + "); return false;' >" + lstTrack[i].NAME + "</a></p>");
 
                 sb.Append("<p class='detail-song-artist-song-artist'>");
                 for (int k = 0; k < lstArtist[i].Count; k++)
                 {
-                    sb.Append("<a href='#'>" + lstArtist[i][k] + "</a>");
+                    sb.Append("<a href='#' onclick='detail_Artist(\"" + lstArtist[i][k] + "\"); return false;' >" + lstArtist[i][k] + "</a>");
                     if (k != lstArtist[i].Count - 1)
                     {
                         sb.Append("<span class='ft'> ft </span>");
@@ -224,7 +234,7 @@ namespace WebMusic.Controllers
                 sb.Append("<p class='detail-song-artist-song-label'>");
                 for (int k = 0; k < lstLabel[i].Count; k++)
                 {
-                    sb.Append("<a href='#'>" + lstLabel[i][k] + "</a>");
+                    sb.Append("<a href='#' onclick='detail_Label(\"" + lstLabel[i][k] + "\"); return false;' >" + lstLabel[i][k] + "</a>");
                     if (k != lstLabel[i].Count - 1)
                     {
                         sb.Append("<span class='ft'> ft </span>");
@@ -236,15 +246,19 @@ namespace WebMusic.Controllers
 
             sb.Append("</div>");
             sb.Append("</div>");
-            sb.Append("</div>");
-
-
 
             return sb.ToString();
         }
 
-        public string More_Track_Label(int id)       //id la id cua track -> lay id artist tu do 
+        public JsonResult More_Track_Artist_Full(int id)
         {
+            return Json(More_Track_Artist(id, 0));
+        }
+
+        public string More_Track_Label(int id, int quantity)       //id la id cua track -> lay id artist tu do 
+        {
+            //quantity = 0 thì lấy full
+            //quantity != 0 thì lấy số lượng theo quantity
 
             List<List<string>> listTrack = new List<List<string>>();
             List<List<List<string>>> listInfo = new List<List<List<string>>>();
@@ -253,27 +267,44 @@ namespace WebMusic.Controllers
             List<string> tempIdArtist = db.TRACK_ARTIST.Where(p => p.ID_TRACK == id).Select(p => p.NAME_LABEL).ToList();
             tempIdArtist = tempIdArtist.Distinct().ToList();
             //lay id cua tat ca cac track cua cac label do
-            List<int> allIdTrackLabel = db.TRACK_ARTIST.Where(x => tempIdArtist.Contains(x.NAME_LABEL)).OrderByDescending(p => p.COST).Select(x => x.ID_TRACK).ToList();
+            List<int> allIdTrackLabel = null;
+            if (quantity == 0)
+            {
+                allIdTrackLabel =
+                    db.TRACK_ARTIST.Where(x => tempIdArtist.Contains(x.NAME_LABEL))
+                        .OrderByDescending(p => p.COST)
+                        .Select(x => x.ID_TRACK)
+                        .ToList();
+            }
+            else
+            {
+                allIdTrackLabel =
+                    db.TRACK_ARTIST.Where(x => tempIdArtist.Contains(x.NAME_LABEL))
+                        .OrderByDescending(p => p.COST).Take(quantity)
+                        .Select(x => x.ID_TRACK)
+                        .ToList();
+            }
+
             allIdTrackLabel.RemoveAll(x => x == id);
             allIdTrackLabel = allIdTrackLabel.Distinct().ToList();
 
             List<TRACK> lstTrack = new List<TRACK>();
-            List<List<string>>lstArtist = new List<List<string>>();
-            List<List<string>>lstLabel = new List<List<string>>();
+            List<List<string>> lstArtist = new List<List<string>>();
+            List<List<string>> lstLabel = new List<List<string>>();
 
             foreach (var i in allIdTrackLabel)
             {
-                lstTrack.Add(db.TRACKs.FirstOrDefault(p => p.ID==i));
-                lstArtist.Add(db.TRACK_ARTIST.Where(p=>p.ID_TRACK==i).Select(p=>p.NAME_ARTIST).ToList());
-                lstLabel.Add(db.TRACK_ARTIST.Where(p=>p.ID_TRACK==i).Select(p=>p.NAME_LABEL).ToList());
+                lstTrack.Add(db.TRACKs.FirstOrDefault(p => p.ID == i));
+                lstArtist.Add(db.TRACK_ARTIST.Where(p => p.ID_TRACK == i).Select(p => p.NAME_ARTIST).ToList());
+                lstLabel.Add(db.TRACK_ARTIST.Where(p => p.ID_TRACK == i).Select(p => p.NAME_LABEL).ToList());
             }
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("<div class='col-sm-12 detail-song-label'>");
+            sb.Append("<span id='detail-song-label-viewall' onclick='detailTrack_fullTrackLabel(" + id + ")'>View All</span>");
             sb.Append("<div class='detail-song-label-title'><span>More Track This Label</span></div>");
             sb.Append("<div class='detail-song-label-content'>");
-            sb.Append("<div class='slider-detail-song-label'>");
+            sb.Append("<div class='slider-detail-song-label' id='slider-detail-song-label-id'>");
 
             for (int i = 0; i < lstTrack.Count; i++)
             {
@@ -286,21 +317,21 @@ namespace WebMusic.Controllers
                 sb.Append("<button class='detail-song-label-song-share'><i class='fa fa-facebook'></i>Share</button>");
                 sb.Append("</div><p></p></div>");
                 sb.Append("<div class='detail-song-label-song-bottom'>");
-                sb.Append("<p class='detail-song-label-song-name'><a href='#'>" + lstTrack[i].NAME + "</a></p>");
+                sb.Append("<p class='detail-song-label-song-name'><a href='#' onclick='ViewDetailTrackAll_fun(" + lstTrack[i].ID + "); return false;' >" + lstTrack[i].NAME + "</a></p>");
                 sb.Append("<p class='detail-song-label-song-artist'>");
-                for(int k = 0 ; k < lstArtist[i].Count ; k++)
+                for (int k = 0; k < lstArtist[i].Count; k++)
                 {
-                    sb.Append("<a href='#'>" + lstArtist[i][k] + "</a>");
+                    sb.Append("<a href='#' onclick='detail_Artist(\"" + lstArtist[i][k] + "\"); return false;' >" + lstArtist[i][k] + "</a>");
                     if (k != lstArtist[i].Count - 1)
                     {
                         sb.Append("<span class='ft'> ft </span>");
                     }
                 }
-                                            sb.Append("</p>");
+                sb.Append("</p>");
                 sb.Append("<p class='detail-song-label-song-label'>");
                 for (int k = 0; k < lstLabel[i].Count; k++)
                 {
-                    sb.Append("<a href='#'>" + lstLabel[i][k] + "</a>");
+                    sb.Append("<a href='#' onclick='detail_Label(\"" + lstLabel[i][k] + "\"); return false;' >" + lstLabel[i][k] + "</a>");
                     if (k != lstLabel[i].Count - 1)
                     {
                         sb.Append("<span class='ft'> ft </span>");
@@ -308,12 +339,16 @@ namespace WebMusic.Controllers
                 }
                 sb.Append("</p></div></div>");
             }
-            sb.Append("</div>");
-            sb.Append("</div>");
-            sb.Append("</div>");
 
+            sb.Append("</div>");
+            sb.Append("</div>");
 
             return sb.ToString();
+        }
+
+        public JsonResult More_Track_Label_Full(int id)
+        {
+            return Json(More_Track_Label(id, 0));
         }
 
         public string VisualizeMusicPlaying()
@@ -341,8 +376,14 @@ namespace WebMusic.Controllers
             sb.Append(VisualizeMusicPlaying());
             sb.Append(Detail_Track(id));
             sb.Append(Track_Total(id));
-            sb.Append(More_Track_Artist(id));
-            sb.Append(More_Track_Label(id));
+
+            sb.Append("<div class='col-sm-12 detail-song-artist'  id='detail-song-artist-id'>");
+            sb.Append(More_Track_Artist(id,10));
+            sb.Append("</div>");
+
+            sb.Append("<div class='col-sm-12 detail-song-label'  id='detail-song-label-id'>");
+            sb.Append(More_Track_Label(id, 10));
+            sb.Append("</div>");
 
             sb.Append("</div>");
             sb.Append("</div>");

@@ -530,6 +530,50 @@
                 }
             });
         }
+
+        //show full MORE_TRACK_THIS_LABEL
+        function detailTrack_fullTrackLabel(id) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("More_Track_Label_Full", "Track")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("detail-song-label-id").innerHTML = data;
+                    document.getElementById("detail-song-label-viewall").style.display = 'none';
+                    document.getElementById("slider-detail-song-label-id").style.overflowY = 'scroll';
+                    document.getElementById("slider-detail-song-label-id").style.overflowX = 'hidden';
+
+                    endLoad();
+                }
+            });
+        }
+
+        //show full MORE_TRACK_THIS_LABEL
+        function detailTrack_fullTrackArtist(id) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("More_Track_Artist_Full", "Track")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("detail-song-artist-id").innerHTML = data;
+                    document.getElementById("detail-song-artist-viewall").style.display = 'none';
+                    document.getElementById("slider-detail-song-artist-id").style.overflowY = 'scroll';
+                    document.getElementById("slider-detail-song-artist-id").style.overflowX = 'hidden';
+
+                    endLoad();
+                }
+            });
+        }
     </script>
 
     @* xu ly phan click mua hang *@

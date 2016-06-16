@@ -46,9 +46,9 @@ namespace WebMusic.Controllers
             sb.Append("<br>");
             sb.Append("<div class='detail-artist-descrip'>");
             sb.Append("<span class='detail-artist-descrip-title'>DESCRIPTION</span>");
-            sb.Append("<span id='detail-artist-descrip-content' >" + artist.DESCRIP + "</span>");
-            sb.Append("<span class='detail-artist-more'>More</span>");
-            sb.Append("<span class='detail-artist-less'>Less</span>");
+            sb.Append("<span id='short-text-content-artist' >" + artist.DESCRIP + "</span>");
+            sb.Append("<span class='short-text-content-artist-more'>More</span>");
+            sb.Append("<span class='short-text-content-artist-less'>Less</span>");
             sb.Append("</div>");
             sb.Append("<div class='detail-artist-follow'>");
             sb.Append("<p>Follow</p>");

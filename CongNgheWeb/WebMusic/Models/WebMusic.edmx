@@ -382,16 +382,6 @@
           <Property Name="CATALOG" Type="nvarchar" MaxLength="50" />
           <Property Name="IMG" Type="nchar" MaxLength="50" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <EntityType Name="TOP_6_DJ">
           <Key>
             <PropertyRef Name="RANK" />
@@ -434,6 +424,7 @@
           <Property Name="POINT_ALL" Type="int" />
           <Property Name="POINT_MONTH" Type="int" />
           <Property Name="GENRE" Type="nvarchar" MaxLength="50" />
+          <Property Name="LINK_IMG" Type="nvarchar" MaxLength="200" />
           <Property Name="POINT_DAY" Type="int" />
         </EntityType>
         <EntityType Name="USER">
@@ -862,7 +853,6 @@
           <EntitySet Name="STEM" EntityType="Self.STEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STEM_ARTIST" EntityType="Self.STEM_ARTIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="STEMS" EntityType="Self.STEMS" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TOP_6_DJ" EntityType="Self.TOP_6_DJ" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TRACK" EntityType="Self.TRACK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TRACK_ARTIST" EntityType="Self.TRACK_ARTIST" Schema="dbo" store:Type="Tables" />
@@ -1393,16 +1383,6 @@
           <Property Name="CATALOG" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IMG" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
         </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <EntityType Name="TOP_6_DJ">
           <Key>
             <PropertyRef Name="RANK" />
@@ -1451,6 +1431,7 @@
           <Property Name="POINT_ALL" Type="Int32" />
           <Property Name="POINT_MONTH" Type="Int32" />
           <Property Name="GENRE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LINK_IMG" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="POINT_DAY" Type="Int32" />
           <NavigationProperty Name="ARTIST" Relationship="Self.FK_TRACK_ARTIST_ARTIST" FromRole="TRACK_ARTIST" ToRole="ARTIST" />
           <NavigationProperty Name="TRACK" Relationship="Self.FK_TRACK_ARTIST_TRACK" FromRole="TRACK_ARTIST" ToRole="TRACK" />
@@ -1855,7 +1836,6 @@
           <EntitySet Name="STEMs" EntityType="Self.STEM" />
           <EntitySet Name="STEM_ARTIST" EntityType="Self.STEM_ARTIST" />
           <EntitySet Name="STEMS1" EntityType="Self.STEM1" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="TOP_6_DJ" EntityType="Self.TOP_6_DJ" />
           <EntitySet Name="TRACKs" EntityType="Self.TRACK" />
           <EntitySet Name="TRACK_ARTIST" EntityType="Self.TRACK_ARTIST" />
@@ -2370,17 +2350,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="MusicModel.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="TOP_6_DJ">
             <EntityTypeMapping TypeName="MusicModel.TOP_6_DJ">
               <MappingFragment StoreEntitySet="TOP_6_DJ">
@@ -2423,6 +2392,7 @@
                 <ScalarProperty Name="POINT_ALL" ColumnName="POINT_ALL" />
                 <ScalarProperty Name="POINT_MONTH" ColumnName="POINT_MONTH" />
                 <ScalarProperty Name="GENRE" ColumnName="GENRE" />
+                <ScalarProperty Name="LINK_IMG" ColumnName="LINK_IMG" />
                 <ScalarProperty Name="POINT_DAY" ColumnName="POINT_DAY" />
               </MappingFragment>
             </EntityTypeMapping>
