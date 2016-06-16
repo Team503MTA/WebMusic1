@@ -14,6 +14,7 @@
     <link href="~/Content/MainLayout_CSS/SearchPage.css" rel="stylesheet" />
     <link href="~/Content/MainLayout_CSS/Track.css" rel="stylesheet" />
     <link href="~/Content/MainLayout_CSS/music.css" rel="stylesheet" />
+    <link href="~/Content/MainLayout_CSS/style-index.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     @* Load Ajax *@
     <script type="text/javascript">
@@ -48,7 +49,7 @@
                         </div>
                         <div id="navbar" class="collapse navbar-collapse">
                             <ul class="nav navbar-nav pull-left">
-                                <li class="active" id="HomePageButton"><a href="#">Home</a></li>
+                                <li class="active" id="HomePageButton"><a href="#" onclick="HomePage(); return false;">Home</a></li>
                                 <li><a href="#about">Store</a></li>
                                 <li><a href="#contact">Listen</a></li>
                                 <li><a href="#contact">Shows</a></li>
@@ -481,8 +482,6 @@
                     contentType: 'application/json; charset=utf-8',
                     success: function (data) {
                         if (data !== '') {
-                            document.getElementById("MainContent").innerHTML = '';
-                            document.getElementById("content1").innerHTML = '';
                             document.getElementById("MainContent").innerHTML = data;
 
                             $(".detail-song-track-total li").hover(function () {
@@ -511,59 +510,6 @@
 
     @* xu ly phan xem chi tiet Track *@
     <script type="text/javascript">
-        var isReady = true;
-        function clickAllPlayMusic(id, type,typePlay) {
-            startLoad();
-            $.ajax({
-                url: '@Url.Action("GetMusic", "PlayMusic")',
-                dataType: 'json',
-                type: 'POST',
-                data: JSON.stringify({
-                    id: id,
-                    type: type,
-                    typePlay:typePlay
-                }),
-                contentType: 'application/json; charset=utf-8',
-                success: function (data) {
-                    if (data !== '') {
-                        document.getElementById("all-tagMusicBottom").innerHTML = '';
-                        document.getElementById("all-tagMusicBottom").innerHTML = data;
-                        endLoad();
-                    } else {
-                        alert("unsuccess");
-                        endLoad();
-                    }
-                }
-            });
-        }
-
-
-        function clickPlayMusicDetail(id, type) {
-            startLoad();
-            $.ajax({
-                url: '@Url.Action("GetMusic", "PlayMusic")',
-                dataType: 'json',
-                type: 'POST',
-                data: JSON.stringify({
-                    id: id,
-                    type: type,
-                    typePlay:1
-                }),
-                contentType: 'application/json; charset=utf-8',
-                success: function (data) {
-                    if (data !== '') {
-                        checkDetailPage_fun();
-                        document.getElementById("all-tagMusicBottom").innerHTML = '';
-                        document.getElementById("all-tagMusicBottom").innerHTML = data;
-
-                        endLoad();
-                    } else {
-                        alert("unsuccess");
-                    }
-                }
-            });
-        }
-
         //show Page Detail
         function ViewDetailTrackAll_fun(id) {
             startLoad();
@@ -578,15 +524,56 @@
                 success: function (data) {
                     document.getElementById("MainContent").innerHTML = '';
                     document.getElementById("MainContent").innerHTML = data;
+                    ShortString();
+                    endLoad();
+                    document.body.scrollTop = 0;
+                }
+            });
+        }
+
+        //show full MORE_TRACK_THIS_LABEL
+        function detailTrack_fullTrackLabel(id) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("More_Track_Label_Full", "Track")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("detail-song-label-id").innerHTML = data;
+                    document.getElementById("detail-song-label-viewall").style.display = 'none';
+                    document.getElementById("slider-detail-song-label-id").style.overflowY = 'scroll';
+                    document.getElementById("slider-detail-song-label-id").style.overflowX = 'hidden';
 
                     endLoad();
                 }
             });
         }
 
-        //show visualize Music
+        //show full MORE_TRACK_THIS_LABEL
+        function detailTrack_fullTrackArtist(id) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("More_Track_Artist_Full", "Track")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("detail-song-artist-id").innerHTML = data;
+                    document.getElementById("detail-song-artist-viewall").style.display = 'none';
+                    document.getElementById("slider-detail-song-artist-id").style.overflowY = 'scroll';
+                    document.getElementById("slider-detail-song-artist-id").style.overflowX = 'hidden';
 
-
+                    endLoad();
+                }
+            });
+        }
     </script>
 
     @* xu ly phan click mua hang *@
@@ -702,120 +689,173 @@
     @* Script xu ly phan User *@
     <script type="text/javascript">
 
-    function register_Fun() {
-        if (document.getElementById('register-form-button-register').getAttribute('_isRegister') === '0') {
-            alert("Value not invalid");
-            return;
-        }
-        $.ajax({
-            url: '@Url.Action("Register", "User")',
-            dataType: 'json',
-            type: 'POST',
-            data: JSON.stringify({
-                FIRSTNAME: $("#register_firstname").val(),
-                PASSWORD: $("#register_password").val(),
-                EMAIL: $("#register_email").val(),
-                LEVEL_: 1,
-                LASTNAME: $("#register_lastname").val()
-            }),
-            contentType: 'application/json; charset=utf-8',
-            success: function(data) {
-                login_Fun($("#register_email").val(), $("#register_password").val());
-
-                noti_Fun("Register Successful");
-                $(".register-form").hide();
-                $(".extra").hide();
-            },
-            error: function(xhr) {
-                alert("loi roi");
+        function register_Fun() {
+            if (document.getElementById('register-form-button-register').getAttribute('_isRegister') === '0') {
+                alert("Value not invalid");
+                return;
             }
-        });
-    }
+            $.ajax({
+                url: '@Url.Action("Register", "User")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    FIRSTNAME: $("#register_firstname").val(),
+                    PASSWORD: $("#register_password").val(),
+                    EMAIL: $("#register_email").val(),
+                    LEVEL_: 1,
+                    LASTNAME: $("#register_lastname").val()
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function(data) {
+                    login_Fun($("#register_email").val(), $("#register_password").val());
 
-    function login_Fun(email, password) {
-        var _email, _password;
-        if (!email || !password) {
-            _email = $("#email-form").val();
-            _password = $("#password-form").val();
-        } else {
-            _email = email;
-            _password = password;
-        }
-
-        $.ajax({
-            url: '@Url.Action("Login", "User")',
-            dataType: 'json',
-            type: 'POST',
-            data: JSON.stringify({
-                email: _email,
-                password: _password
-            }),
-            contentType: 'application/json; charset=utf-8',
-            success: function(data) {
-                if (data !== '') {
-                    $("#login-form").hide();
+                    noti_Fun("Register Successful");
+                    $(".register-form").hide();
                     $(".extra").hide();
-                    $("#login-button").hide();
-                    $("#register-button").hide();
-                    $("#userName_Menu").text(data);
-                    $("#total_Debt_Menu").text("$0");
-                    $("#cartMenu").show();
-                } else {
-                    alert("unsuccess");
+                },
+                error: function(xhr) {
+                    alert("loi roi");
                 }
+            });
+        }
+
+        function login_Fun(email, password) {
+            startLoad();
+            if (!email || !password) {
+                endLoad();
+                noti_Fun('You Must Fill Emain And Password','error');
+                return false;
             }
-        });
-    }
+
+            $.ajax({
+                url: '@Url.Action("Login", "User")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    email: email,
+                    password: password
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function(data) {
+                    if (data !== '') {
+                        $("#login-form").hide();
+                        $(".extra").hide();
+                        $("#login-button").hide();
+                        $("#register-button").hide();
+                        $("#userName_Menu").text(data);
+                        $("#total_Debt_Menu").text("$0");
+                        $("#cartMenu").show();
+
+                        endLoad();
+                    } else {
+                        endLoad();
+                        noti_Fun('Email Or Password fail', 'error');
+                    }
+                }
+            });
+        }
     </script>
 
     @* Script xu ly phan Playlist  *@
     <script type="text/javascript">
 
-    function userDetailPage() {
-        startLoad();
-        $.ajax({
-            url: '@Url.Action("PlayList", "PlayMusic")',
-            dataType: 'json',
-            type: 'POST',
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                document.getElementById("MainContent").innerHTML = data;
-
-                endLoad();
-            },
-            error: function (xhr) {
-                endLoad();
-                alert("ERROR 404");
-            }
-        });
-    }
-
-    function playPlaylist(type) {
-        startLoad();
-        $.ajax({
-            url: '@Url.Action("playPlayList", "PlayMusic")',
-            dataType: 'json',
-            type: 'POST',
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify({
-                type: type
-            }),
-            success: function (data) {
-                if (data === '1') {
-                    clickAllPlayMusic(1, 1, 2);
-                } else {
-                    noti_Fun("Playlist Don't Have Song","success");
+        function clickAllPlayMusic(id, type, typePlay) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("GetMusic", "PlayMusic")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id,
+                    type: type,
+                    typePlay: typePlay
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        document.getElementById("all-tagMusicBottom").innerHTML = '';
+                        document.getElementById("all-tagMusicBottom").innerHTML = data;
+                        endLoad();
+                    } else {
+                        alert("unsuccess");
+                        endLoad();
+                    }
                 }
-                endLoad();
-            },
-            error: function (xhr) {
-                endLoad();
-                alert("ERROR 404");
-            }
-        });
-    }
+            });
+        }
 
-        function select_notSelect_Song(id,type) {
+
+        function clickPlayMusicDetail(id, type) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("GetMusic", "PlayMusic")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id,
+                    type: type,
+                    typePlay: 1
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        checkDetailPage_fun();
+                        document.getElementById("all-tagMusicBottom").innerHTML = '';
+                        document.getElementById("all-tagMusicBottom").innerHTML = data;
+
+                        endLoad();
+                    } else {
+                        alert("unsuccess");
+                    }
+                }
+            });
+        }
+
+        function userDetailPage() {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("PlayList", "PlayMusic")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("MainContent").innerHTML = data;
+
+                    endLoad();
+                },
+                error: function (xhr) {
+                    endLoad();
+                    alert("ERROR 404");
+                }
+            });
+        }
+
+        function playPlaylist(type) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("playPlayList", "PlayMusic")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    type: type
+                }),
+                success: function (data) {
+                    if (data === '1') {
+                        clickAllPlayMusic(1, 1, 2);
+                    } else {
+                        noti_Fun("Playlist Don't Have Song", "success");
+                    }
+                    endLoad();
+                },
+                error: function (xhr) {
+                    endLoad();
+                    alert("ERROR 404");
+                }
+            });
+        }
+
+        function select_notSelect_Song(id, type) {
             startLoad();
             $.ajax({
                 url: '@Url.Action("selectSong", "PlayMusic")',
@@ -823,7 +863,7 @@
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
                 data: JSON.stringify({
-                    id:id,
+                    id: id,
                     type: type
                 }),
                 success: function (data) {
@@ -838,7 +878,89 @@
 
     </script>
 
-    <script src="~/Scripts/MainLayout_JS/main-layout.js"></script>
+    @*Script xu ly phan Detail*@
+<script type="text/javascript">
+    function detail_Artist(artistName) {
+        startLoad();
+        $.ajax({
+            url: '@Url.Action("Index", "Artist")',
+            dataType: 'json',
+            type: 'POST',
+            data: JSON.stringify({
+                artistName: artistName
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function(data) {
+                if (data !== '') {
+                    document.getElementById("MainContent").innerHTML = data;
+                    detail_Hot_Track_Label();
+                    endLoad();
+                    document.body.scrollTop = 0;
 
+                    return false;
+                } else {
+                    alert("unsuccess");
+                    endLoad();
+
+                    return false;
+                }
+            }
+        });
+    }
+</script>
+
+    @* Script xu ly phan Label *@
+    <script type="text/javascript">
+        function detail_Label(name) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("Index", "Label")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    name: name
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        document.getElementById("MainContent").innerHTML = data;
+                        Artist_Label();
+                        endLoad();
+                        document.body.scrollTop = 0;
+                    } else {
+                        alert("unsuccess");
+                        endLoad();
+                    }
+                }
+            });
+        }
+    </script>
+
+@*Script phan Header*@
+<script type="text/javascript">
+    function HomePage() {
+        startLoad();
+        $.ajax({
+            url: '@Url.Action("HomePage", "Home")',
+            dataType: 'json',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data !== '') {
+                    document.getElementById("MainContent").innerHTML = data;
+                    endLoad();
+                } else {
+                    alert("unsuccess");
+                    endLoad();
+                }
+            }
+        });
+    }
+</script>
+
+<script src="~/Scripts/MainLayout_JS/main-layout.js"></script>
+    <script src="~/Scripts/MainLayout_JS/main-detail-artist.js"></script>
+    <script src="~/Scripts/MainLayout_JS/main-label.js"></script>
+    <script src="~/Scripts/MainLayout_JS/main-index.js"></script>
 </body>
 </html>

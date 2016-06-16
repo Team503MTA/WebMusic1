@@ -25,18 +25,24 @@ namespace WebMusic.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<AccountAdmin> AccountAdmins { get; set; }
         public virtual DbSet<ARTIST> ARTISTs { get; set; }
         public virtual DbSet<CARD> CARDs { get; set; }
         public virtual DbSet<CHART> CHARTs { get; set; }
+        public virtual DbSet<DEMO> DEMOes { get; set; }
+        public virtual DbSet<DEMO_ARTIST> DEMO_ARTIST { get; set; }
         public virtual DbSet<FORMULA_HOT> FORMULA_HOT { get; set; }
         public virtual DbSet<GENRE> GENREs { get; set; }
         public virtual DbSet<GENRE_ARTIST> GENRE_ARTIST { get; set; }
         public virtual DbSet<GENRE_LABEL> GENRE_LABEL { get; set; }
+        public virtual DbSet<HISTORY_UPDATE> HISTORY_UPDATE { get; set; }
         public virtual DbSet<HISTORY_USER> HISTORY_USER { get; set; }
         public virtual DbSet<HOME_HOT_NEW> HOME_HOT_NEW { get; set; }
         public virtual DbSet<Home_NewTrack> Home_NewTrack { get; set; }
         public virtual DbSet<LABEL> LABELs { get; set; }
         public virtual DbSet<LISTEN_SLIDER> LISTEN_SLIDER { get; set; }
+        public virtual DbSet<LIVESET> LIVESETs { get; set; }
+        public virtual DbSet<LIVESET_ARTIST> LIVESET_ARTIST { get; set; }
         public virtual DbSet<NEW_TRACK> NEW_TRACK { get; set; }
         public virtual DbSet<REMIX> REMIXes { get; set; }
         public virtual DbSet<REMIX_ARTIST> REMIX_ARTIST { get; set; }
@@ -45,6 +51,8 @@ namespace WebMusic.Models
         public virtual DbSet<SHOW_LIST> SHOW_LIST { get; set; }
         public virtual DbSet<SOUND> SOUNDS { get; set; }
         public virtual DbSet<STATISTIC_ARTIST> STATISTIC_ARTIST { get; set; }
+        public virtual DbSet<STATISTIC_DEMO> STATISTIC_DEMO { get; set; }
+        public virtual DbSet<STATISTIC_LIVESET> STATISTIC_LIVESET { get; set; }
         public virtual DbSet<STATISTIC_REMIX> STATISTIC_REMIX { get; set; }
         public virtual DbSet<STATISTIC_TRACK> STATISTIC_TRACK { get; set; }
         public virtual DbSet<STEM> STEMs { get; set; }

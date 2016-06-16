@@ -95,7 +95,7 @@ function newTrack_Index_Fun() {
 // #endregion
 
 //hot remix
-$(document).ready(function () {
+function Home_Hot_Remix() {
     $(".hot-remix-pages-li").on("click", function () {
         var stt = $(this).attr("stt");
         $(".hot-remix-div").hide();
@@ -103,10 +103,10 @@ $(document).ready(function () {
         $(".hot-remix-pages-li").removeClass('hot-remix-pages-li-active');
         $(".hot-remix-pages-li").eq(stt).addClass('hot-remix-pages-li-active');
     });
-});
+}
 
 //top-liveset
-$(document).ready(function () {
+function Liveset() {
     $(".live-set-slider-div").on("click", function () {
         var stt = $(this).attr("stt");
         $(".live-set-content-div").hide();
@@ -114,10 +114,10 @@ $(document).ready(function () {
         $(".live-set-slider-div").removeClass('live-set-slider-div-active');
         $(".live-set-slider-div").eq(stt).addClass('live-set-slider-div-active');
     });
-});
+}
 
 //bucket
-$(document).ready(function () {
+function Bucket() {
     $(".bucket-pages-li").on("click", function () {
         var stt = $(this).attr("stt");
         $(".bucket-img").hide();
@@ -125,4 +125,4 @@ $(document).ready(function () {
         $(".bucket-pages-li").removeClass('bucket-pages-li-active');
         $(".bucket-pages-li").eq(stt).addClass('bucket-pages-li-active');
     });
-});
+}

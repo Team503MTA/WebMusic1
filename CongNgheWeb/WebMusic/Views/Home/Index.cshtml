@@ -4,31 +4,45 @@
     ViewBag.Title = "Index";
 }
 
-<link href="~/Content/MainLayout_CSS/style-index.css" rel="stylesheet" />
 
 <div class="col-sm-8" id="startIndex">
 </div>
+<div class="col-sm-4" id ="rightContent">
+</div>
 
 <script type="text/javascript">
+    function loadRightContent() {
+        $.ajax({
+            url: '@Url.Action("RightContent", "Home")',
+            dataType: 'json',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                document.getElementById("rightContent").innerHTML = data;
+                Bucket();
+            }
+        });
+    }
     startLoad();
     $.ajax({
-        url: '@Url.Action("FullIndex", "Home")',
+        url: '@Url.Action("LeftContent", "Home")',
         dataType: 'json',
         type: 'POST',
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
-            document.getElementById("startIndex").innerHTML = '';
             document.getElementById("startIndex").innerHTML = data;
             hotSlider_Fun();
             Top_6_DJ_Fun();
             newTrack_Index_Fun();
-
+            Home_Hot_Remix();
+            Liveset();
+            loadRightContent();
             endLoad();
+            $("#footerPage").show();
         }
     });
 
 </script>
 
-<script src="~/Scripts/MainLayout_JS/main-index.js"></script>
 
 

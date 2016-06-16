@@ -227,8 +227,8 @@ namespace WebMusic.Controllers
             {
                 return Json("0");
             }
-            USER tempUser = db.USERs.Where(p => p.EMAIL == pay.email && p.PASSWORD == pay.password).FirstOrDefault();
-            CARD tempCard = db.CARDs.Where(p => p.NUMBER == pay.cardNumber && p.PASSWORD == pay.passwordCard).FirstOrDefault();
+            USER tempUser = db.USERs.FirstOrDefault(p => p.EMAIL == pay.email && p.PASSWORD == pay.password);
+            CARD tempCard = db.CARDs.FirstOrDefault(p => p.NUMBER == pay.cardNumber && p.PASSWORD == pay.passwordCard);
             if (tempUser != null && tempCard != null)
             {
                 byte countPro = (byte)lstCart.Count;
@@ -283,6 +283,21 @@ namespace WebMusic.Controllers
                     tempTracklist.TYPE = (byte)lstCart[i].type;
                     db.USER_TRACKLIST.Add(tempTracklist);
                     db.SaveChanges();
+
+                    //ADD TO STATISTIC BUY
+                    if (lstCart[i].type == 1)
+                    {
+                        var statisticTrack = db.STATISTIC_TRACK.FirstOrDefault(p => p.ID == lstCart[i].id);
+                        statisticTrack.BUY_MONTH++;
+                        statisticTrack.BUY_ALL++;
+                        db.SaveChanges();
+                    }else if (lstCart[i].type == 2)
+                    {
+                        var statisticRemix = db.STATISTIC_REMIX.FirstOrDefault(p => p.ID == lstCart[i].id);
+                        statisticRemix.BUY_MONTH++;
+                        statisticRemix.BUY_ALL++;
+                        db.SaveChanges();
+                    }
                 }
 
                 Session["Cart"] = null;

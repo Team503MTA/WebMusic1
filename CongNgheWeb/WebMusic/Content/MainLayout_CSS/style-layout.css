@@ -344,6 +344,7 @@ header {
     border-top: 1px solid #333;
     background: #373737;
     margin-bottom: 70px;
+    display: none;
 }
 
     #footerPage .col-sm-12, .footerPage .col-sm-3, .footerPage .col-sm-2 {
@@ -544,6 +545,7 @@ header {
     white-space: nowrap;
     display: inline-block;
     width: 100%;
+    font-size: 90%;
 }
 
     .playmusic-name a {
@@ -562,6 +564,7 @@ header {
     display: inline-block;
     width: 100%;
     overflow: hidden;
+    font-size: 90%;
 }
 
     .playmusic-artist a {
@@ -729,6 +732,17 @@ header {
 /*#endregion */
 
 /*#region REGISTER FORM */
+
+.short-text-content-less {
+    display: none;
+    color: #0af;
+    cursor: pointer;
+}
+
+.short-text-content-more {
+    color: #0af;
+    cursor: pointer;
+}
 
 .register-form {
     color: #eee;
@@ -1140,8 +1154,9 @@ header {
     color: #fff;
     text-decoration: none;
     overflow: hidden;
-    font-size: 120%;
+    font-size: 100%;
     padding: 0 5px;
+    cursor: pointer;
 }
 
     #string-name-right:hover {
@@ -1318,10 +1333,21 @@ header {
 
 /*#region Style Visualize Music */
 
+@keyframes animatedBackground {
+	from { background-position: 0 0; }
+	to { background-position: 100% 0; }
+}
+
 #visualizeMusic {
     width: 100%;
-    height: 200px;
-    background: #000;
+    height: 275px;
+    /*background: transparent;*/
+    margin-left: 26px;
+    border-bottom: 5px solid #404;
+    background-image: url('../../IMG/2.jpg');
+    background-repeat: repeat-x;
+	animation: animatedBackground 70s linear infinite;
+    background-position: 50px 0px;
 }
 
 #analyser_render {
@@ -1334,3 +1360,57 @@ header {
 }
 
 /*#endregion */
+
+
+/*#region Common */
+
+.name-level-1 {
+    color: #eee;
+    font-size: 80%;
+}
+
+    .name-level-1:hover {
+        color: #eee;
+        -ms-text-shadow: 0 0 15px #f00;
+        text-shadow: 0 0 15px #f00;
+    }
+
+.name-level-2 {
+    color: #22bbcc;
+    font-size: 75%;
+    white-space: nowrap;
+}
+
+    .name-level-2:hover {
+        color: #22bbcc;
+        -ms-text-shadow: 0 0 15px #f00;
+        text-shadow: 0 0 15px #f00;
+    }
+
+.name-level-3 {
+    color: #777;
+    font-size: 75%;
+    white-space: nowrap;
+}
+
+    .name-level-3:hover {
+        color: #777;
+        -ms-text-shadow: 0 0 15px #f00;
+        text-shadow: 0 0 15px #f00;
+    }
+
+    .ft {
+        color: #555;
+        font-size: 70%;
+    }
+
+    .no-click:hover {
+        cursor: default !important;
+    }
+
+    .col-table-text {
+        font-size: 85%;
+    }
+
+/*#endregion */
+

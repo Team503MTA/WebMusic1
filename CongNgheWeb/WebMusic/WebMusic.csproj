@@ -177,6 +177,8 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\UpdateController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ArtistController.cs" />
@@ -199,6 +201,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountAdmin.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ARTIST.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
@@ -208,6 +213,12 @@
     </Compile>
     <Compile Include="Models\Cart.cs" />
     <Compile Include="Models\CHART.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DEMO.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DEMO_ARTIST.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\FORMULA_HOT.cs">
@@ -220,6 +231,9 @@
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GENRE_LABEL.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HISTORY_UPDATE.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\HISTORY_USER.cs">
@@ -236,6 +250,12 @@
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LISTEN_SLIDER.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LIVESET.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LIVESET_ARTIST.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
@@ -269,6 +289,12 @@
     <Compile Include="Models\STATISTIC_ARTIST.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\STATISTIC_DEMO.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\STATISTIC_LIVESET.cs">
+      <DependentUpon>WebMusic.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\STATISTIC_REMIX.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
@@ -282,9 +308,6 @@
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\STEM_ARTIST.cs">
-      <DependentUpon>WebMusic.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TOP_6_DJ.cs">
@@ -325,8 +348,8 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bootstrap-theme.min.css" />
-    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Areas\Admin\Content\Style\style-admin-update.css" />
+    <Content Include="Areas\Admin\Script\Main\main-admin-update.js" />
     <Content Include="Content\MainLayout_CSS\Artist.css" />
     <Content Include="Content\MainLayout_CSS\fonts\AUBREY1__.svg" />
     <Content Include="Content\MainLayout_CSS\fonts\Player One.svg" />
@@ -337,123 +360,22 @@
     <Content Include="Content\MainLayout_CSS\style-cart.css" />
     <Content Include="Content\MainLayout_CSS\style-index.css" />
     <Content Include="Content\MainLayout_CSS\style-layout.css" />
-    <Content Include="Content\MainLayout_CSS\style-listen.css" />
-    <Content Include="Content\MainLayout_CSS\style-show.css" />
-    <Content Include="Content\MainLayout_CSS\StyleDetailsListen.css" />
     <Content Include="Content\MainLayout_CSS\Track.css" />
-    <Content Include="Content\MainLayout_CSS\Xemchitiet.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="IMG\Track_artist\top1.jpg" />
-    <Content Include="IMG\Track_artist\top10.jpg" />
-    <Content Include="IMG\Track_artist\top100.jpg" />
-    <Content Include="IMG\Track_artist\top101.jpg" />
-    <Content Include="IMG\Track_artist\top102.jpg" />
-    <Content Include="IMG\Track_artist\top103.jpg" />
-    <Content Include="IMG\Track_artist\top104.jpg" />
-    <Content Include="IMG\Track_artist\top105.jpg" />
-    <Content Include="IMG\Track_artist\top106.jpg" />
-    <Content Include="IMG\Track_artist\top107.jpg" />
-    <Content Include="IMG\Track_artist\top108.jpg" />
-    <Content Include="IMG\Track_artist\top109.jpg" />
-    <Content Include="IMG\Track_artist\top11.jpg" />
-    <Content Include="IMG\Track_artist\top110.jpg" />
-    <Content Include="IMG\Track_artist\top12.jpg" />
-    <Content Include="IMG\Track_artist\top13.jpg" />
-    <Content Include="IMG\Track_artist\top14.jpg" />
-    <Content Include="IMG\Track_artist\top15.jpg" />
-    <Content Include="IMG\Track_artist\top16.jpg" />
-    <Content Include="IMG\Track_artist\top17.jpg" />
-    <Content Include="IMG\Track_artist\top18.jpg" />
-    <Content Include="IMG\Track_artist\top19.jpg" />
-    <Content Include="IMG\Track_artist\top2.jpg" />
-    <Content Include="IMG\Track_artist\top20.jpg" />
-    <Content Include="IMG\Track_artist\top21.jpg" />
-    <Content Include="IMG\Track_artist\top22.jpg" />
-    <Content Include="IMG\Track_artist\top23.jpg" />
-    <Content Include="IMG\Track_artist\top24.jpg" />
-    <Content Include="IMG\Track_artist\top25.jpg" />
-    <Content Include="IMG\Track_artist\top26.jpg" />
-    <Content Include="IMG\Track_artist\top27.jpg" />
-    <Content Include="IMG\Track_artist\top28.jpg" />
-    <Content Include="IMG\Track_artist\top29.jpg" />
-    <Content Include="IMG\Track_artist\top3.jpg" />
-    <Content Include="IMG\Track_artist\top30.jpg" />
-    <Content Include="IMG\Track_artist\top31.jpg" />
-    <Content Include="IMG\Track_artist\top32.jpg" />
-    <Content Include="IMG\Track_artist\top33.jpg" />
-    <Content Include="IMG\Track_artist\top34.jpg" />
-    <Content Include="IMG\Track_artist\top35.jpg" />
-    <Content Include="IMG\Track_artist\top36.jpg" />
-    <Content Include="IMG\Track_artist\top37.jpg" />
-    <Content Include="IMG\Track_artist\top38.jpg" />
-    <Content Include="IMG\Track_artist\top39.jpg" />
-    <Content Include="IMG\Track_artist\top4.jpg" />
-    <Content Include="IMG\Track_artist\top40.jpg" />
-    <Content Include="IMG\Track_artist\top41.jpg" />
-    <Content Include="IMG\Track_artist\top42.jpg" />
-    <Content Include="IMG\Track_artist\top43.jpg" />
-    <Content Include="IMG\Track_artist\top44.jpg" />
-    <Content Include="IMG\Track_artist\top45.jpg" />
-    <Content Include="IMG\Track_artist\top46.jpg" />
-    <Content Include="IMG\Track_artist\top47.jpg" />
-    <Content Include="IMG\Track_artist\top48.jpg" />
-    <Content Include="IMG\Track_artist\top49.jpg" />
-    <Content Include="IMG\Track_artist\top5.jpg" />
-    <Content Include="IMG\Track_artist\top50.jpg" />
-    <Content Include="IMG\Track_artist\top51.jpg" />
-    <Content Include="IMG\Track_artist\top52.jpg" />
-    <Content Include="IMG\Track_artist\top53.jpg" />
-    <Content Include="IMG\Track_artist\top54.jpg" />
-    <Content Include="IMG\Track_artist\top55.jpg" />
-    <Content Include="IMG\Track_artist\top56.jpg" />
-    <Content Include="IMG\Track_artist\top57.jpg" />
-    <Content Include="IMG\Track_artist\top58.jpg" />
-    <Content Include="IMG\Track_artist\top59.jpg" />
-    <Content Include="IMG\Track_artist\top6.jpg" />
-    <Content Include="IMG\Track_artist\top60.jpg" />
-    <Content Include="IMG\Track_artist\top61.jpg" />
-    <Content Include="IMG\Track_artist\top62.jpg" />
-    <Content Include="IMG\Track_artist\top63.jpg" />
-    <Content Include="IMG\Track_artist\top64.jpg" />
-    <Content Include="IMG\Track_artist\top65.jpg" />
-    <Content Include="IMG\Track_artist\top66.jpg" />
-    <Content Include="IMG\Track_artist\top67.jpg" />
-    <Content Include="IMG\Track_artist\top68.jpg" />
-    <Content Include="IMG\Track_artist\top69.jpg" />
-    <Content Include="IMG\Track_artist\top7.jpg" />
-    <Content Include="IMG\Track_artist\top70.jpg" />
-    <Content Include="IMG\Track_artist\top71.jpg" />
-    <Content Include="IMG\Track_artist\top72.jpg" />
-    <Content Include="IMG\Track_artist\top73.jpg" />
-    <Content Include="IMG\Track_artist\top74.jpg" />
-    <Content Include="IMG\Track_artist\top75.jpg" />
-    <Content Include="IMG\Track_artist\top76.jpg" />
-    <Content Include="IMG\Track_artist\top77.jpg" />
-    <Content Include="IMG\Track_artist\top78.jpg" />
-    <Content Include="IMG\Track_artist\top79.jpg" />
-    <Content Include="IMG\Track_artist\top8.jpg" />
-    <Content Include="IMG\Track_artist\top80.jpg" />
-    <Content Include="IMG\Track_artist\top81.jpg" />
-    <Content Include="IMG\Track_artist\top82.jpg" />
-    <Content Include="IMG\Track_artist\top84.jpg" />
-    <Content Include="IMG\Track_artist\top85.jpg" />
-    <Content Include="IMG\Track_artist\top86.jpg" />
-    <Content Include="IMG\Track_artist\top89.jpg" />
-    <Content Include="IMG\Track_artist\top9.jpg" />
-    <Content Include="IMG\Track_artist\top90.jpg" />
-    <Content Include="IMG\Track_artist\top91.jpg" />
-    <Content Include="IMG\Track_artist\top92.jpg" />
-    <Content Include="IMG\Track_artist\top93.jpg" />
-    <Content Include="IMG\Track_artist\top94.jpg" />
-    <Content Include="IMG\Track_artist\top95.jpg" />
-    <Content Include="IMG\Track_artist\top96.jpg" />
-    <Content Include="IMG\Track_artist\top97.jpg" />
-    <Content Include="IMG\Track_artist\top98.jpg" />
-    <Content Include="IMG\Track_artist\top99.jpg" />
+    <Content Include="Models\WebMusic.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WebMusic.edmx</DependentUpon>
+      <LastGenOutput>WebMusic.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\WebMusic.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WebMusic.edmx</DependentUpon>
+      <LastGenOutput>WebMusic.cs</LastGenOutput>
+    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\MainLayout_CSS\fonts\AUBREY1__.eot" />
@@ -468,22 +390,14 @@
     <Content Include="Content\MainLayout_CSS\fonts\Snake Jacket12.otf" />
     <Content Include="Content\MainLayout_CSS\fonts\Snake Jacket12.ttf" />
     <Content Include="Content\MainLayout_CSS\fonts\Snake Jacket12.woff" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Update\Index.cshtml" />
     <EntityDeploy Include="Models\WebMusic.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WebMusic.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\WebMusic.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WebMusic.edmx</DependentUpon>
-      <LastGenOutput>WebMusic.Context.cs</LastGenOutput>
-    </Content>
     <Content Include="Models\WebMusic.edmx.diagram">
       <DependentUpon>WebMusic.edmx</DependentUpon>
-    </Content>
-    <Content Include="Models\WebMusic.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WebMusic.edmx</DependentUpon>
-      <LastGenOutput>WebMusic.cs</LastGenOutput>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -499,6 +413,7 @@
     <Content Include="Scripts\MainLayout_JS\main-detail-artist.js" />
     <Content Include="Scripts\MainLayout_JS\main-detail-track.js" />
     <Content Include="Scripts\MainLayout_JS\main-index.js" />
+    <Content Include="Scripts\MainLayout_JS\main-label.js" />
     <Content Include="Scripts\MainLayout_JS\main-layout.js" />
     <Content Include="Scripts\MainLayout_JS\ViewSearch.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
@@ -545,15 +460,6 @@
     <Content Include="Views\Track\Track_Total.cshtml" />
     <Content Include="Views\Track\More_Track_Artist.cshtml" />
     <Content Include="Views\Track\More_Track_Label.cshtml" />
-    <Content Include="Views\Artist\Index.cshtml" />
-    <Content Include="Views\Artist\Detail_Artist.cshtml" />
-    <Content Include="Views\Artist\Total_Track_Artist.cshtml" />
-    <Content Include="Views\Artist\Hot_Remix.cshtml" />
-    <Content Include="Views\Artist\Hot_Track_Label.cshtml" />
-    <Content Include="Views\Label\Index.cshtml" />
-    <Content Include="Views\Label\Detail.cshtml" />
-    <Content Include="Views\Label\Artist_Label.cshtml" />
-    <Content Include="Views\Label\Track_Label.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\Cart\userCart.cshtml" />
@@ -611,6 +517,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Content\Libraly\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Script\Libraly\" />
+    <Folder Include="Areas\Admin\Views\Shared\" />
+    <Folder Include="Demo\" />
+    <Folder Include="Liveset\" />
+    <Folder Include="Views\Artist\" />
+    <Folder Include="Views\Label\" />
     <Folder Include="Views\PlayMusic\" />
     <Folder Include="Views\Search\" />
   </ItemGroup>

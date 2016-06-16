@@ -538,6 +538,7 @@ a.detail-artist-label {
     background: #aaa;
     margin-right: 0.5%;
     cursor: pointer;
+    width: 49.75%;
 }
 
 .detail-artist-remix-slider-button:last-child {

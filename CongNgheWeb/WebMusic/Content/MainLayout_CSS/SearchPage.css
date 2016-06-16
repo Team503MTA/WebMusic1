@@ -159,9 +159,9 @@
     -ms-border-radius: 10px;
     border-radius: 10px;
   
-  background: repeating-linear-gradient(30deg,#555,#555 15px,#272 15px,#272 30px);
+  background: repeating-linear-gradient(30deg,#304,#304 15px,#0cc 15px,#0cc 30px);
   
-    -webkit-box-shadow: inset 0 0 2px rgba(255,0,0,1);
+    -webkit-box-shadow: inset 0 0 2px rgba(0,200,200,1);
 }
 
 #searchRemixAllPage::-webkit-scrollbar-thumb:window-inactive {
@@ -293,10 +293,6 @@
 
 /* end artist */
 
-.content{
-    margin-bottom: 150px;
-}
-
 /* tracks */
 
 .search-tracks{
@@ -332,6 +328,16 @@
 
 
 /* Let's get this party started */
+
+
+#search-tracks-page {
+    display:inline-block; 
+    padding-bottom:5px; 
+    overflow:hidden; 
+    white-space:nowrap; 
+    width:100%;
+}
+
 #search-tracks-page::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -351,9 +357,9 @@
     -ms-border-radius: 10px;
     border-radius: 10px;
   
-  background: repeating-linear-gradient(30deg,#555,#555 15px,#272 15px,#272 30px);
+  background: repeating-linear-gradient(30deg,#304,#304 15px,#0cc 15px,#0cc 30px);
   
-    -webkit-box-shadow: inset 0 0 2px rgba(255,0,0,1);
+    -webkit-box-shadow: inset 0 0 1px rgba(0,200,200,1);
 }
 
 #search-tracks-page::-webkit-scrollbar-thumb:window-inactive {
@@ -624,34 +630,3 @@
     overflow: hidden;
 }
 
-.name-level-1{
-    color: #eee;
-    font-size: 90% !important;
-}
-.name-level-1:hover {
-    color: #eee;
-    -ms-text-shadow: 0 0 15px #f00;
-    text-shadow: 0 0 15px #f00;
-}
-
-.name-level-2{
-    color: #22bbcc;
-    font-size: 65% !important;
-    white-space: nowrap !important;
-}
-.name-level-2:hover {
-    color: #22bbcc;
-    -ms-text-shadow: 0 0 15px #f00;
-    text-shadow: 0 0 15px #f00;
-}
-
-.name-level-3{
-    color: #777;
-    font-size: 60% !important;
-    white-space: nowrap !important;
-}
-.name-level-3:hover {
-    color: #777;
-    -ms-text-shadow: 0 0 15px #f00;
-    text-shadow: 0 0 15px #f00;
-}
