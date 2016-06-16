@@ -21,27 +21,27 @@
                         <div class="daily-rotation-song-vertical-bottom">
                             @if (item.NAME_TRACK.Length > 15)
                             {
-                                <p class="daily-rotation-song-vertical-name"><a href="#"><strong>@item.NAME_TRACK.Substring(0, 15)...</strong></a>
+                                <p class="daily-rotation-song-vertical-name"><a href="#" onclick="ViewDetailTrackAll_fun(@item.ID_TRACK); return false;"><strong>@item.NAME_TRACK.Substring(0, 15)...</strong></a>
                                 </p>
                             }
                             else
                             {
-                                <p class="daily-rotation-song-vertical-name"><a href="#"><strong>@item.NAME_TRACK</strong></a>
+                                <p class="daily-rotation-song-vertical-name"><a href="#" onclick="ViewDetailTrackAll_fun(@item.ID_TRACK); return false;"><strong>@item.NAME_TRACK</strong></a>
                                 </p>
 
                             }
                             @if (item.NAME_ARTIST.Length > 15)
                             {
-                                <p class="daily-rotation-song-vertical-name"><a href="#">@item.NAME_ARTIST.Substring(0, 15)...</a>
+                                <p class="daily-rotation-song-vertical-name"><a href="#" onclick="detail_Artist('@item.NAME_ARTIST'); return false;">@item.NAME_ARTIST.Substring(0, 15)...</a>
                                 </p>
                             }
                             else
                             {
-                                <p class="daily-rotation-song-vertical-name"><a href="#">@item.NAME_ARTIST</a>
+                                <p class="daily-rotation-song-vertical-name"><a href="#" onclick="detail_Artist('@item.NAME_ARTIST'); return false;">@item.NAME_ARTIST</a>
                                 </p>
 
                             }
-                            <p class="daily-rotation-song-vertical-label"><a href="#">@item.NAME_LABEL</a>
+                            <p class="daily-rotation-song-vertical-label"><a href="#" onclick="detail_Label('@item.NAME_LABEL'); return false;">@item.NAME_LABEL</a>
                             </p>
                         </div>
                     </div>
