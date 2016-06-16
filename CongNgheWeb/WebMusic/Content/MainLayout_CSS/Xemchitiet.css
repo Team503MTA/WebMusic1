@@ -1,0 +1,58 @@
+﻿body {
+    background:#1d1d1d;
+}
+.content{
+    margin-top:2%;
+}
+
+.col-sm-7 img{
+    width:100%;
+    margin-bottom:2%;
+}
+.name{
+    font-size:150%;
+    display:inline;
+    
+}
+.location{
+    font-size:150%;
+    display:inline;
+    
+}
+.time{
+    display:inline;
+    font-size:150%;
+}
+.artist{
+    display:inline;
+    font-size:150%;
+}
+.describle{
+    display:inline;
+    font-size:150%;
+}
+.info-show{
+    font-family:Calibri;
+    color:#8c8c8c;
+    display:block;
+}
+.text{
+    font-weight:500;
+    color:#fff;
+    font-size:120%;
+}
+
+.flower{
+    font-size:150%;
+}
+
+.decrib-detail-list-show-more{
+    color: #2222aa;
+    cursor: pointer;
+}
+
+.decrib-detail-list-show-less{
+    color: #2222aa;
+    display: none;
+    cursor: pointer;
+}

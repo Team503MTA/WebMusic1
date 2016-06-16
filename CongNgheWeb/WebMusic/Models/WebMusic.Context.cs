@@ -64,5 +64,6 @@ namespace WebMusic.Models
         public virtual DbSet<USER> USERs { get; set; }
         public virtual DbSet<USER_TRACKLIST> USER_TRACKLIST { get; set; }
         public virtual DbSet<VIDEO> VIDEOs { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
     }
 }

@@ -1,0 +1,80 @@
+﻿
+body {
+    background:#1d1d1d;
+}
+.content{
+    margin-top:2%;
+}
+
+.col-sm-4 img{
+    width:100%;
+    margin-bottom:2%;
+    height: 270px;
+}
+.name{
+    font-size:150%;
+    display:inline;
+    
+}
+.location{
+    font-size:150%;
+    display:inline;
+    
+}
+.genre{
+    display:inline;
+    font-size:150%;
+}
+.artist{
+    display:inline;
+    font-size:150%;
+}
+.describle{
+    display:inline;
+    font-size:150%;
+}
+.info-show{
+    font-family:Calibri;
+    color:#565151;
+    display:block;
+}
+.text{
+    font-weight:500;
+    color:#fff;
+    font-size:120%;
+}
+.flower{
+    font-size:150%;
+}
+
+.flower a{
+    margin-right:1%;
+    color:#fff;
+}
+.money{
+    width: 80px;
+    font-family: cursive;
+    display: inline-block;
+    vertical-align: top;
+    background: #ee2577;
+    font-family: Arial;
+    border: 0;
+    color: #eee;
+    font-weight: bold;
+    margin-right:3.5%;
+}
+.detail-slider-listen-more{
+    color: #2222aa;
+    cursor: pointer;
+}
+
+.detail-slider-listen-less{
+    color: #2222aa;
+    display: none;
+    cursor: pointer;
+}
+
+hr{
+    border:0;
+    border-top:1px solid#eee;
+}
