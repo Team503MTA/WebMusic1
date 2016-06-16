@@ -656,6 +656,13 @@ namespace WebMusic.Controllers
 
         public ActionResult Index()
         {
+            var ss = db.TRACK_ARTIST.ToList();
+            foreach (var item in ss)
+            {
+                var temp = db.TRACKs.Where(p => p.ID == item.ID_TRACK).FirstOrDefault();
+                item.LINK_IMG = temp.LINK_IMG;
+            }
+            db.SaveChanges();
 
             Session["idRandom"] = 0;
             Session["typeSong"] = 1;
