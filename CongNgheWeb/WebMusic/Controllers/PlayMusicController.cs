@@ -30,7 +30,7 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='tag-playmusic' id='all-tagMusicBottom'>");
                 sb.Append("<div class='playmusic-info' id='all-playmusic-change'>");
                 sb.Append("<div class='imgPlayMusic'>");
-                sb.Append("<img src = '." + track.LINK_IMG + "' />");
+                sb.Append("<img src = '.." + track.LINK_IMG + "' />");
                 sb.Append("</div >");
                 sb.Append("<div class='textPlayMusic'>");
                 sb.Append("<a href='#' class='playmusic-name' onclick='ViewDetailTrackAll_fun(" + id + "); return false;' >" + track.NAME + "</a>");
@@ -74,7 +74,7 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
                 sb.Append("</div>");
                 sb.Append("<audio id='myTune' controls onloadedmetadata='audioLoad()' >");
-                sb.Append("<source src='." + track.LINK + "'>");
+                sb.Append("<source src='.." + track.LINK + "'>");
                 sb.Append("</audio>");
                 sb.Append("</div>");
             }
@@ -92,7 +92,7 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='tag-playmusic' id='all-tagMusicBottom'>");
                 sb.Append("<div class='playmusic-info' id='all-playmusic-change'>");
                 sb.Append("<div class='imgPlayMusic'>");
-                sb.Append("<img src = '." + remix.LINK_IMG + "' />");
+                sb.Append("<img src = '.." + remix.LINK_IMG + "' />");
                 sb.Append("</div >");
                 sb.Append("<div class='textPlayMusic'>");
                 sb.Append("<a href='#' class='playmusic-name' onclick='return false;' >" + remix.NAME + "</a>");
@@ -135,7 +135,7 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
                 sb.Append("</div>");
                 sb.Append("<audio id='myTune' controls onloadedmetadata='audioLoad()' >");
-                sb.Append("<source src='." + remix.LINK + "'>");
+                sb.Append("<source src='.." + remix.LINK + "'>");
                 sb.Append("</audio>");
                 sb.Append("</div>");
             }
@@ -153,7 +153,7 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='tag-playmusic' id='all-tagMusicBottom'>");
                 sb.Append("<div class='playmusic-info' id='all-playmusic-change'>");
                 sb.Append("<div class='imgPlayMusic'>");
-                sb.Append("<img src = '." + liveset.LINK_IMG + "' />");
+                sb.Append("<img src = '.." + liveset.LINK_IMG + "' />");
                 sb.Append("</div >");
                 sb.Append("<div class='textPlayMusic'>");
                 sb.Append("<a href='#' class='playmusic-name' onclick='return false;' >" + liveset.NAME + "</a>");
@@ -197,7 +197,7 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
                 sb.Append("</div>");
                 sb.Append("<audio id='myTune' controls onloadedmetadata='audioLoad()' >");
-                sb.Append("<source src='." + liveset.LINK + "'>");
+                sb.Append("<source src='.." + liveset.LINK + "'>");
                 sb.Append("</audio>");
                 sb.Append("</div>");
             }
@@ -215,7 +215,7 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='tag-playmusic' id='all-tagMusicBottom'>");
                 sb.Append("<div class='playmusic-info' id='all-playmusic-change'>");
                 sb.Append("<div class='imgPlayMusic'>");
-                sb.Append("<img src = '." + demo.LINK_IMG + "' />");
+                sb.Append("<img src = '.." + demo.LINK_IMG + "' />");
                 sb.Append("</div >");
                 sb.Append("<div class='textPlayMusic'>");
                 sb.Append("<a href='#' class='playmusic-name' onclick='return false;' >" + demo.NAME + "</a>");
@@ -259,7 +259,7 @@ namespace WebMusic.Controllers
                 sb.Append("</div>");
                 sb.Append("</div>");
                 sb.Append("<audio id='myTune' controls onloadedmetadata='audioLoad()' >");
-                sb.Append("<source src='." + demo.LINK + "'>");
+                sb.Append("<source src='.." + demo.LINK + "'>");
                 sb.Append("</audio>");
                 sb.Append("</div>");
             }

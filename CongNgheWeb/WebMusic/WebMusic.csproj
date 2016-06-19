@@ -261,6 +261,7 @@
     </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Mathh.cs" />
+    <Compile Include="Models\MusicFileUpload.cs" />
     <Compile Include="Models\NEW_TRACK.cs">
       <DependentUpon>WebMusic.tt</DependentUpon>
     </Compile>
@@ -374,17 +375,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="IMG\blank-artist.png" />
-    <Content Include="Models\WebMusic.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WebMusic.edmx</DependentUpon>
-      <LastGenOutput>WebMusic.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\WebMusic.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>WebMusic.edmx</DependentUpon>
-      <LastGenOutput>WebMusic.cs</LastGenOutput>
-    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\MainLayout_CSS\fonts\AUBREY1__.eot" />
@@ -408,8 +398,18 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>WebMusic.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Content Include="Models\WebMusic.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WebMusic.edmx</DependentUpon>
+      <LastGenOutput>WebMusic.Context.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\WebMusic.edmx.diagram">
       <DependentUpon>WebMusic.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\WebMusic.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>WebMusic.edmx</DependentUpon>
+      <LastGenOutput>WebMusic.cs</LastGenOutput>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -496,11 +496,17 @@
     <Content Include="Views\Charts\ChartsGenrePartial.cshtml" />
     <Content Include="Views\Charts\NewChartsPartial.cshtml" />
     <Content Include="Views\Charts\SliderChartsPartial.cshtml" />
+    <Content Include="Views\ChartsDetail\Index.cshtml" />
+    <Content Include="Views\ChartsDetail\ChartsDetailPartial.cshtml" />
+    <Content Include="Views\ChartsDetail\TracksDetailPartial.cshtml" />
     <Content Include="Views\Sounds\Index.cshtml" />
     <Content Include="Views\Sounds\FeaturedPacksPartial.cshtml" />
     <Content Include="Views\Stems\Index.cshtml" />
     <Content Include="Views\Stems\NewStemsPartial.cshtml" />
     <Content Include="Views\Stems\SliderStemsPartial.cshtml" />
+    <Content Include="Views\StemsDetail\Index.cshtml" />
+    <Content Include="Views\StemsDetail\StemsDetailPartial.cshtml" />
+    <Content Include="Views\StemsDetail\StemDetailPartial.cshtml" />
     <Content Include="Views\Listen\Index.cshtml" />
     <Content Include="Views\Listen\SliderListen.cshtml" />
     <Content Include="Views\Listen\ThePulesChart.cshtml" />

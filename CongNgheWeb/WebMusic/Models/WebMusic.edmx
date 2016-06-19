@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="MusicModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="MusicModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AccountAdmin">
           <Key>
             <PropertyRef Name="USERNAME" />
@@ -42,7 +42,6 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="NAME" Type="nvarchar" MaxLength="50" />
-          <Property Name="ARTIST" Type="nvarchar" MaxLength="100" />
           <Property Name="DATE_RELEASE" Type="date" />
           <Property Name="DESCRIP" Type="nvarchar" MaxLength="500" />
           <Property Name="NAME_GENRE" Type="nvarchar" MaxLength="50" />
@@ -523,7 +522,8 @@
           <EntitySet Name="USER_VIDEOLIST" EntityType="Self.USER_VIDEOLIST" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VIDEO" EntityType="Self.VIDEO" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MusicModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -571,7 +571,6 @@
           <Property Name="COST" Type="Double" />
           <Property Name="ID_GENRE" Type="Int16" />
           <Property Name="TYPE" Type="Byte" />
-          <Property Name="ARTIST" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="DEMO">
           <Key>
@@ -1088,7 +1087,6 @@
           <EntitySetMapping Name="CHARTs">
             <EntityTypeMapping TypeName="MusicModel.CHART">
               <MappingFragment StoreEntitySet="CHART">
-                <ScalarProperty Name="ARTIST" ColumnName="ARTIST" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="DATE_RELEASE" ColumnName="DATE_RELEASE" />

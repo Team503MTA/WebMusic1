@@ -128,6 +128,8 @@ header {
     color: #000;
     border-bottom: 2px solid #ddd;
     outline: none;
+    margin-bottom: 5%;
+    margin-top: 5%;
 }
 
     .form-element::-webkit-input-placeholder {
@@ -195,7 +197,7 @@ header {
         -o-transition: all 0.2s;
         transition: all 0.2s;
         width: 25%;
-        height: 150%;
+        height: 110%;
         margin: 0;
     }
 

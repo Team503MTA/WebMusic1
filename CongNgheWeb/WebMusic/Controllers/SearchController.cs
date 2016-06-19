@@ -142,12 +142,12 @@ namespace WebMusic.Controllers
                     if (item.LINK_IMG[0] == '~')
                     {
                         strTemp = item.LINK_IMG.TrimStart('~');
-                        strTemp = '.' + strTemp;
-                        sb.Append("<img src = '" + strTemp + "' alt=''>");
+                        strTemp = '..' + strTemp;
+                        sb.Append("<img src = '.." + strTemp + "' alt=''>");
                     }
                     else
                     {
-                        sb.Append("<img src = '" + item.LINK_IMG + "' alt=''>");
+                        sb.Append("<img src = '.." + item.LINK_IMG + "' alt=''>");
                     }
                     sb.Append("<div class='song-vertical-top-control'>");
                     sb.Append("<button class='song-vertical-play'><i class='fa fa-play'></i></button>");
@@ -321,7 +321,7 @@ namespace WebMusic.Controllers
                 {
                     sb.Append("<div class='col-sm-3'>");
                     sb.Append("<div class='search-label-detail'>");
-                    sb.Append("<img src = '" + temp[item].LINK_IMG +"' alt=''>");
+                    sb.Append("<img src = '.." + temp[item].LINK_IMG +"' alt=''>");
                     sb.Append("<p class='search-label-name' idd='" + temp[item].ID + "'><a href ='#'>" + temp[item].NAME + "</a></p>");
                     sb.Append("</div>");
                     sb.Append("</div>");
@@ -363,7 +363,7 @@ namespace WebMusic.Controllers
                 {
                     sb.Append("<div class='col-sm-2'>");
                     sb.Append("<div class='down-color'>");
-                    sb.Append("<img src = '" + temp[i].IMG + "' alt=''>");
+                    sb.Append("<img src = '.." + temp[i].IMG + "' alt=''>");
                     sb.Append("<a href='#' idd='" + temp[i].ID + "' class='down-color-link'>");
                     sb.Append("</a>");
                     sb.Append("<span class='down-color-name'>" + temp[i].NAME + "</span>");
