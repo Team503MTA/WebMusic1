@@ -23,6 +23,5 @@ namespace WebMusic.Models
         public Nullable<double> COST { get; set; }
         public Nullable<short> ID_GENRE { get; set; }
         public Nullable<byte> TYPE { get; set; }
-        public string ARTIST { get; set; }
     }
 }
