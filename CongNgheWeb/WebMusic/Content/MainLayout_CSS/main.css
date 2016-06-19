@@ -168,7 +168,7 @@ header .glyphicon{
     color: #fff;
 }
 .btn-close{
-    background: #1f1f1f url(/Image/sounds/close.png) no-repeat scroll 0 0;
+    background: #1f1f1f url(/IMG/sounds/close.png) no-repeat scroll 0 0;
     vertical-align: middle;
     display: block;
     position: absolute;
@@ -180,7 +180,7 @@ header .glyphicon{
     border: none;
 }
 .btn-close:hover{
-    background: #1f1f1f url(/Image/sounds/close.png) no-repeat scroll 0 -18px;
+    background: #1f1f1f url(/IMG/sounds/close.png) no-repeat scroll 0 -18px;
 }
 .navbar .create .login-shortcut{
     width: 13%;

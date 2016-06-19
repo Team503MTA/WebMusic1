@@ -9,7 +9,6 @@ namespace WebMusic.Controllers
 {
     public class HomeController : Controller
     {
-
         MusicEntities db = new MusicEntities();
 
         public string HotSlider()
@@ -155,7 +154,7 @@ namespace WebMusic.Controllers
                     sb.Append("<div class='new-track-child-top'>");
                     sb.Append("<img src='." + lst[count].LINK_IMG + "'>");
                     sb.Append("<div class='new-track-child-top-control'>");
-                    sb.Append("<button onclick='clickAllPlayMusic(" + lst[count].ID + ",1,1)' class='new-track-child-play all-playmusic'><i class='fa fa-play'></i></button>");
+                    sb.Append("<button onclick='SelectMusicAll(" + lst[count].ID + ",1)' class='new-track-child-play all-playmusic'><i class='fa fa-play'></i></button>");
                     sb.Append("<button onclick='clickBuy_fun(" + lst[count].ID + ",1)' class='new-track-child-buy'>$" + lst[count].COST + "</button>");
                     sb.Append("<button class='new-track-child-share'><i class='fa fa-facebook'></i>Share</button>");
                     sb.Append("</div>");
@@ -244,8 +243,8 @@ namespace WebMusic.Controllers
                     sb.Append("<div class='song-vertical-top'>");
                     sb.Append("<img src='." + listHot[count].LINK_IMG + "'>");
                     sb.Append("<div class='song-vertical-top-control'>");
-                    sb.Append("<button class='song-vertical-play' onclick='clickAllPlayMusic(" + listHot[count].ID + ",2,1)'><i class='fa fa-play'></i></button>");
-                    sb.Append("<button class='song-vertical-buy'>$" + listHot[count].COST + "</button>");
+                    sb.Append("<button class='song-vertical-play' onclick='SelectMusicAll(" + listHot[count].ID + ",2)'><i class='fa fa-play'></i></button>");
+                    sb.Append("<button class='song-vertical-buy' onclick='clickBuy_fun(" + listHot[count].ID + ",2)' >$" + listHot[count].COST + "</button>");
                     sb.Append("<button class='song-vertical-share'><i class='fa fa-facebook'></i>Share</button>");
                     sb.Append("</div>");
                     sb.Append("<p></p>");
@@ -338,8 +337,8 @@ namespace WebMusic.Controllers
                         sb.Append("<div class='song-vertical-top'>");
                         sb.Append("<img src='." + liveset[count].LINK_IMG + "'>");
                         sb.Append("<div class='song-vertical-top-control'>");
-                        sb.Append("<button class='song-vertical-play' onclick='clickAllPlayMusic(" + liveset[count].ID + ",3,1)'><i class='fa fa-play'></i></button>");
-                        sb.Append("<button class='song-vertical-buy'>$" + liveset[count].COST + "</button>");
+                        sb.Append("<button class='song-vertical-play' onclick='SelectMusicAll(" + liveset[count].ID + ",3)'><i class='fa fa-play'></i></button>");
+                        sb.Append("<button class='song-vertical-buy' onclick='clickBuy_fun(" + liveset[count].ID + ",3)' >$" + liveset[count].COST + "</button>");
                         sb.Append("<button class='song-vertical-share'><i class='fa fa-facebook'></i>Share</button>");
                         sb.Append("</div>");
                         sb.Append("<p></p>");
@@ -414,8 +413,8 @@ namespace WebMusic.Controllers
                     sb.Append("<div class='song-vertical-top'>");
                     sb.Append("<img src='." + demo[count].LINK_IMG + "' alt=''>");
                     sb.Append("<div class='song-vertical-top-control'>");
-                    sb.Append("<button class='song-vertical-play' onclick='clickAllPlayMusic(" + demo[count].ID + ",4,1)'><i class='fa fa-play'></i></button>");
-                    sb.Append("<button class='song-vertical-buy'>$" + demo[count].COST.Value + "</button>");
+                    sb.Append("<button class='song-vertical-play' onclick='SelectMusicAll(" + demo[count].ID + ",4)'><i class='fa fa-play'></i></button>");
+                    sb.Append("<button class='song-vertical-buy' onclick='clickBuy_fun(" + demo[count].ID + ",4)' >$" + demo[count].COST.Value + "</button>");
                     sb.Append("<button class='song-vertical-share'><i class='fa fa-facebook'></i>Share</button>");
                     sb.Append("</div>");
                     sb.Append("<p></p>");
@@ -477,7 +476,7 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='song-horizontal'>");
                 sb.Append("<div class='song-horizontal-left'>");
                 sb.Append("<p>" + (i + 1) + "</p>");
-                sb.Append("<button style='outline:none;' onclick='clickAllPlayMusic(" + track[i].ID + ",1,1)'><i class='fa fa-play'></i></button>");
+                sb.Append("<button style='outline:none;' onclick='SelectMusicAll(" + track[i].ID + ",1)'><i class='fa fa-play'></i></button>");
                 sb.Append("<span class='song-horizontal-left-top'></span>");
                 sb.Append("<span class='song-horizontal-left-bottom'></span>");
                 sb.Append("<span class='song-horizontal-left-left'></span>");
@@ -486,7 +485,7 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='song-horizontal-right'>");
                 sb.Append("<p class='song-horizontal-name'><a href='#' onclick='ViewDetailTrackAll_fun(" + track[i].ID + "); return false;'>" + track[i].NAME + "</a></p>");
 
-                sb.Append("<p class='song-horizontal-label'>");
+                sb.Append("<p class='song-horizontal-artist'>");
                 var ss = track[i].ID;
                 var artist = db.TRACK_ARTIST.Where(p => p.ID_TRACK == ss).Select(p => p.NAME_ARTIST).ToList();
                 for (int j = artist.Count - 1; j >= 0; j--)
@@ -499,7 +498,7 @@ namespace WebMusic.Controllers
                 }
                 sb.Append("</p>");
 
-                sb.Append("<p class='song-horizontal-artist'>");
+                sb.Append("<p class='song-horizontal-label'>");
                 var label = db.TRACK_ARTIST.Where(p => p.ID_TRACK == ss).Select(p => p.NAME_LABEL).ToList();
                 for (int j = label.Count - 1; j >= 0; j--)
                 {
@@ -511,7 +510,7 @@ namespace WebMusic.Controllers
                 }
                 sb.Append("</p>");
 
-                sb.Append("<button>$" + track[i].COST + "</button>");
+                sb.Append("<button  onclick='clickBuy_fun(" + track[i].ID + ",2)' >$" + track[i].COST + "</button>");
                 sb.Append("</div>");
                 sb.Append("</div>");
                 sb.Append("</li>");
@@ -656,15 +655,9 @@ namespace WebMusic.Controllers
 
         public ActionResult Index()
         {
-            var ss = db.TRACK_ARTIST.ToList();
-            foreach (var item in ss)
-            {
-                var temp = db.TRACKs.Where(p => p.ID == item.ID_TRACK).FirstOrDefault();
-                item.LINK_IMG = temp.LINK_IMG;
-            }
-            db.SaveChanges();
-
-            Session["idRandom"] = 0;
+            Session["idRandom"] = 0;                    //id vừa phát
+            Session["typeRandom"] = 1;                  //type (thể loại nhạc vừa phát)      1: Track  2:Remix   3:Liveset      4:Demo
+            Session["typePlayMusic"] = 0;               //cách phát nhạc hiện tại( 0:Random ; 1: playlist )
             Session["typeSong"] = 1;
             Session["User"] = 0;
             return View();

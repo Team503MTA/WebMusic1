@@ -9,11 +9,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scale=no" />
-    <link href="~/Content/Bootstrap/css/bootstrap.css" rel="stylesheet" />
+    @*<link href="~/Content/Bootstrap/css/bootstrap.css" rel="stylesheet" />
     <link href="~/Content/Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/Bootstrap/css/bootstrap-theme.css" rel="stylesheet" />
-    <link href="~/Content/Css/main.css" rel="stylesheet" />
+    <link href="~/Content/Css/main.css" rel="stylesheet" />*@
     @*@Styles.Render("~/Content/css");*@
+    <link href="~/Content/bootstrap-3.3.6-dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-3.3.6-dist/css/bootstrap-theme.css" rel="stylesheet" />
+    <link href="~/Content/MainLayout_CSS/charts-detail.css" rel="stylesheet" />
+    <link href="~/Content/MainLayout_CSS/main.css" rel="stylesheet" />
     <title>@ViewBag.Title</title>
 </head>
 
@@ -24,8 +29,10 @@
     <!-- Menu  -->
     @RenderPage("~/Views/Shared/Menu.cshtml");
     <!-- end menu -->
-    <!-- Content -->
+<!-- Content -->
+    <div id="contentWrap">
     @RenderBody();
+    </div>
     <!-- end content -->
     <!-- Footer -->
     @RenderPage("~/Views/Shared/Footer.cshtml");
@@ -33,11 +40,15 @@
     <!-- Play music -->
     @RenderPage("~/Views/Shared/PlayMusic.cshtml");
     <!-- end play music -->
-
-    <script src="~/Content/Bootstrap/js/jquery-1.12.1.min.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/MainLayout_JS/main.js"></script>
+    <script src="~/Scripts/MainLayout_JS/chart.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @*<script src="~/Content/Bootstrap/js/jquery-1.12.1.min.js"></script>
     <script src="~/Content/Bootstrap/js/bootstrap.js"></script>
     <script src="~/Content/Bootstrap/js/bootstrap.min.js"></script>
-    <script src="~/Content/Javascript/main.js"></script>
+    <script src="~/Content/Javascript/main.js"></script>*@
     @*@Scripts.Render("~/content/js");*@
 </body>
 

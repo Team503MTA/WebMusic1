@@ -19,7 +19,5 @@ namespace WebMusic.Models
         public Nullable<int> CLICK_ALL { get; set; }
         public Nullable<int> BUY_MONTH { get; set; }
         public Nullable<int> BUY_ALL { get; set; }
-    
-        public virtual ARTIST ARTIST { get; set; }
     }
 }

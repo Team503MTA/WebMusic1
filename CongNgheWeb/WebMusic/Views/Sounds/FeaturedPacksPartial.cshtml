@@ -1,5 +1,5 @@
-﻿@using MusicWeb.Model
-@model List<SOUNDS>
+﻿@using WebMusic.Models
+@model List<SOUND>
 <div class="main-content-1">
     <h1>FEATURED PACKS</h1>
     @{
@@ -12,7 +12,7 @@
                     for (int j = i; j < i + 4; j++)
                     {
                         <div class="items packs-items">
-                            <a class="img-items" href="#"><img src="@Url.Content("~/Image/sounds/"+@Model[j].LINK_IMG)" alt=""></a>
+                            <a class="img-items" href="#"><img src="@Url.Content("~/IMG/sounds/"+@Model[j].LINK_IMG)" alt=""></a>
                             <div class="items-info packs-items-info">
                                 <a href="#" class="items-name">@Model[j].NAME</a>
                                 <a href="#" class="items-label">@ViewBag.lbl[j]</a>
@@ -24,7 +24,6 @@
                             </div>
                         </div>
                     }
-
                 }
             </div>
                         num++;

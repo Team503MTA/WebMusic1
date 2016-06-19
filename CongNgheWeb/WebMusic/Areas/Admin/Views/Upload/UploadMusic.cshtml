@@ -1,0 +1,21 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+@{
+    List<string> listAList = ViewBag.listArtist;
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UploadMusic</title>
+
+    <script src="~/Areas/Admin/Script/Libraly/jquery-2.2.3.js"></script>
+    <link href="~/Areas/Admin/Content/Style/style-upload.css" rel="stylesheet" />
+</head>
+<body>
+    @*@Html.DropDownList(p => p.NAME, );*@
+    @Html.DropDownList("", new SelectList(ViewBag.listArtist, Model))
+</body>
+</html>

@@ -1,4 +1,4 @@
-﻿@model List<MusicWeb.Model.CHART>
+﻿@model List<WebMusic.Models.CHART>
 
 @{
     var num = 0;
@@ -32,27 +32,27 @@
                                     ViewBag.img[j] = "blank-artist.png";
                                 }
                                 <li>
-                                    <a class="new-charts-detail-link" href="@Url.Action("Index", "ChartsDetail", new {@id = Model[j].ID})"><img src="@Url.Content("~/Image/tracks/" + ViewBag.img[j])" alt=""></a>
+                                    <a class="new-charts-detail-link" onclick="ChartDetail(@Model.ElementAt(j).ID)"><img src="@Url.Content(ViewBag.img[j])" alt=""></a>
 
                                     <a class="new-charts-name link-decorate" href="#">@Model[j].NAME</a>
-                                    <a class="new-charts-artist link-decorate" href="#">BEATPORT</a>
+                                    <a class="new-charts-artist link-decorate" href="#">@Model[j].ARTIST</a>
                                 </li>
                             }
 
                         }
                     </ul>
                 </div>
-                                num++;
-                                cl = "";
-                            }
+                num++;
+                cl = "";
+            }
         }
     </div>
     <div class="new-charts-slider">
         <ul>
             @{
                 cl = "new-charts-slider-li-active";
-                var w = 98 / (num);
-                var mr = 2 / (num);
+                var w = 98/(num);
+                var mr = 2/(num);
                 for (int i = 0; i < num; i++)
                 {
                     <li stt="@i" class="new-charts-slider-li @cl" style="width: @w%; margin-right: @mr%"></li>
@@ -68,3 +68,21 @@
         </ul>
     </div>
 </div>
+            
+<script type="text/javascript">
+    function ChartDetail(id) {
+        $.ajax({
+            url: '@Url.Action("Index", "ChartsDetail")',
+            dataType: 'json',
+            type: 'POST',
+            data: JSON.stringify({
+                id: id
+            }),
+            contentType: 'application/json; charset=utf-8',
+            success: function(data) {
+                document.getElementById("contentWrap").innerHTML = "";
+                document.getElementById("contentWrap").innerHTML = data;
+            }
+        });
+    }
+</script>

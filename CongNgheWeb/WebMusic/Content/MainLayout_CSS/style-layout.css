@@ -268,11 +268,18 @@ header {
 
 #logoCartMenu {
     border: none;
-    -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    padding: 0;
+    padding: 0 3px;
+    height: 25px;
 }
+
+.element_inline-block {
+    display: inline-block;
+}
+
+
 
 #menu .pull-right {
     margin-top: 10px;
@@ -333,7 +340,30 @@ header {
 #saleUser_Menu {
     background: #5c5;
     color: #eee;
-    display: inline-block;
+    vertical-align: top;
+    height: 25px;
+    margin-top: 0;
+    padding: 0 3px;
+    line-height: 25px;
+}
+
+#select-type-play {
+    height: 25px;
+    border: none;
+    color: #eee !important;
+    outline: none;
+}
+
+.hide-element {
+    display: none !important;
+}
+
+.red-button {
+    background: red;
+}
+
+.green-button {
+    background: green;
 }
 
 /*#endregion */
@@ -732,17 +762,6 @@ header {
 /*#endregion */
 
 /*#region REGISTER FORM */
-
-.short-text-content-less {
-    display: none;
-    color: #0af;
-    cursor: pointer;
-}
-
-.short-text-content-more {
-    color: #0af;
-    cursor: pointer;
-}
 
 .register-form {
     color: #eee;
@@ -1287,13 +1306,13 @@ header {
     width: 6px;
     height: 6px;
 }
- 
+
 /* Track */
 #show-search::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 1px rgba(0,0,255,0.5);
     -ms-border-radius: 10px;
-    border-radius: 10px; 
-  background: rgba(30,30,30,1);
+    border-radius: 10px;
+    background: rgba(30,30,30,1);
 }
 
 /* Handle */
@@ -1301,15 +1320,13 @@ header {
     -webkit-border-radius: 10px;
     -ms-border-radius: 10px;
     border-radius: 10px;
-    
-  background: repeating-linear-gradient(-45deg,#000,#000 10px,#f00 10px,#f00 20px);
-  
+    background: repeating-linear-gradient(-45deg,#000,#000 10px,#f00 10px,#f00 20px);
     -webkit-box-shadow: inset 0 0 4px rgba(0,255,255,1);
 }
 
-#show-search::-webkit-scrollbar-thumb:window-inactive {
-	background: rgba(255,0,0,0.4); 
-}
+    #show-search::-webkit-scrollbar-thumb:window-inactive {
+        background: rgba(255,0,0,0.4);
+    }
 
 /* end right */
 
@@ -1334,8 +1351,13 @@ header {
 /*#region Style Visualize Music */
 
 @keyframes animatedBackground {
-	from { background-position: 0 0; }
-	to { background-position: 100% 0; }
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 100% 0;
+    }
 }
 
 #visualizeMusic {
@@ -1346,7 +1368,7 @@ header {
     border-bottom: 5px solid #404;
     background-image: url('../../IMG/2.jpg');
     background-repeat: repeat-x;
-	animation: animatedBackground 70s linear infinite;
+    animation: animatedBackground 70s linear infinite;
     background-position: 50px 0px;
 }
 
@@ -1399,18 +1421,18 @@ header {
         text-shadow: 0 0 15px #f00;
     }
 
-    .ft {
-        color: #555;
-        font-size: 70%;
-    }
+.ft {
+    color: #555;
+    font-size: 70%;
+}
 
-    .no-click:hover {
-        cursor: default !important;
-    }
+.no-click:hover {
+    cursor: default !important;
+}
 
-    .col-table-text {
-        font-size: 85%;
-    }
+.col-table-text {
+    font-size: 85%;
+}
 
 /*#endregion */
 

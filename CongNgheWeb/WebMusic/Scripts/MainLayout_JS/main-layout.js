@@ -1,4 +1,64 @@
 ﻿
+
+
+//check input
+
+        function checkFirstname(s) {
+            var patt = /([A-Z])(\w+)*/;
+            var p = document.getElementById(s).value;
+            if (!patt.test(p)) {
+                document.getElementById('register_firstname_noti').style.display = 'inline-block';
+            } else {
+                document.getElementById('register_firstname_noti').style.display = 'none';
+            }
+        }
+
+        function checkLastname(s) {
+            var patt = /([A-Z])(\w+)*/;
+            var p = document.getElementById(s).value;
+            if (!patt.test(p)) {
+                document.getElementById('register_lastname_noti').style.display = 'inline-block';
+            } else {
+                document.getElementById('register_lastname_noti').style.display = 'none';
+            }
+        }
+
+        function focusoutInputRegister(s) {
+            document.getElementById(s).style.display = 'none';
+        }
+
+        function checkEmail(s) {
+            var patt = /(\_*)[\_a-zA-Z0-9]+@+([a-zA-Z0-9]+\.)+([a-zA-Z]{2,})(\.[a-zA-Z]{2,})*/;
+            var p = document.getElementById(s).value;
+            if (!patt.test(p)) {
+                document.getElementById('register_email_noti').style.display = 'inline-block';
+            } else {
+                document.getElementById('register_email_noti').style.display = 'none';
+            }
+        }
+
+        function checkPassword(s) {
+            var patt = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[^^<>!()[\]\\.,;:\s@\"]{8,}/;
+            var p = document.getElementById(s).value;
+            if (!patt.test(p)) {
+                document.getElementById('register_password_noti').style.display = 'inline-block';
+            } else {
+                document.getElementById('register_password_noti').style.display = 'none';
+            }
+        }
+
+        function checkRePassword(s) {
+            var p = document.getElementById(s).value;
+            var r = document.getElementById('register_password').value;
+            if (p !== r) {
+                document.getElementById('register_rePassword_noti').style.display = 'inline-block';
+            } else {
+                document.getElementById('register_rePassword_noti').style.display = 'none';
+            }
+
+        }
+
+
 // #region No Click
 
 function no_click(e) {
@@ -151,7 +211,7 @@ function audioLoad() {
     //event end audio
     audio.onended = function endedAudio() {
         if (audio.loop === false) {
-            clickAllPlayMusic(1, 1, 2);
+            RandomMusic();
         }
     };
 
