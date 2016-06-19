@@ -24,7 +24,5 @@ namespace WebMusic.Models
         public Nullable<int> POINT_MONTH { get; set; }
         public Nullable<int> POINT_ALL { get; set; }
         public string LINK_IMG { get; set; }
-    
-        public virtual LABEL LABEL { get; set; }
     }
 }

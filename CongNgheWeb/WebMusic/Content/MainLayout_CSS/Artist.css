@@ -12,7 +12,7 @@
 
 .detail-artist-wrap {
     padding: 0;
-    font-size: 95%;
+    font-size: 80%;
 }
 
 .detail-artist {
@@ -76,39 +76,38 @@ a.detail-artist-label {
     color: #eee;
 }
 
-#short-text-content-artist-more {
+.short-text-content-artist-more {
     color: #55e;
     cursor: pointer;
 }
 
-#short-text-content-artist-less {
+.short-text-content-artist-less {
     color: #55e;
     display: none;
     cursor: pointer;
 }
 
-.detail-artist-follow{
+.detail-artist-follow {
     background: transparent;
     margin-top: 20px;
 }
 
-.detail-artist-follow p{
-    display: inline-block;
-    height: 30px;
-    vertical-align: top;
-    line-height: 30px;
-    padding-bottom: 6px;
-    width: 80px;
-    text-align: center;
-    border: 2px solid #22dd22;
-    color: #22dd22;
-}
+    .detail-artist-follow p {
+        display: inline-block;
+        height: 30px;
+        vertical-align: top;
+        line-height: 30px;
+        padding-bottom: 6px;
+        width: 80px;
+        text-align: center;
+        border: 2px solid #22dd22;
+        color: #22dd22;
+    }
 
-.detail-artist-fb , .detail-artist-tw{
+.detail-artist-fb, .detail-artist-tw {
     border: 0;
     padding: 0;
     margin: 0;
-    background: #333;
     color: #fff;
     width: 30px;
     height: 30px;
@@ -117,14 +116,22 @@ a.detail-artist-label {
     line-height: 30px;
 }
 
-.detail-artist-fb:hover , .detail-artist-tw:hover {
-    cursor: pointer;
-    color: #fff;
+.detail-artist-fb {
+    background: #02f;
 }
 
-.detail-artist-fb:focus , .detail-artist-tw:focus {
-    color: #fff;
+.detail-artist-tw {
+    background: #3af;
 }
+
+    .detail-artist-fb:hover, .detail-artist-tw:hover {
+        cursor: pointer;
+        color: #fff;
+    }
+
+    .detail-artist-fb:focus, .detail-artist-tw:focus {
+        color: #fff;
+    }
 
 
 /* end content detail */
@@ -133,11 +140,11 @@ a.detail-artist-label {
 
 /* All track total */
 
-.track-total{
+.track-total {
     width: 100%;
 }
 
-.detail-artist-total-track{
+.detail-artist-total-track {
     display: inline-block;
     width: 100%;
     font-family: cursive;
@@ -145,7 +152,7 @@ a.detail-artist-label {
     padding: 0 15px;
 }
 
-.detail-artist-total-track-title{
+.detail-artist-total-track-title {
     display: inline-block;
     width: 100%;
     text-align: left;
@@ -154,69 +161,76 @@ a.detail-artist-label {
     font-size: 150%;
 }
 
-.detail-artist-total-track-content{
+.detail-artist-total-track-content {
     padding-top: 15px;
     display: inline-block;
     width: 100%;
     border-top: 1px solid #888;
 }
 
-.detail-artist-total-track-content ul{
-    padding: 0;
-    margin: 0;
-    display: inline-block;
-    width: 100%;
-}
+    .detail-artist-total-track-content ul {
+        padding: 0;
+        margin: 0;
+        display: inline-block;
+        width: 100%;
+    }
 
-.detail-artist-total-track-content li{
-    padding: 0;
-    margin: 0;
-    display: inline-block;
-    width: 100%;
-    height: 40px;
-    line-height: 40px;
-    background:#333;
-    border:none;
-}
+    .detail-artist-total-track-content li {
+        padding: 0;
+        margin: 0;
+        display: inline-block;
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        background: #333;
+        border: none;
+    }
 
-.detail-artist-total-track-content li:first-child{
-    color: #eee;
-    background: transparent;
-}
+        .detail-artist-total-track-content li:first-child {
+            color: #eee;
+            background: transparent;
+        }
 
-.detail-artist-total-track-play, .detail-artist-total-track-genre, .detail-artist-total-track-bpm, .detail-artist-total-track-key, .detail-artist-total-track-length, .detail-artist-total-track-buy{
+.detail-artist-total-track-play, .detail-artist-total-track-genre, .detail-artist-total-track-bpm, .detail-artist-total-track-key, .detail-artist-total-track-length, .detail-artist-total-track-buy {
     display: inline-block;
     float: left;
     width: 8.3333%;
     padding-left: 5px;
     padding-right: 5px;
     height: 100%;
-    box-sizing : border-box;
+    box-sizing: border-box;
     overflow: hidden;
     white-space: nowrap;
 }
 
-.detail-artist-total-track-buy{
+.detail-artist-total-track-buy {
     padding-right: 0;
 }
 
-.detail-artist-total-track-name, .detail-artist-total-track-artist, .detail-artist-total-track-remixer{
+.detail-artist-total-track-name, .detail-artist-total-track-artist, .detail-artist-total-track-remixer {
     display: inline-block;
     float: left;
     width: 16.6666%;
     padding-left: 5px;
     padding-right: 5px;
     height: 100%;
-    box-sizing : border-box;
+    box-sizing: border-box;
     overflow: hidden;
     white-space: nowrap;
 }
 
-.detail-artist-total-track-content a{
+.detail-artist-total-track-content a {
     text-decoration: none;
 }
 
-.detail-artist-total-track-buy button{
+.detail-artist-hot-remix-top button {
+    padding: 0;
+    border: 0;
+    height: 30px;
+    cursor: pointer;
+}
+
+.detail-artist-total-track-buy button {
     display: inline-block;
     margin: 0;
     padding: 0;
@@ -230,8 +244,8 @@ a.detail-artist-label {
     cursor: pointer;
 }
 
-.detail-artist-total-track-play span{
-    padding:0;
+.detail-artist-total-track-play span {
+    padding: 0;
     margin: 0;
     color: #eee;
     font-size: 150%;
@@ -241,91 +255,89 @@ a.detail-artist-label {
     height: 100%;
 }
 
-.detail-artist-total-track-play button{
+.detail-artist-total-track-play button {
     margin: 0;
     padding: 0;
     height: 30px;
     width: 30px;
-    border:0;
+    border: 0;
     background: transparent;
     cursor: pointer;
 }
 
-.detail-artist-total-track-play i{
+.detail-artist-total-track-play i {
     color: #888;
     font-size: 130%;
 }
 
-.detail-artist-total-track-name a{
+.detail-artist-total-track-name a {
     color: #eee;
 }
 
-.detail-artist-total-track-name a:hover{
-    color: #eee;
-    text-shadow:0 0 15px #f00;
-}
+    .detail-artist-total-track-name a:hover {
+        color: #eee;
+        text-shadow: 0 0 15px #f00;
+    }
 
-.detail-artist-total-track-artist a{
+.detail-artist-total-track-artist a {
     color: #22aadd;
 }
 
-.detail-artist-total-track-artist a:hover{
-    color: #22aadd;
-    text-shadow:0 0 15px #f00;
-}
+    .detail-artist-total-track-artist a:hover {
+        color: #22aadd;
+        text-shadow: 0 0 15px #f00;
+    }
 
-.detail-artist-total-track-remixer a{
+.detail-artist-total-track-remixer a {
     color: #22bb88;
 }
 
-.detail-artist-total-track-remixer a:hover{
-    color: #22bb88;
-    text-shadow:0 0 15px #f00;
-}
+    .detail-artist-total-track-remixer a:hover {
+        color: #22bb88;
+        text-shadow: 0 0 15px #f00;
+    }
 
-.detail-artist-total-track-genre a{
+.detail-artist-total-track-genre a {
     color: #bbb;
 }
 
-.detail-artist-total-track-genre a:hover{
-    color: #bbb;
-    text-shadow:0 0 15px #f00;
-}
+    .detail-artist-total-track-genre a:hover {
+        color: #bbb;
+        text-shadow: 0 0 15px #f00;
+    }
 
-.detail-artist-total-track-bpm span{
+.detail-artist-total-track-bpm span {
     color: #666;
 }
 
-.detail-artist-total-track-key span{
+.detail-artist-total-track-key span {
     color: #666;
 }
 
-.detail-artist-total-track-length span{
+.detail-artist-total-track-length span {
     color: #666;
 }
 
-.detail-artist-total-track-content li:hover .detail-artist-total-track-play i{
+.detail-artist-total-track-content li:hover .detail-artist-total-track-play i {
     color: #eee;
-    text-shadow:0 0 15px #f00;
+    text-shadow: 0 0 15px #f00;
 }
 
-.detail-artist-total-track-content li:hover .detail-artist-total-track-buy button{
+.detail-artist-total-track-content li:hover .detail-artist-total-track-buy button {
     background: rgba(240, 70, 110, 1);
 }
 /*END all track total*/
 
 
-
-
 /* Artist remix */
-.detail-artist-remix{
+.detail-artist-trackLabel {
     display: inline-block;
     width: 100%;
     padding: 0 30px;
     margin-top: 100px;
 }
 
-.detail-artist-remix-title{
+.detail-artist-trackLabel-title {
     display: inline-block;
     width: 100%;
     color: #22cc55;
@@ -333,278 +345,38 @@ a.detail-artist-label {
     margin-bottom: 30px;
 }
 
-.detail-artist-remix-content{
+.detail-artist-trackLabel-content {
     display: inline-block;
     width: 100%;
 }
 
-.detail-artist-remix-slide{
+.detail-artist-trackLabel-slide {
     display: none;
     width: 100%;
 }
 
-.detail-artist-remix-slide:first-child{
-    display: inline-block;
-}
+    .detail-artist-trackLabel-slide:first-child {
+        display: inline-block;
+    }
 
-.detail-artist-remix-slide ul{
-    padding: 0;
-    list-style-type: none;
-    display: inline-block;
-    width: 100%;
-}
+    .detail-artist-trackLabel-slide ul {
+        padding: 0;
+        list-style-type: none;
+        display: inline-block;
+        width: 100%;
+    }
 
-.detail-artist-remix-slide li{
-    padding: 0;
-    display: inline-block;
-    width: 19.6%;
-    float: left;
-    margin-right: 0.5%;
-}
+    .detail-artist-trackLabel-slide li {
+        padding: 0;
+        display: inline-block;
+        width: 19.6%;
+        float: left;
+        margin-right: 0.5%;
+    }
 
-.detail-artist-remix-slide li:last-child{
-    margin-right: 0;
-}
-
-/* END Artist remix */
-
-
-/* Detail-artist-remix-child */
-
-.detail-artist-remix-child {
-    display: inline-block;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    background: #333;
-}
-
-.detail-artist-remix-child-top{
-    width: 100%;
-    display: inline-block;
-    position: relative;
-    padding: 0;
-    margin: 0;
-}
-
-.detail-artist-remix-child-top img{
-    display: inline-block;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
-
-.detail-artist-remix-child-control{
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    display: inline-block;
-    width: 0%;
-    padding: 0;
-    z-index: 2;
-    overflow: hidden;
-    transition: 0.5s all;
-}
-
-.detail-artist-remix-child-control button{
-    padding: 0;
-    border: 0;
-    height: 30px;
-    cursor: pointer;
-}
-
-.detail-artist-remix-child-play{
-    width: 30px;
-    display: inline-block;
-    vertical-align: top;
-    background: #555;
-    color: #eee;
-    float: left;
-}
-
-.detail-artist-remix-child-buy{
-    width: 70px;
-    font-family: cursive;
-    display: inline-block;
-    vertical-align: top;
-    background: #ee2577;
-    font-family: cursive;
-    border: 0;
-    float: left;
-    color: #eee;
-    font-weight: bold;
-}
-
-.detail-artist-remix-child-share{
-    width: 70px;
-    display: inline-block;
-    vertical-align: top;
-    font-family: cursive;
-    background: #2222ee;
-    color: #eee;
-    border: 0;
-    float: left;
-}
-
-.detail-artist-remix-child-share i{
-    margin-right: 5px;
-    font-size: 130%;
-}
-
-.detail-artist-remix-child-top p{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: 1;
-    margin: 0;
-    width: 0;
-    height: 0%;
-    background: #000;
-    opacity: 0.3;
-    transition: 0.5s all;
-}
-
-.detail-artist-remix-child:hover .detail-artist-remix-child-control{
-    width: 100%;
-}
-
-.detail-artist-remix-child:hover .detail-artist-remix-child-top p{
-    width: 100%;
-    height: 100%;
-}
-
-.detail-artist-remix-child-bottom{
-    margin: 0;
-    padding: 0;
-}
-
-.detail-artist-remix-child-bottom a{
-    text-decoration: none;
-}
-/* END Detail-artist-remix-child */
-
-
-
-/* Detail-Artist-remix-child name,artist,label */
-
-.detail-artist-remix-child-bottom{
-    display: inline-block;
-    width: 100%;
-    margin: 0;
-    padding: 2px 3px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-
-.detail-artist-remix-child-name a{
-    color: #eee;
-    font-size: 105%;
-}
-.detail-artist-remix-child-name a:hover{
-    color: #eee;
-    text-shadow: 0 0 15px #f00;
-}
-.detail-artist-remix-child-artist a{
-    color: #22bbcc;
-    font-size: 100%;
-}
-.detail-artist-remix-child-artist a:hover{
-    color: #22bbcc;
-    text-shadow: 0 0 15px #f00;
-}
-.detail-artist-remix-child-label a{
-    color: #777;
-    font-size: 95%;
-}
-.detail-artist-remix-child-label a:hover{
-    color: #777;
-    text-shadow: 0 0 15px #f00;
-}
-/* END detail-artist-remix-child name, artist, label */
-
-
-/* Detail-artist-remix-slider */
-
-.detail-artist-remix-slider-control {
-    display: inline-block;
-    width: 100%;
-}
-
-.detail-artist-remix-slider-button {
-    height: 5px;
-    display: inline-block;
-    float: left;
-    background: #aaa;
-    margin-right: 0.5%;
-    cursor: pointer;
-    width: 49.75%;
-}
-
-.detail-artist-remix-slider-button:last-child {
-    margin-right: 0;
-}
-
-.detail-artist-remix-slider-button-active {
-    background: #151;
-}
-/* END Detail-artist-remix-slider */
-
-
-
-
-
-
-
-
-/* Artist remix */
-.detail-artist-trackLabel{
-    display: inline-block;
-    width: 100%;
-    padding: 0 30px;
-    margin-top: 100px;
-}
-
-.detail-artist-trackLabel-title{
-    display: inline-block;
-    width: 100%;
-    color: #22cc55;
-    font-size: 150%;
-    margin-bottom: 30px;
-}
-
-.detail-artist-trackLabel-content{
-    display: inline-block;
-    width: 100%;
-}
-
-.detail-artist-trackLabel-slide{
-    display: none;
-    width: 100%;
-}
-
-.detail-artist-trackLabel-slide:first-child{
-    display: inline-block;
-}
-
-.detail-artist-trackLabel-slide ul{
-    padding: 0;
-    list-style-type: none;
-    display: inline-block;
-    width: 100%;
-}
-
-.detail-artist-trackLabel-slide li{
-    padding: 0;
-    display: inline-block;
-    width: 19.6%;
-    float: left;
-    margin-right: 0.5%;
-}
-
-.detail-artist-trackLabel-slide li:last-child{
-    margin-right: 0;
-}
+        .detail-artist-trackLabel-slide li:last-child {
+            margin-right: 0;
+        }
 
 /* END Artist remix */
 
@@ -625,7 +397,7 @@ body {
     background: #333;
 }
 
-.detail-artist-trackLabel-child-top{
+.detail-artist-trackLabel-child-top {
     width: 100%;
     display: inline-block;
     position: relative;
@@ -633,14 +405,14 @@ body {
     margin: 0;
 }
 
-.detail-artist-trackLabel-child-top img{
-    display: inline-block;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
+    .detail-artist-trackLabel-child-top img {
+        display: inline-block;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
 
-.detail-artist-trackLabel-child-control{
+.detail-artist-trackLabel-child-control {
     position: absolute;
     top: 0%;
     left: 0%;
@@ -652,14 +424,14 @@ body {
     transition: 0.5s all;
 }
 
-.detail-artist-trackLabel-child-control button{
-    padding: 0;
-    border: 0;
-    height: 30px;
-    cursor: pointer;
-}
+    .detail-artist-trackLabel-child-control button {
+        padding: 0;
+        border: 0;
+        height: 30px;
+        cursor: pointer;
+    }
 
-.detail-artist-trackLabel-child-play{
+.detail-artist-trackLabel-child-play {
     width: 30px;
     display: inline-block;
     vertical-align: top;
@@ -668,7 +440,7 @@ body {
     float: left;
 }
 
-.detail-artist-trackLabel-child-buy{
+.detail-artist-trackLabel-child-buy {
     width: 70px;
     font-family: cursive;
     display: inline-block;
@@ -681,7 +453,7 @@ body {
     font-weight: bold;
 }
 
-.detail-artist-trackLabel-child-share{
+.detail-artist-trackLabel-child-share {
     width: 70px;
     display: inline-block;
     vertical-align: top;
@@ -692,12 +464,12 @@ body {
     float: left;
 }
 
-.detail-artist-trackLabel-child-share i{
-    margin-right: 5px;
-    font-size: 130%;
-}
+    .detail-artist-trackLabel-child-share i {
+        margin-right: 5px;
+        font-size: 130%;
+    }
 
-.detail-artist-trackLabel-child-top p{
+.detail-artist-trackLabel-child-top p {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -710,30 +482,30 @@ body {
     transition: 0.5s all;
 }
 
-.detail-artist-trackLabel-child:hover .detail-artist-trackLabel-child-control{
+.detail-artist-trackLabel-child:hover .detail-artist-trackLabel-child-control {
     width: 100%;
 }
 
-.detail-artist-trackLabel-child:hover .detail-artist-trackLabel-child-top p{
+.detail-artist-trackLabel-child:hover .detail-artist-trackLabel-child-top p {
     width: 100%;
     height: 100%;
 }
 
-.detail-artist-trackLabel-child-bottom{
+.detail-artist-trackLabel-child-bottom {
     margin: 0;
     padding: 0;
 }
 
-.detail-artist-trackLabel-child-bottom a{
-    text-decoration: none;
-}
+    .detail-artist-trackLabel-child-bottom a {
+        text-decoration: none;
+    }
 /* END detail-artist-trackLabel-child */
 
 
 
 /* detail-artist-trackLabel-child name,artist,label */
 
-.detail-artist-trackLabel-child-bottom{
+.detail-artist-trackLabel-child-bottom {
     display: inline-block;
     width: 100%;
     margin: 0;
@@ -743,30 +515,35 @@ body {
     box-sizing: border-box;
 }
 
-.detail-artist-trackLabel-child-name a{
+.detail-artist-trackLabel-child-name a {
     color: #eee;
     font-size: 105%;
 }
-.detail-artist-trackLabel-child-name a:hover{
-    color: #eee;
-    text-shadow: 0 0 15px #f00;
-}
-.detail-artist-trackLabel-child-artist a{
+
+    .detail-artist-trackLabel-child-name a:hover {
+        color: #eee;
+        text-shadow: 0 0 15px #f00;
+    }
+
+.detail-artist-trackLabel-child-artist a {
     color: #22bbcc;
     font-size: 100%;
 }
-.detail-artist-trackLabel-child-artist a:hover{
-    color: #22bbcc;
-    text-shadow: 0 0 15px #f00;
-}
-.detail-artist-trackLabel-child-label a{
+
+    .detail-artist-trackLabel-child-artist a:hover {
+        color: #22bbcc;
+        text-shadow: 0 0 15px #f00;
+    }
+
+.detail-artist-trackLabel-child-label a {
     color: #777;
     font-size: 95%;
 }
-.detail-artist-trackLabel-child-label a:hover{
-    color: #777;
-    text-shadow: 0 0 15px #f00;
-}
+
+    .detail-artist-trackLabel-child-label a:hover {
+        color: #777;
+        text-shadow: 0 0 15px #f00;
+    }
 /* END detail-artist-trackLabel-child name, artist, label */
 
 
@@ -787,11 +564,440 @@ body {
     cursor: pointer;
 }
 
-.detail-artist-trackLabel-slider-button:last-child {
-    margin-right: 0;
-}
+    .detail-artist-trackLabel-slider-button:last-child {
+        margin-right: 0;
+    }
 
 .detail-artist-trackLabel-slider-button-active {
     background: #151;
 }
 /* END detail-artist-trackLabel-slider */
+
+/*#region Hot Remix */
+
+#detail-artist-hot-remix-viewall {
+    position: absolute;
+    top: 40px;
+    right: 35px;
+    color: #ddd;
+    background: #555;
+    padding: 3px 5px;
+    border: 1px solid #aaa;
+    cursor: pointer;
+}
+
+.detail-artist-hot-remix-title {
+    display: inline-block;
+    width: 100%;
+    color: #eee;
+    font-family: cursive;
+    margin: 30px 0 20px 0;
+    font-size: 150%;
+}
+
+.detail-artist-hot-remix-title span {
+    color: #22cc55;
+}
+
+.slider-detail-artist-hot-remix {
+    display: inline-block;
+    width: 100%;
+    max-height: 646px;
+    border-bottom: 1px solid #080;
+}
+
+.detail-artist-hot-remix {
+    display: inline-block;
+    width: 19.5%;
+    padding: 0;
+    margin: 0;
+    background: #333;
+    overflow: hidden;
+    margin-right: 0.5%;
+    float: left;
+    height: 320px;
+    margin-bottom: 5px;
+}
+
+    .detail-artist-hot-remix:hover .detail-artist-hot-remix-top-control {
+        width: 100%;
+    }
+
+    .detail-artist-hot-remix:hover .detail-artist-hot-remix-top p {
+        width: 100%;
+        height: 100%;
+    }
+
+.detail-artist-hot-remix-top {
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+    .detail-artist-hot-remix-top img {
+        display: inline-block;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+.detail-artist-hot-remix-top-control {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    width: 0;
+    padding: 0;
+    z-index: 2;
+    overflow: hidden;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    transition: 0.5s all;
+}
+
+.detail-artist-hot-remix-play {
+    width: 30px;
+    display: inline-block;
+    vertical-align: top;
+    background: #555;
+    color: #eee;
+    float: left;
+}
+
+.detail-artist-hot-remix-buy {
+    width: 70px;
+    font-family: cursive;
+    display: inline-block;
+    vertical-align: top;
+    background: #ee2577;
+    font-family: cursive;
+    border: 0;
+    float: left;
+    color: #eee;
+    font-weight: bold;
+}
+
+.detail-artist-hot-remix-share {
+    width: 70px;
+    display: inline-block;
+    vertical-align: top;
+    font-family: cursive;
+    background: #2222ee;
+    color: #eee;
+    border: 0;
+    float: left;
+}
+
+    .detail-artist-hot-remix-share i {
+        margin-right: 5px;
+        font-size: 130%;
+    }
+
+.detail-artist-hot-remix-bottom {
+    margin: 0;
+    padding: 0;
+}
+
+    .detail-artist-hot-remix-bottom a {
+        text-decoration: none;
+    }
+
+.detail-artist-hot-remix-name, .detail-artist-hot-remix-artist, .detail-artist-hot-remix-label {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding: 2px 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+    .detail-artist-hot-remix-name a {
+        color: #eee;
+        font-size: 85%;
+    }
+
+        .detail-artist-hot-remix-name a:hover {
+            color: #eee;
+            text-shadow: 0 0 15px #f00;
+        }
+
+    .detail-artist-hot-remix-artist a {
+        color: #22bbcc;
+        font-size: 80%;
+    }
+
+        .detail-artist-hot-remix-artist a:hover {
+            color: #22bbcc;
+            text-shadow: 0 0 15px #f00;
+        }
+
+    .detail-artist-hot-remix-label a {
+        color: #777;
+        font-size: 80%;
+    }
+
+        .detail-artist-hot-remix-label a:hover {
+            color: #777;
+            text-shadow: 0 0 15px #f00;
+        }
+
+/*#endregion */
+
+
+
+/*#region Hot Track */
+
+#detail-artist-hot-track-viewall {
+    position: absolute;
+    top: 40px;
+    right: 35px;
+    color: #ddd;
+    background: #555;
+    padding: 3px 5px;
+    border: 1px solid #aaa;
+    cursor: pointer;
+}
+
+#id_detail-artist-hot-remix {
+    padding: 0 30px;
+}
+
+#id_detail-artist-hot-track {
+    padding: 0 30px;
+}
+
+.detail-artist-hot-track-title {
+    display: inline-block;
+    width: 100%;
+    color: #eee;
+    font-family: cursive;
+    margin: 30px 0 20px 0;
+    font-size: 150%;
+}
+
+.detail-artist-hot-track-title span {
+    color: #22cc55;
+}
+
+.slider-detail-artist-hot-track {
+    display: inline-block;
+    width: 100%;
+    max-height: 646px;
+    border-bottom: 1px solid #080;
+}
+
+.detail-artist-hot-track {
+    display: inline-block;
+    width: 19.5%;
+    padding: 0;
+    margin: 0;
+    background: #333;
+    overflow: hidden;
+    margin-right: 0.5%;
+    float: left;
+    height: 320px;
+    margin-bottom: 5px;
+}
+
+    .detail-artist-hot-track:hover .detail-artist-hot-track-top-control {
+        width: 100%;
+    }
+
+    .detail-artist-hot-track:hover .detail-artist-hot-track-top p {
+        width: 100%;
+        height: 100%;
+    }
+
+.detail-artist-hot-track-top {
+    width: 100%;
+    display: inline-block;
+    position: relative;
+    padding: 0;
+    margin: 0;
+}
+
+    .detail-artist-hot-track-top img {
+        display: inline-block;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+.detail-artist-hot-track-top-control {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    width: 0;
+    padding: 0;
+    z-index: 2;
+    overflow: hidden;
+    -webkit-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    transition: 0.5s all;
+}
+
+.detail-artist-hot-track-play {
+    width: 30px;
+    display: inline-block;
+    vertical-align: top;
+    background: #555;
+    color: #eee;
+    float: left;
+}
+
+.detail-artist-hot-track-buy {
+    width: 70px;
+    font-family: cursive;
+    display: inline-block;
+    vertical-align: top;
+    background: #ee2577;
+    font-family: cursive;
+    border: 0;
+    float: left;
+    color: #eee;
+    font-weight: bold;
+}
+
+.detail-artist-hot-track-share {
+    width: 70px;
+    display: inline-block;
+    vertical-align: top;
+    font-family: cursive;
+    background: #2222ee;
+    color: #eee;
+    border: 0;
+    float: left;
+}
+
+    .detail-artist-hot-track-share i {
+        margin-right: 5px;
+        font-size: 130%;
+    }
+
+.detail-artist-hot-track-bottom {
+    margin: 0;
+    padding: 0;
+}
+
+    .detail-artist-hot-track-bottom a {
+        text-decoration: none;
+    }
+
+.detail-artist-hot-track-name, .detail-artist-hot-track-artist, .detail-artist-hot-track-label {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding: 2px 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+    .detail-artist-hot-track-name a {
+        color: #eee;
+        font-size: 85%;
+    }
+
+        .detail-artist-hot-track-name a:hover {
+            color: #eee;
+            text-shadow: 0 0 15px #f00;
+        }
+
+    .detail-artist-hot-track-artist a {
+        color: #22bbcc;
+        font-size: 80%;
+    }
+
+        .detail-artist-hot-track-artist a:hover {
+            color: #22bbcc;
+            text-shadow: 0 0 15px #f00;
+        }
+
+    .detail-artist-hot-track-label a {
+        color: #777;
+        font-size: 80%;
+    }
+
+        .detail-artist-hot-track-label a:hover {
+            color: #777;
+            text-shadow: 0 0 15px #f00;
+        }
+
+.detail-artist-hot-track-top button {
+    padding: 0;
+    border: 0;
+    height: 30px;
+    cursor: pointer;
+}
+
+/*#endregion */
+
+#detail-artist-remix-id::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+/* Track */
+#detail-artist-remix-id::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 1px rgba(0,0,255,0.5);
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(30,30,30,1);
+}
+
+/* Handle */
+#detail-artist-remix-id::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+    background: repeating-linear-gradient(30deg,#304,#304 15px,#0cc 15px,#0cc 30px);
+    -webkit-box-shadow: inset 0 0 1px rgba(0,200,200,1);
+}
+
+    #detail-artist-remix-id::-webkit-scrollbar-thumb:window-inactive {
+        background: rgba(255,0,0,0.4);
+    }
+
+
+
+
+
+#slider-detail-artist-track-id::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+/* Track */
+#slider-detail-artist-track-id::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 1px rgba(0,0,255,0.5);
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(30,30,30,1);
+}
+
+/* Handle */
+#slider-detail-artist-track-id::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    -ms-border-radius: 10px;
+    border-radius: 10px;
+    background: repeating-linear-gradient(30deg,#304,#304 15px,#0cc 15px,#0cc 30px);
+    -webkit-box-shadow: inset 0 0 1px rgba(0,200,200,1);
+}
+
+    #slider-detail-artist-track-id::-webkit-scrollbar-thumb:window-inactive {
+        background: rgba(255,0,0,0.4);
+    }

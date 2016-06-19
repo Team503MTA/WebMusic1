@@ -39,7 +39,7 @@ namespace WebMusic.Controllers
                 sb.Append("<a href='#'>" + listGenre[i] + "</a>");
                 if (i != 0)
                 {
-                    sb.Append("<span> ft </span>");
+                    sb.Append("<span style='color:#aaa; font-size:75%;' > ft </span>");
                 }
             }
             sb.Append("</div><br>");
@@ -206,7 +206,7 @@ namespace WebMusic.Controllers
                         sb.Append("<a href='#'>" + info[k].NAME_ARTIST + "</a>");
                         if (k != 0)
                         {
-                            sb.Append("<span> ft </span>");
+                            sb.Append("<span style='color:#555;'> ft </span>");
                         }
                     }
                     sb.Append("</p>");
@@ -216,7 +216,7 @@ namespace WebMusic.Controllers
                         sb.Append("<a href='#'>" + info[k].NAME_LABEL + "</a>");
                         if (k != 0)
                         {
-                            sb.Append("<span> ft </span>");
+                            sb.Append("<span style='color:#555;'> ft </span>");
                         }
                     }
                     sb.Append("</p>");

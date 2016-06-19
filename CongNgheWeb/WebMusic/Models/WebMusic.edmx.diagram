@@ -4,71 +4,48 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8ed309fddd954e019df805ce0c6f2d3b" Name="Diagram1">
-        <EntityTypeShape EntityType="MusicModel.AccountAdmin" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.ARTIST" Width="1.5" PointX="3" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.CARD" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.CHART" Width="1.5" PointX="5.25" PointY="30" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.DEMO" Width="1.5" PointX="12.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.DEMO_ARTIST" Width="1.5" PointX="14.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.FORMULA_HOT" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.GENRE" Width="1.5" PointX="3" PointY="2.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.GENRE_ARTIST" Width="1.5" PointX="5.25" PointY="12.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.GENRE_LABEL" Width="1.5" PointX="8" PointY="16.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.HISTORY_UPDATE" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.HISTORY_USER" Width="1.5" PointX="13" PointY="3.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.HOME_HOT_NEW" Width="1.5" PointX="10.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.Home_NewTrack" Width="1.5" PointX="12.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.LABEL" Width="1.5" PointX="0.75" PointY="13.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.LISTEN_SLIDER" Width="1.5" PointX="14.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.LIVESET" Width="1.5" PointX="15.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.LIVESET_ARTIST" Width="1.5" PointX="16.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.NEW_TRACK" Width="1.5" PointX="8.25" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.REMIX" Width="1.5" PointX="6" PointY="24.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.REMIX_ARTIST" Width="1.5" PointX="8.25" PointY="12.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.SALE" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.SHOW" Width="1.5" PointX="5.25" PointY="17.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.SHOW_LIST" Width="1.5" PointX="16.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.SOUND" Width="1.5" PointX="3" PointY="19.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.STATISTIC_ARTIST" Width="1.5" PointX="5.25" PointY="20.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.STATISTIC_DEMO" Width="1.5" PointX="17.75" PointY="10.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.STATISTIC_LIVESET" Width="1.5" PointX="10.75" PointY="17.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.STATISTIC_REMIX" Width="1.5" PointX="8.25" PointY="25.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.STATISTIC_TRACK" Width="1.5" PointX="8.25" PointY="19.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.STEM" Width="1.5" PointX="3" PointY="5.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.STEM_ARTIST" Width="1.5" PointX="5.25" PointY="8.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.STEM1" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.TOP_6_DJ" Width="1.5" PointX="18.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.TRACK" Width="1.5" PointX="6" PointY="2" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.TRACK_ARTIST" Width="1.5" PointX="8.25" PointY="7.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.USER" Width="1.5" PointX="10.75" PointY="4.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.USER_TRACKLIST" Width="1.5" PointX="16" PointY="3.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="MusicModel.VIDEO" Width="1.5" PointX="13" PointY="10.875" IsExpanded="true" />
-        <AssociationConnector Association="MusicModel.FK_ARTIST_LABEL" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_GENRE_ARTIST_ARTIST" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_REMIX_ARTIST_ARTIST" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_SHOW_ARTIST" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_STATISTIC_ARTIST_ARTIST" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_STEM_ARTIST_ARTIST" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_TRACK_ARTIST_ARTIST" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_CHART_GENRE" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_GENRE_ARTIST_GENRE" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_GENRE_LABEL_GENRE" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_GENRE_LABEL_LABEL" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_HISTORY_USER_TRACK" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_HISTORY_USER_USER" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_SOUNDS_LABEL" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_NEW_TRACK_TRACK" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_REMIX_ARTIST_REMIX1" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_REMIX_TRACK" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_STATISTIC_REMIX_REMIX" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_STATISTIC_TRACK_TRACK" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_STEM_ARTIST_STEM" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_STEM_ARTIST_STEM1" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_TRACK_ARTIST_TRACK" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_USER_TRACKLIST_TRACK" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.FK_USER_TRACKLIST_USER" ManuallyRouted="false" />
-        <AssociationConnector Association="MusicModel.USER_VIDEOLIST" ManuallyRouted="false" />
+      <Diagram DiagramId="030cc01c23cc45e9b6b5b8424b474944" Name="Diagram1">
+        <EntityTypeShape EntityType="MusicModel.AccountAdmin" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.ARTIST" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.CARD" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.CHART" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.DEMO" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.DEMO_ARTIST" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.FORMULA_HOT" Width="1.5" PointX="6.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.GENRE" Width="1.5" PointX="2.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.GENRE_ARTIST" Width="1.5" PointX="4.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.GENRE_LABEL" Width="1.5" PointX="6.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.HISTORY_UPDATE" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.HISTORY_USER" Width="1.5" PointX="8.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.HOME_HOT_NEW" Width="1.5" PointX="8.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.Home_NewTrack" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.LABEL" Width="1.5" PointX="0.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.LISTEN_SLIDER" Width="1.5" PointX="10.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.LIVESET" Width="1.5" PointX="2.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.LIVESET_ARTIST" Width="1.5" PointX="4.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.NEW_TRACK" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.REMIX" Width="1.5" PointX="6.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.REMIX_ARTIST" Width="1.5" PointX="8.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.SALE" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.SHOW" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.SHOW_LIST" Width="1.5" PointX="12.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.SOUND" Width="1.5" PointX="12.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.STATISTIC_ARTIST" Width="1.5" PointX="10.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.STATISTIC_DEMO" Width="1.5" PointX="12.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.STATISTIC_LIVESET" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.STATISTIC_REMIX" Width="1.5" PointX="0.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.STATISTIC_TRACK" Width="1.5" PointX="2.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.STEM" Width="1.5" PointX="14.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.STEM_ARTIST" Width="1.5" PointX="14.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.STEM1" Width="1.5" PointX="14.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.sysdiagram" Width="1.5" PointX="14.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.TOP_6_DJ" Width="1.5" PointX="4.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.TRACK" Width="1.5" PointX="6.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.TRACK_ARTIST" Width="1.5" PointX="8.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.USER" Width="1.5" PointX="10.75" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.USER_TRACKLIST" Width="1.5" PointX="16.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.USER_VIDEOLIST" Width="1.5" PointX="16.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MusicModel.VIDEO" Width="1.5" PointX="16.75" PointY="6.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

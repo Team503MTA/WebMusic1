@@ -20,7 +20,5 @@ namespace WebMusic.Models
         public string LINK { get; set; }
         public Nullable<byte> RANKK { get; set; }
         public Nullable<double> COST { get; set; }
-    
-        public virtual TRACK TRACK { get; set; }
     }
 }

@@ -35,6 +35,8 @@
 	color: #c6a;
 	padding: 10px 0;
 	border-right: 1px solid #444;
+    font-size: 90%;
+    white-space: nowrap;
 }
 
 .cart-row:last-child{
@@ -50,8 +52,18 @@
 	color: #eee;
 }
 
+.content .col-sm-4 {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .cart-artist a{
 	color: #337ab7;
+    display: inline-block;
+}
+
+.row-cart-detail {
+    border-bottom: 1px solid #101010;
 }
 
 .cart-label a{

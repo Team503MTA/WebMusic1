@@ -18,8 +18,5 @@ namespace WebMusic.Models
         public int ID_PROD { get; set; }
         public byte TYPE { get; set; }
         public string NAME { get; set; }
-    
-        public virtual TRACK TRACK { get; set; }
-        public virtual USER USER { get; set; }
     }
 }

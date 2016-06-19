@@ -151,7 +151,7 @@ function audioLoad() {
     //event end audio
     audio.onended = function endedAudio() {
         if (audio.loop === false) {
-            clickAllPlayMusic(1, 1, 2);
+            RandomMusic();
         }
     };
 

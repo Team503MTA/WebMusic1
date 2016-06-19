@@ -21,8 +21,5 @@ namespace WebMusic.Models
         public byte TYPE { get; set; }
         public Nullable<byte> RANK { get; set; }
         public Nullable<short> DISTANCE_NEAR { get; set; }
-    
-        public virtual TRACK TRACK { get; set; }
-        public virtual USER USER { get; set; }
     }
 }
