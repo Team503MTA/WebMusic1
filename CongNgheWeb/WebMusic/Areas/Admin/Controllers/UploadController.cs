@@ -58,17 +58,17 @@ namespace WebMusic.Areas.Admin.Controllers
 
         public void AddNewTrack(MusicFileUpload obj)
         {
-            TRACK newTrack = new TRACK();
-            newTrack.NAME = obj.NAME;
-            newTrack.TEMPO = byte.Parse(obj.TEMPO);
-            newTrack.KEY_ = obj.KEY;
-            newTrack.COST = float.Parse(obj.COST);
-            newTrack.LINK = "/music/" + fileNameMusic;
-            newTrack.DATE_RELEASE = DateTime.Now;
-            newTrack.LINK_IMG = "/IMG/Track/Alesso/" + fileNameIMG;
-            newTrack.DESCRIPT = obj.DESCRIPTION;
-            newTrack.POINT_ALL = 0;
-            newTrack.POINT_MONTH = 0;
+            //TRACK newTrack = new TRACK();
+            //newTrack.NAME = obj.NAME;
+            //newTrack.TEMPO = byte.Parse(obj.TEMPO);
+            //newTrack.KEY_ = obj.KEY;
+            //newTrack.COST = float.Parse(obj.COST);
+            //newTrack.LINK = "/music/" + fileNameMusic;
+            //newTrack.DATE_RELEASE = DateTime.Now;
+            //newTrack.LINK_IMG = "/IMG/Track/Alesso/" + fileNameIMG;
+            //newTrack.DESCRIPT = obj.DESCRIPTION;
+            //newTrack.POINT_ALL = 0;
+            //newTrack.POINT_MONTH = 0;
         }
 
         [HttpPost]
