@@ -33,16 +33,17 @@
 
 .detail-label-name {
     font-size: 200%;
-    color: #fff;
+    color: #ddd;
 }
 
 p.detail-label-artist-name {
     display: inline-block;
     color: #666;
+    font-size: 80%;
 }
 
 a.detail-label-artist-name {
-    color: #fff;
+    color: #ccc;
     margin-left: 5px;
     text-decoration: none;
 }
@@ -50,21 +51,23 @@ a.detail-label-artist-name {
 p.detail-label-release {
     color: #555;
     display: inline-block;
+    font-size: 80%;
 }
 
 span.detail-label-release {
     margin-left: 5px;
-    color: #fff;
+    color: #ccc;
 }
 
 p.detail-label-location {
     color: #555;
     display: inline-block;
+    font-size: 80%;
 }
 
 a.detail-label-location {
     margin-left: 5px;
-    color: #fff;
+    color: #ccc;
     text-decoration: none;
 }
 
@@ -72,18 +75,21 @@ a.detail-label-location {
     color: #555;
     display: inline-block;
     margin-right: 5px;
+    font-size: 80%;
 }
 
 .detail-label-genres a{
-    color: #fff;
+    color: #c50;
+    font-size: 90%;
 }
 
 .detail-label-descrip-title {
     color: #555;
+    font-size: 80%;
 }
 
 #detail-label-descrip-content{
-    color: #fff;
+    color: #ccc;
 }
 
 .detail-label-more {
@@ -111,7 +117,7 @@ a.detail-label-location {
 
 .detail-label-artist-title{
     color: #88dd22;
-    font-size: 180%;
+    font-size: 150%;
 }
 
 .detail-label-artist-info{
@@ -269,7 +275,7 @@ a.detail-label-location {
     height: 30px;
     line-height: 30px;
     text-align: center;
-    font-size: 110%;
+    font-size: 90%;
     font-weight: bold;
 }
 
@@ -337,7 +343,7 @@ a.detail-label-location {
 .detail-label-track-title{
     display: inline-block;
     color: #77cc22;
-    font-size: 180%;
+    font-size: 150%;
 }
 
 .detail-label-track-slide{
@@ -507,9 +513,10 @@ a.detail-label-location {
     overflow: hidden;
 }
 .detail-label-track-child-name{
-    font-size: 105%;
+    font-size: 90%;
     padding: 0;
-    margin: 0;
+    margin: 5px 3px;
+    white-space: nowrap;
 }
 .detail-label-track-child-name a{
     color: #eee;
@@ -519,9 +526,11 @@ a.detail-label-location {
     text-shadow: 0 0 15px #f00;
 }
 .detail-label-track-child-artist{
-    font-size: 100%;
+    font-size: 75%;
     padding: 0;
-    margin: 0;
+    margin: 5px 3px;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .detail-label-track-child-artist a{
     color: #44bbcc;
@@ -532,8 +541,10 @@ a.detail-label-location {
 }
 .detail-label-track-child-label{
     color: #777;
-    font-size: 95%;
-    margin:0;
+    font-size: 75%;
+    margin:5px 3px;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .detail-label-track-child-label a{
     color: #666;

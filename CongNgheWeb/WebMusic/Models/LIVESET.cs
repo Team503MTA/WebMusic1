@@ -21,5 +21,6 @@ namespace WebMusic.Models
         public string LINK { get; set; }
         public Nullable<int> POINT_MONTH { get; set; }
         public Nullable<int> POINT_ALL { get; set; }
+        public string FULL_NAME { get; set; }
     }
 }

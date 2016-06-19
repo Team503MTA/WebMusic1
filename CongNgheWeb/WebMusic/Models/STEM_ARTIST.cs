@@ -19,9 +19,5 @@ namespace WebMusic.Models
         public string ARTIST_NAME { get; set; }
         public string NAME_LABEL { get; set; }
         public string NAME_STEM { get; set; }
-    
-        public virtual ARTIST ARTIST { get; set; }
-        public virtual STEM STEM { get; set; }
-        public virtual STEM STEM1 { get; set; }
     }
 }

@@ -14,19 +14,10 @@ namespace WebMusic.Models
     
     public partial class VIDEO
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public VIDEO()
-        {
-            this.USERs = new HashSet<USER>();
-        }
-    
         public int ID { get; set; }
         public string NAME { get; set; }
         public string DESCRIPT { get; set; }
         public Nullable<System.DateTime> TIME { get; set; }
         public string LINK { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<USER> USERs { get; set; }
     }
 }

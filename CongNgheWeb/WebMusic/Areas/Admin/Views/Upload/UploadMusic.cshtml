@@ -1,0 +1,132 @@
+﻿
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UploadMusic</title>
+
+    <script src="~/Areas/Admin/Script/Libraly/jquery-2.2.3.js"></script>
+    <link href="~/Areas/Admin/Content/Style/style-upload.css" rel="stylesheet" />
+</head>
+<body>
+
+    <select id="upload_typeMusic" name="genre">
+        <option value=""></option>
+        <option value="1">TRACK</option>
+        <option value="2">REMIX</option>
+        <option value="3">LIVESET</option>
+        <option value="4">DEMO</option>
+    </select>
+
+    <table id="upload_normal">
+        <tr>
+            <td>Name</td>
+            <td><input type="text" id="upload_nameMusic" placeholder="Name Music" /></td>
+        </tr>
+        <tr>
+            <td>Music</td>
+            <td><input accept=".mp3" type="file" id="upload_fileMusic" onchange="upload_sendRequest('upload_fileMusic')" /></td>
+        </tr>
+        <tr>
+            <td>Artist</td>
+            <td>@Html.DropDownList("listArtist", String.Empty)</td>
+            <td>@Html.DropDownList("listArtist1", String.Empty)</td>
+            <td>@Html.DropDownList("listArtist2", String.Empty)</td>
+            <td>@Html.DropDownList("listArtist3", String.Empty)</td>
+            <td><a href="#">New Artist</a></td>
+        </tr>
+        <tr>
+            <td>Cost($)</td>
+            <td><input type="text" placeholder="Cost" id="upload_Cost" /></td>
+        </tr>
+        <tr>
+            <td>Image</td>
+            <td><input accept=".jpg" type="file" id="upload_Image" onchange="upload_sendRequest('upload_Image')" /></td>
+        </tr>
+    </table>
+
+    <table id="upload_Advange">
+        <tr>
+            <td>Tempo</td>
+            <td><input type="text" placeholder="Tempo" id="upload_Tempo" /></td>
+        </tr>
+        <tr>
+            <td>Key</td>
+            <td><input type="text" placeholder="Key" id="upload_key" /></td>
+        </tr>
+        <tr>
+            <td>Date Release</td>
+            <td><input type="text" placeholder="Date Release" id="upload_dateRelease" /></td>
+        </tr>
+
+        <tr>
+            <td>Description</td>
+            <td><textarea id="upload_descript"></textarea></td>
+        </tr>
+        <tr>
+            <td>Genre</td>
+            <td>@Html.DropDownList("upload_genre", String.Empty)</td>
+            <td><a href="#"> new Genre</a></td>
+        </tr>
+    </table>
+
+    <button onclick="CreateMusic()">Create</button>
+
+</body>
+
+<script type="text/javascript">
+
+    function upload_sendRequest(stringId) {
+        var formData = new FormData();
+        var file = document.getElementById(stringId).files[0];
+        formData.append("FileUpload", file);
+        $.ajax({
+            type: "POST",
+            url: '/Upload/UploadMusic_File',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                console.log('success!!');
+            },
+            error: function (error) {
+                console.log("errror");
+            }
+        });
+    }
+
+    function CreateMusic() {
+
+        var listartist = $("#listArtist").val() + '.' + $("#listArtist2").val() + '.' + $("#listArtist3").val() + '.' + $("#listArtist1").val();
+
+        $.ajax({
+            type: "POST",
+            url: '/Upload/UploadMusic_Full',
+            data: JSON.stringify({
+                NAME: $("#upload_nameMusic").val(),
+                COST: $("#upload_Cost").val(),
+                LISTARTIST: listartist,
+                TEMPO: $("#upload_Tempo").val(),
+                KEY: $("#upload_key").val(),
+                DATERELEASE: $("#upload_dateRelease").val(),
+                DESCRIPTION: $("#upload_descript").val(),
+                GENRE: $("#upload_genre").val(),
+                TYPEMUSIC: $("#upload_typeMusic").val()
+            }),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            processData: false,
+            success: function (response) {
+            },
+            error: function (error) {
+                alert("Disconnect");
+            }
+        });
+    }
+</script>
+
+</html>
