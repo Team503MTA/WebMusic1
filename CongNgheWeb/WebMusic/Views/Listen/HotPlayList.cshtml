@@ -10,7 +10,7 @@
         foreach (var item in Model)
         {
             <div class="img-hotplaylist">
-                <a href="#"><img src="@Url.Content(item.LINK_IMG)" alt=""></a>
+                <a href="#"><img src="@Url.Content(item.LINK_IMG)" alt="" onclick="ViewDetailTrackAll_fun(@item.ID); return false;"</a>
 
             </div>
         }
