@@ -14,13 +14,6 @@ namespace WebMusic.Models
     
     public partial class STEM
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public STEM()
-        {
-            this.STEM_ARTIST = new HashSet<STEM_ARTIST>();
-            this.STEM_ARTIST1 = new HashSet<STEM_ARTIST>();
-        }
-    
         public int ID { get; set; }
         public string NAME { get; set; }
         public Nullable<byte> TEMPO { get; set; }
@@ -34,10 +27,5 @@ namespace WebMusic.Models
         public Nullable<int> POIN_ALL { get; set; }
         public Nullable<int> STEMS_ID { get; set; }
         public string GENRE { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STEM_ARTIST> STEM_ARTIST { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<STEM_ARTIST> STEM_ARTIST1 { get; set; }
     }
 }

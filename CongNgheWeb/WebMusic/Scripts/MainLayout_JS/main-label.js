@@ -9,3 +9,42 @@ function Artist_Label() {
     });
 }
 //END Slider-detail-label-artist
+
+
+
+
+
+// #region SHORT STRING
+
+function ShortStringLabel() {
+    var stringFull = $("#detail-label-descrip-content").text();
+
+    function displayShortString() {
+        var lenStringFull = 0;
+        lenStringFull = $("#detail-label-descrip-content").text().length;
+        if (lenStringFull > 20) {
+            $("#detail-label-descrip-content").text($("#detail-label-descrip-content").text().substr(0, 250) + '...');
+        }
+    }
+
+    function displayMoreString() {
+        $("#detail-label-descrip-content").text(stringFull);
+    }
+
+    displayShortString();
+
+    $(".detail-label-more").click(function () {
+        displayMoreString();
+        $(this).hide();
+        $(".detail-label-less").show();
+    });
+
+    $(".detail-label-less").click(function () {
+        displayShortString();
+        $(this).hide();
+        $(".detail-label-more").show();
+    });
+
+}
+
+// #endregion

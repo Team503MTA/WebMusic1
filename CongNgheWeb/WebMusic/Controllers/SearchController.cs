@@ -42,7 +42,7 @@ namespace WebMusic.Controllers
             }
 
             //lay du lieu cho Remix
-            var temp2 = db.REMIXes.Where(p => p.FULL_ARTIST.StartsWith(keyWord)).Select(p => new { p.ID, p.FULL_ARTIST }).OrderBy(p => p.FULL_ARTIST).Take(5).ToList();
+            var temp2 = db.REMIXes.Where(p => p.FULL_NAME.StartsWith(keyWord)).Select(p => new { p.ID, p.FULL_NAME }).OrderBy(p => p.FULL_NAME).Take(5).ToList();
             if (temp2.Count > 0)
             {
                 sb.Append("<div class='show-search-child'>");
@@ -53,7 +53,7 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='show-search-content'>");
                 foreach (var item in temp2)
                 {
-                    sb.Append("<div class='show-search-value' idd='" + item.ID + "'>" + item.FULL_ARTIST + "</div>");
+                    sb.Append("<div class='show-search-value' idd='" + item.ID + "'>" + item.FULL_NAME + "</div>");
                 }
                 sb.Append("</div>");
                 sb.Append("</div>");
@@ -142,12 +142,12 @@ namespace WebMusic.Controllers
                     if (item.LINK_IMG[0] == '~')
                     {
                         strTemp = item.LINK_IMG.TrimStart('~');
-                        strTemp = '.' + strTemp;
-                        sb.Append("<img src = '" + strTemp + "' alt=''>");
+                        strTemp = '..' + strTemp;
+                        sb.Append("<img src = '.." + strTemp + "' alt=''>");
                     }
                     else
                     {
-                        sb.Append("<img src = '" + item.LINK_IMG + "' alt=''>");
+                        sb.Append("<img src = '.." + item.LINK_IMG + "' alt=''>");
                     }
                     sb.Append("<div class='song-vertical-top-control'>");
                     sb.Append("<button class='song-vertical-play'><i class='fa fa-play'></i></button>");
@@ -321,7 +321,7 @@ namespace WebMusic.Controllers
                 {
                     sb.Append("<div class='col-sm-3'>");
                     sb.Append("<div class='search-label-detail'>");
-                    sb.Append("<img src = '" + temp[item].LINK_IMG +"' alt=''>");
+                    sb.Append("<img src = '.." + temp[item].LINK_IMG +"' alt=''>");
                     sb.Append("<p class='search-label-name' idd='" + temp[item].ID + "'><a href ='#'>" + temp[item].NAME + "</a></p>");
                     sb.Append("</div>");
                     sb.Append("</div>");
@@ -363,7 +363,7 @@ namespace WebMusic.Controllers
                 {
                     sb.Append("<div class='col-sm-2'>");
                     sb.Append("<div class='down-color'>");
-                    sb.Append("<img src = '" + temp[i].IMG + "' alt=''>");
+                    sb.Append("<img src = '.." + temp[i].IMG + "' alt=''>");
                     sb.Append("<a href='#' idd='" + temp[i].ID + "' class='down-color-link'>");
                     sb.Append("</a>");
                     sb.Append("<span class='down-color-name'>" + temp[i].NAME + "</span>");

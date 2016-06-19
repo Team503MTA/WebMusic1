@@ -28,7 +28,6 @@ namespace WebMusic.Controllers
             return lstCart;
         }
 
-        [HttpPost]
         public ActionResult Add(PostTrackRemix product)
         {
 
@@ -44,6 +43,12 @@ namespace WebMusic.Controllers
                 Byte saleValue = Convert.ToByte(Session["sale"].ToString());
 
                 temp = new Cart();
+
+                //product.type = 1   Track
+                //product.type = 2   Remix
+                //product.type = 3   LiveSet
+                //product.type = 4   Demo
+
                 if (product.type == 1)
                 {
                     TRACK tempTrack = db.TRACKs.Where(x => x.ID == product.id).FirstOrDefault();
@@ -73,6 +78,7 @@ namespace WebMusic.Controllers
                         temp.id = tempTrack.ID;
                         temp.type = 2;
                         temp.name = tempTrack.NAME;
+                        temp.fullName = tempTrack.FULL_NAME;
                         temp.sale = saleValue;
                         if (tempTrack.COST != null)
                         {
@@ -82,6 +88,44 @@ namespace WebMusic.Controllers
                     }
                     temp.artist = db.REMIX_ARTIST.Where(p => p.ID_REMIX == product.id).Select(p => p.NAME_ARTIST).ToList();
                     temp.label = db.REMIX_ARTIST.Where(p => p.ID_REMIX == product.id).Select(p => p.NAME_LABEL).ToList();
+                }
+                else if (product.type == 3)
+                {
+                    LIVESET tempTrack = db.LIVESETs.FirstOrDefault(x => x.ID == product.id);
+                    if (tempTrack != null)
+                    {
+                        temp.id = tempTrack.ID;
+                        temp.type = 3;
+                        temp.name = tempTrack.NAME;
+                        temp.fullName = tempTrack.FULL_NAME;
+                        temp.sale = saleValue;
+                        if (tempTrack.COST != null)
+                        {
+                            temp.cost = (double)tempTrack.COST;
+                            temp.cost = temp.cost * (100 - temp.sale) / 100;
+                        }
+                    }
+                    temp.artist = db.LIVESET_ARTIST.Where(p => p.ID_LIVESET == product.id).Select(p => p.NAME_ARTIST).ToList();
+                    temp.label = db.LIVESET_ARTIST.Where(p => p.ID_LIVESET == product.id).Select(p => p.NAME_LABEL).ToList();
+                }
+                else if (product.type == 4)
+                {
+                    DEMO tempTrack = db.DEMOes.FirstOrDefault(x => x.ID == product.id);
+                    if (tempTrack != null)
+                    {
+                        temp.id = tempTrack.ID;
+                        temp.type = 4;
+                        temp.name = tempTrack.NAME;
+                        temp.fullName = tempTrack.FULL_NAME;
+                        temp.sale = saleValue;
+                        if (tempTrack.COST != null)
+                        {
+                            temp.cost = (double)tempTrack.COST;
+                            temp.cost = temp.cost * (100 - temp.sale) / 100;
+                        }
+                    }
+                    temp.artist = db.DEMO_ARTIST.Where(p => p.ID_DEMO == product.id).Select(p => p.NAME_ARTIST).ToList();
+                    temp.label = db.DEMO_ARTIST.Where(p => p.ID_DEMO == product.id).Select(p => p.NAME_LABEL).ToList();
                 }
                 lstGioHang.Add(temp);
                 Session["Cart"] = lstGioHang;
@@ -146,7 +190,7 @@ namespace WebMusic.Controllers
                 sb.Append("<div class='col-sm-12'>");
                 sb.Append("<h1 id='detail-username' >vu hoang ha</h1>");
                 sb.Append("<br/>");
-                sb.Append("<div class='row'>");
+                sb.Append("<div class='row row-cart-detail'>");
                 sb.Append("<div class='col-sm-4 header'>Name</div>");
                 sb.Append("<div class='col-sm-3 header'>Artist</div>");
                 sb.Append("<div class='col-sm-3 header'>Label</div>");
@@ -263,9 +307,13 @@ namespace WebMusic.Controllers
                     }
                     else
                     {
-                        if (lastHist.ID_USER > 0)
+                        if (lastHist.ID_USER > 0 && lastHist.TIME == DateTime.Now)
                         {
-                            temp.DISTANCE_NEAR = Convert.ToInt16((DateTime.Now - lastHist.TIME).TotalDays - 1);
+                            temp.DISTANCE_NEAR = 0;
+                        }
+                        else if (lastHist.ID_USER > 0)
+                        {
+                            temp.DISTANCE_NEAR = Convert.ToInt16((DateTime.Now - lastHist.TIME).TotalDays-1);
                         }
                         else
                         {
@@ -284,18 +332,33 @@ namespace WebMusic.Controllers
                     db.USER_TRACKLIST.Add(tempTracklist);
                     db.SaveChanges();
 
+                    int fakeID = lstCart[i].id;
                     //ADD TO STATISTIC BUY
                     if (lstCart[i].type == 1)
                     {
-                        var statisticTrack = db.STATISTIC_TRACK.FirstOrDefault(p => p.ID == lstCart[i].id);
+                        var statisticTrack = db.STATISTIC_TRACK.FirstOrDefault(p => p.ID == fakeID);
                         statisticTrack.BUY_MONTH++;
                         statisticTrack.BUY_ALL++;
                         db.SaveChanges();
                     }else if (lstCart[i].type == 2)
                     {
-                        var statisticRemix = db.STATISTIC_REMIX.FirstOrDefault(p => p.ID == lstCart[i].id);
+                        var statisticRemix = db.STATISTIC_REMIX.FirstOrDefault(p => p.ID == fakeID);
                         statisticRemix.BUY_MONTH++;
                         statisticRemix.BUY_ALL++;
+                        db.SaveChanges();
+                    }
+                    else if (lstCart[i].type == 3)
+                    {
+                        var statisticLiveset = db.STATISTIC_LIVESET.FirstOrDefault(p => p.ID == fakeID);
+                        statisticLiveset.BUY_MONTH++;
+                        statisticLiveset.BUY_ALL++;
+                        db.SaveChanges();
+                    }
+                    else if (lstCart[i].type == 4)
+                    {
+                        var statisticDemo = db.STATISTIC_DEMO.FirstOrDefault(p => p.ID == fakeID);
+                        statisticDemo.BUY_MONTH++;
+                        statisticDemo.BUY_ALL++;
                         db.SaveChanges();
                     }
                 }
@@ -303,7 +366,6 @@ namespace WebMusic.Controllers
                 Session["Cart"] = null;
                 Session["TotalMoney"] = 0;
                 return Json("1");
-
             }
             return Json("0");
         }

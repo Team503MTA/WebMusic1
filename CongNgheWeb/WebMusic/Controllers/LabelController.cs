@@ -20,7 +20,7 @@ namespace WebMusic.Controllers
 
             sb.Append("<div class='detail-label'>");
             sb.Append("<div class='col-sm-12'>");
-            sb.Append("<div class='col-sm-4 detail-label-left'><img src='." + lb.LINK_IMG + "'></div>");
+            sb.Append("<div class='col-sm-4 detail-label-left'><img src='.." + lb.LINK_IMG + "'></div>");
             sb.Append("<div class='col-sm-8 detail-label-right'>");
             sb.Append("<p class='detail-label-nav'>LABEL</p>");
             sb.Append("<p class='detail-label-name'>" + lb.NAME + "</p><br>");
@@ -39,7 +39,7 @@ namespace WebMusic.Controllers
                 sb.Append("<a href='#'>" + listGenre[i] + "</a>");
                 if (i != 0)
                 {
-                    sb.Append("<span> ft </span>");
+                    sb.Append("<span style='color:#aaa; font-size:75%;' > ft </span>");
                 }
             }
             sb.Append("</div><br>");
@@ -96,7 +96,7 @@ namespace WebMusic.Controllers
 
                     sb.Append("<li>");
                     sb.Append("<div class='detail-label-artist-child'>");
-                    sb.Append("<img src='." + listArtist[count].IMG + "'>");
+                    sb.Append("<img src='.." + listArtist[count].IMG + "'>");
                     sb.Append("<div class='detail-label-artist-child-control'>");
                     sb.Append("<span>Follow</span>");
                     sb.Append("<a href='" + listArtist[count].FB + "' class='detail-label-artist-child-fb'>");
@@ -185,7 +185,7 @@ namespace WebMusic.Controllers
                     sb.Append("<li>");
                     sb.Append("<div class='detail-label-track-child'>");
                     sb.Append("<div class='detail-label-track-child-top'>");
-                    sb.Append("<img src='." + listTrack[count].LINK_IMG + "'>");
+                    sb.Append("<img src='.." + listTrack[count].LINK_IMG + "'>");
                     sb.Append("<div class='detail-label-track-child-top-control'>");
                     sb.Append("<a href='#' class='detail-label-track-child-play'><i class='fa fa-play'></i></a>");
                     sb.Append("<button class='detail-label-track-child-buy'>$" + listTrack[count].COST + "</button>");
@@ -206,7 +206,7 @@ namespace WebMusic.Controllers
                         sb.Append("<a href='#'>" + info[k].NAME_ARTIST + "</a>");
                         if (k != 0)
                         {
-                            sb.Append("<span> ft </span>");
+                            sb.Append("<span style='color:#555;'> ft </span>");
                         }
                     }
                     sb.Append("</p>");
@@ -216,7 +216,7 @@ namespace WebMusic.Controllers
                         sb.Append("<a href='#'>" + info[k].NAME_LABEL + "</a>");
                         if (k != 0)
                         {
-                            sb.Append("<span> ft </span>");
+                            sb.Append("<span style='color:#555;'> ft </span>");
                         }
                     }
                     sb.Append("</p>");

@@ -14,12 +14,6 @@ namespace WebMusic.Models
     
     public partial class REMIX
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public REMIX()
-        {
-            this.REMIX_ARTIST = new HashSet<REMIX_ARTIST>();
-        }
-    
         public int ID { get; set; }
         public string NAME { get; set; }
         public Nullable<int> TEMPO { get; set; }
@@ -33,11 +27,6 @@ namespace WebMusic.Models
         public string GENRE { get; set; }
         public Nullable<int> POINT_MONTH { get; set; }
         public Nullable<int> POINT_ALL { get; set; }
-        public string FULL_ARTIST { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<REMIX_ARTIST> REMIX_ARTIST { get; set; }
-        public virtual TRACK TRACK { get; set; }
-        public virtual STATISTIC_REMIX STATISTIC_REMIX { get; set; }
+        public string FULL_NAME { get; set; }
     }
 }

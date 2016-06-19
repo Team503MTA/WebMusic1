@@ -12,16 +12,9 @@ namespace WebMusic.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DEMO
+    public partial class USER_VIDEOLIST
     {
-        public int ID { get; set; }
-        public string NAME { get; set; }
-        public string LINK { get; set; }
-        public string LINK_IMG { get; set; }
-        public Nullable<int> POINT_MONTH { get; set; }
-        public Nullable<int> POINT_ALL { get; set; }
-        public Nullable<double> COST { get; set; }
-        public Nullable<System.DateTime> DATE_RELEASE { get; set; }
-        public string FULL_NAME { get; set; }
+        public int ID_USER { get; set; }
+        public int ID_VIDEO { get; set; }
     }
 }

@@ -59,7 +59,7 @@
                             <ul class="nav navbar-nav login pull-right">
                                 <li><a href="#" id="login-button">Login</a></li>
                                 <li><a href="#" id="register-button">Register</a></li>
-                                <li><a href="#" id="userName_Menu" onclick='userDetailPage()'></a></li>
+                                <li><a href="#" id="userName_Menu" onclick='userDetailPage(); return false;'></a></li>
                             </ul>
                         </div>
                         <!--/.nav-collapse -->
@@ -84,12 +84,12 @@
                     </div>
 
                     <div class="login-form-button-group">
-                        <input type="button" id="button-me-login" class="button-me" value="Login" onclick="login_Fun(null,null)">
+                        <input type="button" id="button-me-login" class="button-me" value="Login" onclick="login_Fun(); return false;">
                         <input type="button" id="button-me-cancel" class="button-me" value="Cancel">
                     </div>
 
                     <p id="fogotten-password">
-                        <a href="#">Fogotten Password</a>
+                        <a href="#" onclick="return false;">Fogotten Password</a>
                     </p>
                 </div>
             </div>
@@ -153,12 +153,12 @@
                 <div class="col-sm-12" id="userControl">
                     <div class="pull-left">
                         <ul class="nav navbar-nav">
-                            <li><a href="#" id="genres-button">GENRES <i class="glyphicon glyphicon-menu-down"></i></a></li>
-                            <li><a href="#">TRACKS</a></li>
-                            <li><a href="#">RELEASES</a></li>
-                            <li><a href="#">CHARTS</a></li>
-                            <li><a href="#">STEMS</a></li>
-                            <li><a href="#">SOUNDS</a></li>
+                            <li><a href="#" id="genres-button" onclick="return false;">GENRES <i class="glyphicon glyphicon-menu-down"></i></a></li>
+                            <li><a href="#" onclick="return false;">TRACKS</a></li>
+                            <li><a href="#" onclick="return false;">RELEASES</a></li>
+                            <li><a href="#" onclick="return false;">CHARTS</a></li>
+                            <li><a href="#" onclick="return false;">STEMS</a></li>
+                            <li><a href="#" onclick="return false;">SOUNDS</a></li>
                             <li id="input-form-search">
                                 <form class="form-search" id="input-form-search-child">
                                     <input type="text" placeholder="Search" id="main-search-input">
@@ -168,11 +168,12 @@
                         </ul>
                     </div>
                     <div class="pull-right">
-                        <button id="logoCartMenu" onclick="DetailCart_fun()">
+                        <button id="logoCartMenu" class="hide-element" onclick="DetailCart_fun()">
                             <i class="glyphicon glyphicon-shopping-cart" id="cartMenu" style="display: none;"></i>
                             <span id="total_Debt_Menu"></span>
                         </button>
-                        <span id="saleUser_Menu"></span>
+                        <span id="saleUser_Menu" class="hide-element"></span>
+                        <button id="select-type-play" class="red-button hide-element" onclick="ChangeStatusPlay();">Play PlayList</button>
                     </div>
                 </div>
             </div>
@@ -333,14 +334,14 @@
             <label id="playmusic-end"></label>
         </div>
         <div class="playmusic-button">
-            <button id="playmusic-prev" onclick='clickAllPlayMusic(1,1,2)'>
+            <button id="playmusic-prev" onclick='RandomMusic()'>
                 <i class="glyphicon glyphicon-backward"></i>
             </button>
             <button id="playButton">
                 <i class="glyphicon glyphicon-play"></i>
                 <i class="glyphicon glyphicon-pause"></i>
             </button>
-            <button id="playmusic-next" onclick='clickAllPlayMusic(1,1,2)'>
+            <button id="playmusic-next" onclick='RandomMusic()'>
                 <i class="glyphicon glyphicon-forward"></i>
             </button>
             <button id="loopButton">
@@ -524,7 +525,7 @@
                 success: function (data) {
                     document.getElementById("MainContent").innerHTML = '';
                     document.getElementById("MainContent").innerHTML = data;
-                    ShortString();
+                    ShortStringTrack();
                     endLoad();
                     document.body.scrollTop = 0;
                 }
@@ -646,10 +647,15 @@
                     if (data === '1') {
                         $("#total_Debt_Menu").text('$0');
                         noti_Fun("Buy Successful", "success");
+                        endLoad();
+                        HomePage();
                     } else {
                         noti_Fun("Input Value Fail", "error");
                     }
                     endLoad();
+                },
+                error:function() {
+                    console.log(error);
                 }
             });
         }
@@ -706,24 +712,24 @@
                     LASTNAME: $("#register_lastname").val()
                 }),
                 contentType: 'application/json; charset=utf-8',
-                success: function(data) {
+                success: function (data) {
                     login_Fun($("#register_email").val(), $("#register_password").val());
 
                     noti_Fun("Register Successful");
                     $(".register-form").hide();
                     $(".extra").hide();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     alert("loi roi");
                 }
             });
         }
 
-        function login_Fun(email, password) {
+        function login_Fun() {
             startLoad();
-            if (!email || !password) {
+            if (!$("#email-form").val() || !$("#password-form").val()) {
                 endLoad();
-                noti_Fun('You Must Fill Emain And Password','error');
+                noti_Fun('You Must Fill Emain And Password', 'error');
                 return false;
             }
 
@@ -732,19 +738,25 @@
                 dataType: 'json',
                 type: 'POST',
                 data: JSON.stringify({
-                    email: email,
-                    password: password
+                    email: $("#email-form").val(),
+                    password: $("#password-form").val()
                 }),
                 contentType: 'application/json; charset=utf-8',
-                success: function(data) {
+                success: function (data) {
                     if (data !== '') {
                         $("#login-form").hide();
                         $(".extra").hide();
                         $("#login-button").hide();
                         $("#register-button").hide();
                         $("#userName_Menu").text(data);
-                        $("#total_Debt_Menu").text("$0");
                         $("#cartMenu").show();
+                        $("#total_Debt_Menu").text("$0");
+
+                        $("#logoCartMenu").removeClass('hide-element');
+                        $("#saleUser_Menu").removeClass('hide-element').addClass('element_inline-block');
+                        $("#saleUser_Menu").text("Sale");
+                        
+                        $("#select-type-play").removeClass('hide-element');
 
                         endLoad();
                     } else {
@@ -759,16 +771,15 @@
     @* Script xu ly phan Playlist  *@
     <script type="text/javascript">
 
-        function clickAllPlayMusic(id, type, typePlay) {
+        function SelectMusicAll(id, type) {
             startLoad();
             $.ajax({
-                url: '@Url.Action("GetMusic", "PlayMusic")',
+                url: '@Url.Action("SelectMusic", "PlayMusic")',
                 dataType: 'json',
                 type: 'POST',
                 data: JSON.stringify({
                     id: id,
-                    type: type,
-                    typePlay: typePlay
+                    type: type
                 }),
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
@@ -784,17 +795,57 @@
             });
         }
 
+        function RandomMusic() {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("PlayMusic", "PlayMusic")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        document.getElementById("all-tagMusicBottom").innerHTML = '';
+                        document.getElementById("all-tagMusicBottom").innerHTML = data;
+                        endLoad();
+                    } else {
+                        alert("unsuccess");
+                        endLoad();
+                    }
+                },
+                error: function () {
+                    console.log("Disconnect");
+                }
+            });
+        }
+
+        function ChangeStatusPlay() {
+            $.ajax({
+                url: '@Url.Action("status_PlayMusic", "PlayMusic")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data === '1') {
+                        $("#select-type-play").removeClass('red-button').addClass('green-button');
+                    } else {
+                        $("#select-type-play").removeClass('green-button').addClass('red-button');
+                    }
+                },
+                error: function () {
+                    noti_Fun("Disconnect", "error");
+                }
+            });
+        }
 
         function clickPlayMusicDetail(id, type) {
             startLoad();
             $.ajax({
-                url: '@Url.Action("GetMusic", "PlayMusic")',
+                url: '@Url.Action("SelectMusic", "PlayMusic")',
                 dataType: 'json',
                 type: 'POST',
                 data: JSON.stringify({
                     id: id,
-                    type: type,
-                    typePlay: 1
+                    type: type
                 }),
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
@@ -833,7 +884,7 @@
         function playPlaylist(type) {
             startLoad();
             $.ajax({
-                url: '@Url.Action("playPlayList", "PlayMusic")',
+                url: '@Url.Action("PlayMusic", "PlayMusic")',
                 dataType: 'json',
                 type: 'POST',
                 contentType: 'application/json; charset=utf-8',
@@ -842,7 +893,7 @@
                 }),
                 success: function (data) {
                     if (data === '1') {
-                        clickAllPlayMusic(1, 1, 2);
+                        RandomMusic();
                     } else {
                         noti_Fun("Playlist Don't Have Song", "success");
                     }
@@ -878,36 +929,78 @@
 
     </script>
 
-    @*Script xu ly phan Detail*@
-<script type="text/javascript">
-    function detail_Artist(artistName) {
-        startLoad();
-        $.ajax({
-            url: '@Url.Action("Index", "Artist")',
-            dataType: 'json',
-            type: 'POST',
-            data: JSON.stringify({
-                artistName: artistName
-            }),
-            contentType: 'application/json; charset=utf-8',
-            success: function(data) {
-                if (data !== '') {
-                    document.getElementById("MainContent").innerHTML = data;
-                    detail_Hot_Track_Label();
-                    endLoad();
-                    document.body.scrollTop = 0;
+    @*Script xu ly phan Detail Artist*@
+    <script type="text/javascript">
 
-                    return false;
-                } else {
-                    alert("unsuccess");
-                    endLoad();
-
-                    return false;
+        function detail_Artist(artistName) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("Index", "Artist")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    artistName: artistName
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        document.getElementById("MainContent").innerHTML = data;
+                        ShortStringArtist();
+                        endLoad();
+                        document.body.scrollTop = 0;
+                    } else {
+                        alert("unsuccess");
+                        endLoad();
+                    }
                 }
-            }
-        });
-    }
-</script>
+            });
+        }
+
+        //show full MORE_TRACK_THIS_LABEL
+        function detailArtist_hotRemix(id) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("Hot_Remix_Full", "Artist")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("id_detail-artist-hot-remix").innerHTML = data;
+                    document.getElementById("detail-artist-hot-remix-viewall").style.display = 'none';
+                    document.getElementById("detail-artist-remix-id").style.overflowY = 'scroll';
+                    document.getElementById("detail-artist-remix-id").style.overflowX = 'hidden';
+
+                    endLoad();
+                }
+            });
+        }
+
+        //show full MORE_TRACK_THIS_LABEL
+        function detailArtist_hotTrack(id) {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("Hot_Track_Label_Full", "Artist")',
+                dataType: 'json',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: id
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    document.getElementById("id_detail-artist-hot-track").innerHTML = data;
+                    document.getElementById("detail-artist-hot-track-viewall").style.display = 'none';
+                    document.getElementById("slider-detail-artist-track-id").style.overflowY = 'scroll';
+                    document.getElementById("slider-detail-artist-track-id").style.overflowX = 'hidden';
+
+                    endLoad();
+                }
+            });
+        }
+
+    </script>
 
     @* Script xu ly phan Label *@
     <script type="text/javascript">
@@ -925,6 +1018,7 @@
                     if (data !== '') {
                         document.getElementById("MainContent").innerHTML = data;
                         Artist_Label();
+                        ShortStringLabel();
                         endLoad();
                         document.body.scrollTop = 0;
                     } else {
@@ -936,31 +1030,40 @@
         }
     </script>
 
-@*Script phan Header*@
-<script type="text/javascript">
-    function HomePage() {
-        startLoad();
-        $.ajax({
-            url: '@Url.Action("HomePage", "Home")',
-            dataType: 'json',
-            type: 'POST',
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                if (data !== '') {
-                    document.getElementById("MainContent").innerHTML = data;
-                    endLoad();
-                } else {
-                    alert("unsuccess");
-                    endLoad();
-                }
-            }
-        });
-    }
-</script>
+    @*Script phan Header*@
+    <script type="text/javascript">
+        function HomePage() {
+            startLoad();
+            $.ajax({
+                url: '@Url.Action("HomePage", "Home")',
+                dataType: 'json',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data !== '') {
+                        document.getElementById("MainContent").innerHTML = data;
 
-<script src="~/Scripts/MainLayout_JS/main-layout.js"></script>
+                        hotSlider_Fun();
+                        Top_6_DJ_Fun();
+                        newTrack_Index_Fun();
+                        Home_Hot_Remix();
+                        Liveset();
+                        Bucket();
+
+                        endLoad();
+                    } else {
+                        alert("unsuccess");
+                        endLoad();
+                    }
+                }
+            });
+        }
+    </script>
+
+    <script src="~/Scripts/MainLayout_JS/main-layout.js"></script>
     <script src="~/Scripts/MainLayout_JS/main-detail-artist.js"></script>
     <script src="~/Scripts/MainLayout_JS/main-label.js"></script>
     <script src="~/Scripts/MainLayout_JS/main-index.js"></script>
+    <script src='~/Scripts/MainLayout_JS/main-detail-track.js'></script>
 </body>
 </html>

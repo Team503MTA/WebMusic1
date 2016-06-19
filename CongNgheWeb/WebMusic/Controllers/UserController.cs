@@ -35,6 +35,7 @@ namespace WebMusic.Controllers
                 Session["User"] = user;
                 Session["totalDebtNearDay"] = 0;
                 Session["TotalMoney"] = 0;
+                Session["Cart"] = null;
 
                 //read PlayList
                 Session["PlayList"] = Session["PlaylistRight"] = db.USER_TRACKLIST.Where(p => p.ID_USER == user.ID).ToList();

@@ -21,7 +21,5 @@ namespace WebMusic.Models
         public Nullable<System.DateTime> TIME { get; set; }
         public string DESCRIBLE { get; set; }
         public string LINK_IMG { get; set; }
-    
-        public virtual ARTIST ARTIST { get; set; }
     }
 }

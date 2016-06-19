@@ -21,7 +21,5 @@ namespace WebMusic.Models
         public Nullable<int> BUY_MONTH { get; set; }
         public Nullable<int> POINT_MONTH { get; set; }
         public Nullable<int> POINT_ALL { get; set; }
-    
-        public virtual REMIX REMIX { get; set; }
     }
 }
