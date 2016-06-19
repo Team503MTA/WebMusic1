@@ -41,7 +41,7 @@ namespace WebMusic.Controllers
 
         public PartialViewResult Staffpick()
         {
-            var lstStaffpick = db.TRACK_ARTIST.Take(10).ToList();
+            var lstStaffpick = db.TRACK_ARTIST.Take(9).ToList();
             return PartialView(lstStaffpick);
         }
         public PartialViewResult FeatureArtist()

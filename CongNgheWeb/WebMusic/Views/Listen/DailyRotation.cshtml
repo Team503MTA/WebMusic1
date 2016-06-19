@@ -12,8 +12,8 @@
                         <div class="daily-rotation-song-vertical-top">
                             <img src="@Url.Content(item.LINK_IMG)" alt="">
                             <div class="daily-rotation-song-vertical-top-control">
-                                <button class="daily-rotation-song-vertical-play"><i class="fa fa-play"></i></button>
-                                <button class="daily-rotation-song-vertical-buy">@item.COST</button>
+                                <button onclick="clickAllPlayMusic(@item.ID_TRACK,1,2)"  class="daily-rotation-song-vertical-play"><i class="fa fa-play"></i></button>
+                                <button onclick="clickBuy_fun(@item.ID_TRACK,1)" class="daily-rotation-song-vertical-buy">@item.COST</button>
                                 <button class="daily-rotation-song-vertical-share"><i class="fa fa-facebook"></i>Share</button>
                             </div>
                             <p></p>

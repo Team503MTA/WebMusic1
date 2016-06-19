@@ -2,24 +2,24 @@
 @model List<TRACK_ARTIST>
 
 
-<div class="top-ten-demo">
-    <p class="top-ten-demo-title">STAFF PICK</p>
+<div class="top-ten-demo1">
+    <p class="top-ten-demo-title1">STAFF PICK</p>
     <ul>
         @{
             var count = 1;
             foreach (var item in Model)
             {
                 <li>
-                    <div class="top-ten-demo-img">
+                    <div class="top-ten-demo-img1">
                         <img src="@Url.Content(item.LINK_IMG)" alt="">
                     </div>
-                    <div class="top-ten-demo-li-left">
+                    <div class="top-ten-demo-li-left1">
                         @count
                     </div>
-                    <div class="top-ten-demo-li-right">
-                        <a href="#" class="top-ten-demo-name link-decorate">@item.NAME_TRACK</a>
-                        <a href="#" class="top-ten-demo-artist link-decorate">@item.NAME_ARTIST</a>
-                        <a href="#" class="top-ten-demo-label link-decorate">@item.NAME_LABEL</a>
+                    <div class="top-ten-demo-li-right1">
+                        <a href="#" class="top-ten-demo-name1 link-decorate1" onclick="ViewDetailTrackAll_fun(@item.ID_TRACK); return false;">@item.NAME_TRACK</a>
+                        <a href="#" class="top-ten-demo-artist1 link-decorate1" onclick="detail_Artist('@item.NAME_ARTIST'); return false;">@item.NAME_ARTIST</a>
+                        <a href="#" class="top-ten-demo-label1 link-decorate1" onclick="detail_Artist('@item.NAME_ARTIST'); return false;">@item.NAME_LABEL</a>
                         <hr>
                     </div>
                 </li>

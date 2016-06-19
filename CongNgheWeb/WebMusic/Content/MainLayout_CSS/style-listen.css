@@ -1751,102 +1751,6 @@ hr{
 /*top Artists End*/
 
 
-/* top-10-demo */
-
-
-.top-ten-demo {
-    margin: 3em 0 0 0;
-    color: #fff;
-}
-
-.top-ten-demo-title {
-    padding: 1em 0;
-    margin: 0em 0.5em 1em 0.5em;
-    border-bottom: 2px solid #444;
-    font-size: 150%;
-    color: #fff;
-    font-family: arial;
-}
-
-.top-ten-demo ul {
-    display: inline-block;
-    width: 100%;
-    padding: 0;
-}
-
-.top-ten-demo li {
-    display: block;
-    width: 100%;
-    margin: 0 0 10px 0;
-    padding: 0;
-}
-
-.top-ten-demo-img{
-    display: inline-block;
-    vertical-align: top;
-    width: 12.5%;
-}
-
-.top-ten-demo-img img{
-    display: inline-block;
-    width: 100%;
-}
-
-.top-ten-demo-li-left {
-    display: inline-block;
-    height: 100%;
-    font-size: 200%;
-    width: 10%;
-    vertical-align: top;
-    text-align: center;
-}
-
-.top-ten-demo-li-right {
-    display: inline-block;
-    vertical-align: top;
-    height: 100%;
-    width: 60%;
-    text-align: left;
-}
-
-.top-ten-demo-li-right hr {
-    height: 1px;
-    border: 0;
-    background: #333;
-    width: 95%;
-}
-
-.top-ten-demo a {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-decoration: none;
-}
-
-.top-ten-demo a:hover{
-    color: #afee10;
-}
-
-.top-ten-demo-name {
-    font-size: 130%;
-    color: #fff;
-}
-
-.top-ten-demo-artist {
-    font-size: 100%;
-    color: #22bbcc;
-    
-        margin: 5px 0;
-
-}
-
-.top-ten-demo-label {
-    font-size: 95%;
-    color: #888;
-}
-
-/* end top-10-demo */
 
 /*Slider - video*/
 
@@ -2649,3 +2553,115 @@ body {
 /* end top video */
 
 
+
+
+.top-ten-demo1 {
+    margin: 3em 0 0 0;
+    color: #fff;
+}
+
+.top-ten-demo-title1 {
+    padding: 1em 0;
+    margin: 0 0.5em 1em 0.5em;
+    border-bottom: 2px solid #444;
+    font-size: 150%;
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    font-family:Arial;
+}
+
+.top-ten-demo1 ul {
+    display: inline-block;
+    width: 100%;
+    padding: 0;
+}
+
+.top-ten-demo1 li {
+    display: block;
+    width: 50%;
+    margin: 0 0 10px 0;
+    padding: 0;
+}
+
+.top-ten-demo-img1 {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    width: 25%;
+}
+
+.top-ten-demo-img1 img {
+        display: inline-block;
+        width: 100%;
+    }
+
+.top-ten-demo-li-left1 {
+    display: inline-block;
+    height: 100%;
+    font-size: 160%;
+    width: 10%;
+    vertical-align: top;
+    text-align: center;
+}
+
+.top-ten-demo-li-right1 {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    width: 60%;
+    text-align: left;
+}
+
+.top-ten-demo-li-right1 hr {
+        height: 1px;
+        border: 0;
+        background: #333;
+        width: 95%;
+    }
+
+.top-ten-demo1 a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    -moz-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    text-decoration: none;
+}
+
+.top-ten-demo1 a:hover {
+        -ms-text-shadow: 0 0 15px #f00;
+        text-shadow: 0 0 15px #f00;
+    }
+
+.top-ten-demo-name1 {
+    font-size: 100%;
+    color: #eee;
+}
+
+.top-ten-demo-name1:hover {
+        color: #eee;
+    }
+
+.top-ten-demo-artist1 {
+    font-size: 90%;
+    color: #22bbcc;
+    margin: 5px 0;
+}
+
+    .top-ten-demo-artist1:hover {
+        color: #22bbcc;
+    }
+
+.top-ten-demo-label1 {
+    font-size: 90%;
+    color: #888;
+}
+
+    .top-ten-demo-label1:hover {
+        color: #888;
+    }
+
+/* end top-10-demo */
