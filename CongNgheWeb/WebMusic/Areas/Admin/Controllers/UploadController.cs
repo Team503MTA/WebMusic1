@@ -56,19 +56,30 @@ namespace WebMusic.Areas.Admin.Controllers
             }
         }
 
-        public void AddNewTrack(MusicFileUpload obj)
+        public void AddNewTrack(MusicFileUpload obj,string fileNameMusic,string fileNameIMG)
         {
-            //TRACK newTrack = new TRACK();
-            //newTrack.NAME = obj.NAME;
-            //newTrack.TEMPO = byte.Parse(obj.TEMPO);
-            //newTrack.KEY_ = obj.KEY;
-            //newTrack.COST = float.Parse(obj.COST);
-            //newTrack.LINK = "/music/" + fileNameMusic;
-            //newTrack.DATE_RELEASE = DateTime.Now;
-            //newTrack.LINK_IMG = "/IMG/Track/Alesso/" + fileNameIMG;
-            //newTrack.DESCRIPT = obj.DESCRIPTION;
-            //newTrack.POINT_ALL = 0;
-            //newTrack.POINT_MONTH = 0;
+            TRACK newTrack = new TRACK();
+            newTrack.NAME = obj.NAME;
+            newTrack.TEMPO = byte.Parse(obj.TEMPO);
+            newTrack.KEY_ = obj.KEY;
+            newTrack.COST = float.Parse(obj.COST);
+            newTrack.LINK = "/music/" + fileNameMusic;
+            newTrack.DATE_RELEASE = DateTime.Now;
+            newTrack.LINK_IMG = "/IMG/Track/Alesso/" + fileNameIMG;
+            newTrack.DESCRIPT = obj.DESCRIPTION;
+            newTrack.POINT_ALL = 0;
+            newTrack.POINT_MONTH = 0;
+
+            var artist = obj.LISTARTIST.Split('.');
+            List<string> lstArtist = new List<string>();
+            foreach (var item in artist)
+            {
+                if (item == null || item == "")
+                {
+                    lstArtist.Add(item);
+                }
+            }
+
         }
 
         [HttpPost]
@@ -93,7 +104,7 @@ namespace WebMusic.Areas.Admin.Controllers
                 string pathIMG = Path.Combine(Server.MapPath("~/IMG/Track/Alesso/"), fileNameIMG);
                 fileImage.SaveAs(pathIMG);
 
-                
+                AddNewTrack(obj, fileNameMusic, fileNameIMG);
             }
 
 
