@@ -1590,8 +1590,8 @@ hr{
 
 /*Top Artists*/
 
-.top-Artist{
-    display: inline-block;
+.top-Artist1{
+    display:block;
     width: 90%;
     position: relative;
     box-sizing: border-box;
@@ -1601,16 +1601,16 @@ hr{
     height: auto;
 }
 
-.top-Artist button{
+.top-Artist1 button1{
     cursor: pointer;
 }
 
-.top-Artist img{
+.top-Artist1 img{
     width: 100%;
     display: inline-block;
 }
 
-.top-Artist-control{
+.top-Artist-control1{
     box-sizing: border-box;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
@@ -1623,7 +1623,7 @@ hr{
     transition: 0.2s all;
 }
 
-.top-Artist-control button{
+.top-Artist-control1 button{
     box-sizing: border-box;
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
@@ -1631,7 +1631,7 @@ hr{
     padding: 0;
 }
 
-.top-Artist-control span{
+.top-Artist-control1 span{
     display: inline-block;
     height: 100%;
     padding: 0;
@@ -1651,7 +1651,7 @@ hr{
     transition-timing-function: ease-in-out;
 }
 
-.top-Artist-fb{
+.top-Artist-fb1{
     display: inline-block;
     box-sizing: border-box;
     -moz-box-sizing:border-box;
@@ -1669,7 +1669,7 @@ hr{
     transform: translate(10000%,10000%);
 }
 
-.top-Artist-tw{
+.top-Artist-tw1{
     display: inline-block;
     box-sizing: border-box;
     -moz-box-sizing:border-box;
@@ -1686,25 +1686,25 @@ hr{
     transform: translateX(1500%);
 }
 
-.top-Artist:hover .top-Artist-control span{
+.top-Artist1:hover .top-Artist-control1 span{
     transform: translateY(0);
     width: 70px;
     border: 2px solid #22dd22;
 }
 
-.top-Artist:hover .top-Artist-fb{
+.top-Artist1:hover .top-Artist-fb1{
     transform: translate(0,0);
 }
 
-.top-Artist:hover .top-Artist-tw{
+.top-Artist1:hover .top-Artist-tw1{
     transform: translateX(0);
 }
 
-.top-Artist:hover .top-Artist-control{
+.top-Artist1:hover .top-Artist-control1{
     height: 30px;
 }
 
-.top-Artist-name{
+.top-Artist-name1{
     display: inline-block;
     position: absolute;
     bottom: 0;
@@ -1720,18 +1720,18 @@ hr{
     font-weight: bold;
 }
 
-#name-Artists{
+#name-Artists1{
     display: inline-block;
     color: #fff;
     text-decoration: none;
     overflow: hidden;
 }
 
-#name-Artists:hover{
+#name-Artists1:hover{
     text-shadow:0 0 15px #f00;
 }
 
-.FeaturedArtists-right{
+.FeaturedArtists-right1{
     width: 100%;
     display: inline-block;
     vertical-align: top;
@@ -1739,12 +1739,12 @@ hr{
     padding-top: 0.5%
 }
 
-.featured-title{
+.featured-title1{
     font-size: 125%;
     color: #fff;
     font-family: arial;
 }
-.img-featuredartists{
+.img-featuredartists1{
     width: 100%;
 }
 

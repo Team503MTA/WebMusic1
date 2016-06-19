@@ -28,7 +28,7 @@ namespace WebMusic.Controllers
             sb.Append("<div class='detail-song'>");
             sb.Append("<div class='col-sm-12'>");
             sb.Append("<div class='col-sm-4 detail-song-left'>");
-            sb.Append("<img src='." + track.LINK_IMG + "'>");
+            sb.Append("<img src='.." + track.LINK_IMG + "'>");
             sb.Append("</div>");
             sb.Append("<div class='col-sm-8 detail-song-right'>");
             sb.Append("<p class='detail-song-nav'>RELEASE</p>");
@@ -212,7 +212,7 @@ namespace WebMusic.Controllers
             {
                 sb.Append("<div class='detail-song-artist-song'>");
                 sb.Append("<div class='detail-song-artist-song-top'>");
-                sb.Append("<img src='." + lstTrack[i].LINK_IMG + "'>");
+                sb.Append("<img src='.." + lstTrack[i].LINK_IMG + "'>");
                 sb.Append("<div class='detail-song-artist-song-top-control'>");
                 sb.Append("<button class='detail-song-artist-song-play'><i class='fa fa-play' ></i ></button>");
                 sb.Append("<button class='detail-song-artist-song-buy'>$" + lstTrack[i].COST + "</button>");
@@ -310,7 +310,7 @@ namespace WebMusic.Controllers
             {
                 sb.Append("<div class='detail-song-label-song'>");
                 sb.Append("<div class='detail-song-label-song-top'>");
-                sb.Append("<img src = '." + lstTrack[i].LINK_IMG + "' alt=''>");
+                sb.Append("<img src = '.." + lstTrack[i].LINK_IMG + "' alt=''>");
                 sb.Append("<div class='detail-song-label-song-top-control'>");
                 sb.Append("<button class='detail-song-label-song-play'><i class='fa fa-play'></i></button>");
                 sb.Append("<button class='detail-song-label-song-buy'>$" + lstTrack[i].COST + "</button>");

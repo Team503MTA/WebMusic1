@@ -13,7 +13,7 @@
                     <div class="song-horizontal">
                         <div class="song-horizontal-left">
                             <p>@count</p>
-                            <button onclick="SelectMusicAll(@item.ID_TRACK)"><i class="fa fa-play"></i></button>
+                            <button onclick="SelectMusicAll(@item.ID_TRACK,1)"><i class="fa fa-play"></i></button>
                             <span class="song-horizontal-left-top"></span>
                             <span class="song-horizontal-left-bottom"></span>
                             <span class="song-horizontal-left-left"></span>
@@ -23,7 +23,7 @@
                             <p class="song-horizontal-name"><a class="name-level-1" href="#" onclick="ViewDetailTrackAll_fun(@item.ID_TRACK); return false;">@item.NAME_TRACK</a></p>
                             <p class="song-horizontal-artist"><a class="name-level-2" } href="#" onclick="detail_Artist('@item.NAME_ARTIST'); return false;">@item.NAME_ARTIST</a></p>
                             <p class="song-horizontal-label"><a class="name-level-3" href="#" onclick="detail_Artist('@item.NAME_ARTIST'); return false;">@item.NAME_LABEL</a></p>
-                            <button>$2.8</button>
+                            <button onclick ="clickBuy_fun(@item.ID_TRACK,1)">$2.8</button>
                         </div>
                     </div>
                 </li>
